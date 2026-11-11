@@ -1,18 +1,22 @@
 spring:
+  profiles:
+    # 프로필을 따로 정하지 않으면 local로 실행돼요. (개발용 임시 로그인은 local에서만 켜져요)
+    # 배포할 때는 SPRING_PROFILES_ACTIVE를 꼭 다른 값으로 지정하세요.
+    default: local
   application:
     name: charity-auction
   jackson:
-    time-zone: Asia/Seoul
+    time-zone: UTC
 
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/auctions
+    username: root
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:

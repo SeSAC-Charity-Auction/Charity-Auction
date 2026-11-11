@@ -21,8 +21,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
-
-                        // 초기 세팅: 모든 API 접근 허용
+                        // 임시: 5단계에서 인증을 만들기 전까지 모든 API 접근 허용
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form.disable())

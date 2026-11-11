@@ -1,0 +1,635 @@
+/* app/donations/[targetId]/page.module.css */
+
+/* ---------- 색과 기본 설정 ---------- */
+.page {
+  --paper: #f6f7fb;
+  --ink: #1f2347;
+  --ink-soft: #4a4f78;
+  --bid: #3b4cca;
+  --hammer: #ffc83d;
+  --lilac: #aab3f2;
+  --mist: #e3e6f4;
+  --mist-strong: #b9bedf;
+
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.7;
+  word-break: keep-all; /* 한글이 단어 단위로 줄바꿈되게 */
+}
+
+.page :where(h1, h2, h3, p, ol, dl, dd, output) {
+  margin: 0;
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px 96px;
+}
+
+.notice {
+  margin: 0;
+  padding: 10px 20px;
+  background: var(--mist);
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.loading {
+  padding: 96px 0;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0;
+  clip-path: inset(50%);
+}
+
+/* ---------- 링크와 버튼 ---------- */
+.back {
+  display: inline-block;
+  margin: 24px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.textLink {
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.btnPrimary {
+  background: var(--bid);
+  color: #fff;
+}
+.btnPrimary:hover {
+  background: #2f3ea8;
+}
+.btn:focus-visible,
+.textLink:focus-visible,
+.back:focus-visible {
+  outline: 3px solid var(--bid);
+  outline-offset: 3px;
+}
+
+/* ---------- 전체 배치 ---------- */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  grid-template-areas:
+    "head form"
+    "recent form";
+  gap: 40px 48px;
+  align-items: start;
+  padding-top: 24px;
+}
+
+.head {
+  grid-area: head;
+}
+
+.formArea {
+  grid-area: form;
+  position: sticky;
+  top: 24px;
+}
+
+.recent {
+  grid-area: recent;
+}
+
+/* ---------- 기부처 소개 ---------- */
+.heroThumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+  background: var(--mist);
+  border-radius: 12px;
+}
+
+.heroImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroFallback {
+  color: var(--ink-soft);
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 24px;
+}
+
+.title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.badge {
+  padding: 2px 12px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.badgeOpen {
+  background: var(--hammer);
+  color: var(--ink);
+}
+.badgeClosed {
+  background: var(--mist);
+  color: var(--ink-soft);
+}
+
+.lead {
+  max-width: 36em;
+  margin-top: 12px;
+  color: var(--ink-soft);
+}
+
+/* ---------- 진행 상황 ---------- */
+.progressBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.progressTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+
+.pct {
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.progressNote {
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.bar {
+  position: relative;
+  height: 14px;
+  overflow: hidden;
+  background: var(--mist);
+  border-radius: 999px;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--bid);
+  border-radius: 999px;
+}
+
+/* 25%, 50%, 75% 위치를 알려주는 가는 눈금 */
+.tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.amounts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  font-size: 0.875rem;
+}
+
+.raised {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.goal {
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 숫자 요약 ---------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 32px;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--mist-strong);
+}
+
+.stat {
+  padding: 18px 0 18px 20px;
+  border-left: 1.5px solid var(--mist-strong);
+}
+.stat:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.statLabel {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.statValue {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.statNum {
+  font-size: 1.625rem;
+  font-weight: 400;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.statUnit {
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+/* ---------- 기부 폼 (이 페이지의 기억에 남는 장면: 슬라이더) ---------- */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px;
+  background: var(--ink);
+  border-radius: 14px;
+  color: #fff;
+}
+
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-bottom: 8px;
+}
+
+.panelTitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.panelBalance {
+  color: #cfd3ee;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.amountLabel {
+  color: #cfd3ee;
+  font-size: 0.875rem;
+}
+
+/* 슬라이더를 움직이면 이 숫자가 바뀌어요 */
+.amountValue {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--hammer);
+  font-size: clamp(2.75rem, 7vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.amountUnit {
+  color: #cfd3ee;
+  font-size: 1.25rem;
+}
+
+/* 슬라이더: 왼쪽(채워진 부분)은 노란색, 오른쪽은 연한 흰색 */
+.range {
+  --pct: 50%;
+
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.range:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--hammer) var(--pct),
+    rgba(255, 255, 255, 0.22) var(--pct)
+  );
+}
+.range::-moz-range-track {
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--hammer) var(--pct),
+    rgba(255, 255, 255, 0.22) var(--pct)
+  );
+}
+
+/* 손잡이: 노란 동전 (내 포인트 영역의 동전과 같은 모양) */
+.range::-webkit-slider-thumb {
+  width: 32px;
+  height: 32px;
+  margin-top: -10px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--hammer);
+  box-shadow: 0 0 0 3px #fff;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.range::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--hammer);
+  box-shadow: 0 0 0 3px #fff;
+}
+
+.rangeScale {
+  display: flex;
+  justify-content: space-between;
+  color: #cfd3ee;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.chip {
+  min-height: 36px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  color: #fff;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.chip:hover {
+  border-color: #fff;
+}
+.chip[aria-pressed="true"] {
+  background: #fff;
+  border-color: #fff;
+  color: var(--ink);
+}
+.chip:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+/* 기부하면 목표 막대가 얼마나 채워지는지 미리 보기 */
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.35);
+}
+
+.previewBar {
+  display: flex;
+  height: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+}
+
+.previewNow {
+  background: var(--lilac);
+}
+
+.previewAdd {
+  background: var(--hammer);
+}
+
+.previewText {
+  color: #cfd3ee;
+  font-size: 0.875rem;
+}
+
+.messageError,
+.messageSuccess {
+  margin: 4px 0 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+}
+.messageError {
+  background: rgba(255, 138, 138, 0.16);
+  border-left: 4px solid #ff8a8a;
+  color: #ffe0e0;
+}
+.messageSuccess {
+  background: rgba(255, 255, 255, 0.12);
+  border-left: 4px solid var(--hammer);
+}
+
+.submit {
+  min-height: 52px;
+  margin-top: 8px;
+  padding: 0 20px;
+  background: var(--hammer);
+  border: 0;
+  border-radius: 8px;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.submit:hover {
+  background: #ffd45f;
+}
+.submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.submit:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+/* ---------- 폼 대신 안내만 보일 때 (로그인 전, 포인트 부족, 마감) ---------- */
+.panelQuiet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 28px;
+  background: var(--mist);
+  border-radius: 14px;
+}
+
+.panelQuietTitle {
+  font-size: 1.375rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.panelQuietText {
+  color: var(--ink-soft);
+}
+
+.panelSkeleton {
+  min-height: 420px;
+  background: var(--mist);
+  border-radius: 14px;
+}
+
+/* ---------- 섹션 제목과 최근 기부 ---------- */
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 0 0 20px;
+}
+
+.h2 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.sectionNote {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.empty {
+  padding: 32px;
+  border: 1.5px dashed var(--mist-strong);
+  border-radius: 12px;
+  color: var(--ink-soft);
+}
+
+.donationList {
+  padding: 0;
+  list-style: none;
+  border-top: 1.5px solid var(--ink);
+}
+
+.donation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--mist-strong);
+}
+
+.donationName {
+  font-weight: 700;
+}
+
+.donationTime {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.donationAmount {
+  flex: none;
+  padding-left: 16px;
+  border-left: 2px dashed var(--mist-strong);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ---------- 화면이 좁을 때: 소개 → 기부 폼 → 최근 기부 순서 ---------- */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "head"
+      "form"
+      "recent";
+    gap: 32px;
+  }
+  .formArea {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .panel,
+  .panelQuiet {
+    padding: 22px 20px;
+  }
+  .stat {
+    padding-left: 12px;
+  }
+  .statNum {
+    font-size: 1.375rem;
+  }
+}
