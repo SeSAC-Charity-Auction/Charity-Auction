@@ -24,6 +24,10 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(springError.getStatusCode())
                     .body(ErrorResponse.of(ErrorCode.UNKNOWN));
         }
+        // /api/donation-targets/abc 처럼 숫자 자리에 글자가 오면 서버 오류가 아니라 잘못된 요청이에요.
+        if (e instanceof org.springframework.beans.TypeMismatchException) {
+            return ResponseEntity.badRequest().body(ErrorResponse.of(ErrorCode.UNKNOWN));
+        }
         log.error("처리되지 않은 예외", e);
         return ResponseEntity.status(ErrorCode.UNKNOWN.getStatus()).body(ErrorResponse.of(ErrorCode.UNKNOWN));
     }

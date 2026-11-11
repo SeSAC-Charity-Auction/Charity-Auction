@@ -55,6 +55,14 @@ public class User {
         this.createdAt = LocalDateTime.now(ZoneOffset.UTC);
     }
 
+    /** 개인정보 보호용: 첫 글자만 보이고 나머지는 가려요. (예: 김민준 -> 김**) */
+    public String getMaskedName() {
+        if (name == null || name.isEmpty()) {
+            return "**";
+        }
+        return name.substring(0, 1) + "**";
+    }
+
     public Long getId() { return id; }
     public String getLoginId() { return loginId; }
     public String getPassword() { return password; }
