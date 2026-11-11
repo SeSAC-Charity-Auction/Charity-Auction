@@ -51,12 +51,12 @@ cd frontend && npm run build
 
 ## API 계약 (프론트 `data.ts`의 타입이 기준이에요)
 
-| 요청 | 인증 | 응답 |
-|---|---|---|
-| `GET /api/donations/summary` | 불필요 | `{ totalDonation, donationCount, donorCount, targets[], recentDonations[] }` |
+| 요청                                   | 인증   | 응답                                                                                      |
+| -------------------------------------- | ------ | ----------------------------------------------------------------------------------------- |
+| `GET /api/donations/summary`           | 불필요 | `{ totalDonation, donationCount, donorCount, targets[], recentDonations[] }`              |
 | `GET /api/donation-targets/{targetId}` | 불필요 | `{ target, donorCount, donationCount, recentDonations[] }`, 없으면 404 `TARGET_NOT_FOUND` |
-| `GET /api/me/points` | 필요 | `{ balance, recent[] }`, 로그인하지 않았으면 401 |
-| `POST /api/donations` | 필요 | 요청 `{ targetId, amount }` → 성공 `{ amount, balance }`, 실패 `{ code, message }` |
+| `GET /api/me/points`                   | 필요   | `{ balance, recent[] }`, 로그인하지 않았으면 401                                          |
+| `POST /api/donations`                  | 필요   | 요청 `{ targetId, amount }` → 성공 `{ amount, balance }`, 실패 `{ code, message }`        |
 
 필드 모양:
 
@@ -87,20 +87,25 @@ cd frontend && npm run build
 
 - Next.js 16.x이고 `cacheComponents: true`예요. 현재 시각이나 요청마다 달라지는 값은 `<Suspense>` 안에서 `await connection()` 뒤에 써요. 클라이언트 컴포넌트가 렌더링되는 중에는 `Date.now()`, `Math.random()`, `crypto`를 쓰지 않아요.
 - `frontend/next.config.ts`의 Turbopack CSS 규칙은 `*.module.css`를 제외해야 CSS Modules가 동작해요. (`condition: { not: { path: "*.module.css" } }`) 이 설정을 지우거나 바꾸지 마세요.
-- `data.ts`의 모든 함수가 이제 실제 API를 불러요. (mock 저장소는 지웠어요.) `API_BASE_URL`은 `frontend/.env.local`에 적어요. (예: `http://localhost:8080`) 개발 중 로그인은 `frontend/.env.local`의 `DEV_USER_ID`(예: 1)로 임시 처리해요. (백엔드 `local` 프로필의 `X-Dev-User-Id` 헤더, JWT 로그인이 생기면 지워요.)
+  <<<<<<< HEAD
+
+- # `data.ts`의 모든 함수가 이제 실제 API를 불러요. (mock 저장소는 지웠어요.) `API_BASE_URL`은 `frontend/.env.local`에 적어요. (예: `http://localhost:8080`) 개발 중 로그인은 `frontend/.env.local`의 `DEV_USER_ID`(예: 1)로 임시 처리해요. (백엔드 `local` 프로필의 `X-Dev-User-Id` 헤더, JWT 로그인이 생기면 지워요.)
+
+- 가짜 데이터를 실제 API로 바꿀 때는 `data.ts`의 각 함수 **안쪽만** `fetch`로 바꿔요. 방법은 주석에 있어요. `API_BASE_URL`은 `frontend/.env.local`에 적어요. (예: `http://localhost:8080`) `MOCK_LOGGED_IN` 플래그는 개발용이에요.
+    > > > > > > > a0bc95c3a05228ccdeddf985f5a03a122d9a9da8
 - 화면의 데이터 요청은 브라우저가 아니라 Next.js 서버가 Spring에 보내서, 지금은 CORS 설정이 필요 없어요.
 
 ## 작업 순서 (한 번에 한 단계씩)
 
-| 단계 | 할 일 | 끝났다는 증거 |
-|---|---|---|
-| 1 | DB 연결 + 앱 실행 | `Started CharityAuctionApplication` 로그 |
-| 2 | 패키지 구조, 공통 에러 형식, `/api/health`, 임시 보안 설정 | `/api/health`가 `{"status":"UP"}` |
-| 3 | Flyway 테이블 + 엔티티 | 앱 시작 시 테이블 생성, 검증 오류 없음 |
-| 4 | 조회 API 2개 (기부 현황, 기부처 상세) | 프론트 mock을 실제 API로 바꿔도 화면이 같음 |
-| 5 | 회원가입·로그인(JWT) + 내 포인트 API | 로그인한 사람만 `/api/me/points` 가능 |
-| 6 | 기부하기 API (트랜잭션) | 슬라이더로 기부하면 잔액과 누적액이 실제로 바뀜 |
-| 7 | 동시성 테스트 | 동시에 여러 번 기부해도 잔액이 마이너스가 안 됨 |
+| 단계 | 할 일                                                      | 끝났다는 증거                                   |
+| ---- | ---------------------------------------------------------- | ----------------------------------------------- |
+| 1    | DB 연결 + 앱 실행                                          | `Started CharityAuctionApplication` 로그        |
+| 2    | 패키지 구조, 공통 에러 형식, `/api/health`, 임시 보안 설정 | `/api/health`가 `{"status":"UP"}`               |
+| 3    | Flyway 테이블 + 엔티티                                     | 앱 시작 시 테이블 생성, 검증 오류 없음          |
+| 4    | 조회 API 2개 (기부 현황, 기부처 상세)                      | 프론트 mock을 실제 API로 바꿔도 화면이 같음     |
+| 5    | 회원가입·로그인(JWT) + 내 포인트 API                       | 로그인한 사람만 `/api/me/points` 가능           |
+| 6    | 기부하기 API (트랜잭션)                                    | 슬라이더로 기부하면 잔액과 누적액이 실제로 바뀜 |
+| 7    | 동시성 테스트                                              | 동시에 여러 번 기부해도 잔액이 마이너스가 안 됨 |
 
 ## 작업 방식 부탁
 

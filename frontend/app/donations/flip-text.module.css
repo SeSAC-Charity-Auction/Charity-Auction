@@ -1,0 +1,140 @@
+/* app/donations/flip-text.module.css */
+/* 숫자 한 칸 = 위쪽 반(top)과 아래쪽 반(bottom)으로 된 달력/전광판 판이에요. */
+
+.root {
+	/* 한 칸이 넘어가는 시간. 위쪽 판이 내려오는 절반 + 아래쪽 판이 펴지는 절반이에요. */
+	--flip-ms: 50ms;
+}
+
+/* 화면에는 안 보이지만 스크린리더는 읽는 진짜 글자예요. (판은 aria-hidden) */
+.sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.tile {
+	position: relative;
+	display: inline-block;
+	width: 0.58em;
+	height: 1.2em;
+	vertical-align: -0.22em;
+	perspective: 3em; /* 판이 넘어갈 때 입체감을 주는 값 */
+	color: inherit; /* 바탕 카드 없이 주변 글자색 그대로 써서 읽기 편해요 */
+	font-weight: inherit;
+	line-height: 1;
+	text-align: center;
+	text-indent: 0;
+}
+
+.comma {
+	display: inline-block;
+	margin: 0 -0.04em; /* 쉼표 양옆을 조금 당겨서 자간을 좁혀요 */
+}
+
+.half {
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 50%;
+	overflow: hidden;
+	backface-visibility: hidden;
+}
+
+.top {
+	top: 0;
+	transform-origin: center bottom;
+}
+
+.bottom {
+	bottom: 0;
+	transform-origin: center top;
+}
+
+/* 글자는 판 전체 높이로 그려 두고, 위쪽 판은 윗부분만 아래쪽 판은 아랫부분만 보여줘요. */
+.glyph {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 200%;
+}
+
+.glyphBottom {
+	transform: translateY(-50%);
+}
+
+.staticTopNew {
+	/* 위쪽 판이 반쯤 내려온 뒤에야 새 숫자가 나타나요 */
+	animation: showAtHalf var(--flip-ms) steps(1, end) both;
+}
+
+.staticBottomOld {
+	/* 아래쪽 새 판이 펴지기 시작하면 예전 숫자는 사라져요 */
+	animation: hideAtHalf var(--flip-ms) steps(1, end) both;
+}
+
+.flapTop {
+	z-index: 3;
+	animation: flipDown calc(var(--flip-ms) / 2) ease-in both;
+}
+
+.flapBottom {
+	z-index: 4;
+	animation: flipUp calc(var(--flip-ms) / 2) ease-out calc(var(--flip-ms) / 2) both;
+}
+
+@keyframes showAtHalf {
+	0% {
+		opacity: 0;
+	}
+	50%,
+	100% {
+		opacity: 1;
+	}
+}
+
+/* 끝(100%) 값도 꼭 적어야 해요. 안 적으면 끝난 뒤 원래 값(1)으로 돌아가서 예전 숫자가 다시 비쳐요. */
+@keyframes hideAtHalf {
+	0% {
+		opacity: 1;
+	}
+	50%,
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes flipDown {
+	from {
+		transform: rotateX(0deg);
+	}
+	to {
+		transform: rotateX(-90deg);
+	}
+}
+
+@keyframes flipUp {
+	from {
+		transform: rotateX(90deg);
+	}
+	to {
+		transform: rotateX(0deg);
+	}
+}
+
+/* '동작 줄이기'를 켠 사람에게는 움직임 없이 바로 보여줘요. (js에서도 따로 처리해요) */
+@media (prefers-reduced-motion: reduce) {
+	.flapTop,
+	.flapBottom {
+		animation: none;
+		display: none;
+	}
+	.staticTopNew,
+	.staticBottomOld {
+		animation: none;
+		opacity: 1;
+	}
+}
