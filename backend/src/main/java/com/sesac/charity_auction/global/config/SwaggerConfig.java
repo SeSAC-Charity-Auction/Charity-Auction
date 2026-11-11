@@ -1,4 +1,4 @@
-package com.sesac.charity_auction.config;
+package com.sesac.charity_auction.global.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

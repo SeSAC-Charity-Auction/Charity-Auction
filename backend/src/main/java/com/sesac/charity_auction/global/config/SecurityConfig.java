@@ -1,5 +1,5 @@
 
-package com.sesac.charity_auction.config;
+package com.sesac.charity_auction.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
