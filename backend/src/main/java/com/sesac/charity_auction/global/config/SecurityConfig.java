@@ -1,5 +1,5 @@
 
-package com.sesac.charity_auction.config;
+package com.sesac.charity_auction.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-                        // 초기 세팅: 모든 API 접근 허용
+                        // 임시: 5단계에서 인증을 만들기 전까지 모든 API 접근 허용
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form.disable())
