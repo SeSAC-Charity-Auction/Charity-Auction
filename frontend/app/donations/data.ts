@@ -267,14 +267,11 @@ export async function getDonationSummary(): Promise<DonationSummary> {
   //  - targets       : SELECT * FROM donation_targets
   //  - recentDonations : donations 최신순 5건 + donation_targets.target_name + 회원 이름(마스킹)
 
-  const store = getStore();
-  return {
-    totalDonation: store.targets.reduce((sum, t) => sum + t.totalDonation, 0),
-    donationCount: Object.values(store.counts).reduce((sum, c) => sum + c.count, 0),
-    donorCount: 17 + (store.myTargets.size > 0 ? 1 : 0),
-    targets: store.targets.map((t) => ({ ...t })),
-    recentDonations: store.donations.slice(0, 5).map((d) => ({ ...d })),
-  };
+  const res = await fetch(`${process.env.API_BASE_URL}/api/donations/summary`, {
+    next: { revalidate: 30 }, // 30초마다 갱신
+  });
+  if (!res.ok) throw new Error("기부 현황을 불러오지 못했어요.");
+  return res.json();
 }
 
 /* ---------- 내 포인트 ---------- */
@@ -325,20 +322,12 @@ export async function getDonationTarget(targetId: number): Promise<DonationTarge
   //  - donationCount   : SELECT COUNT(*) FROM donations WHERE target_id = ?
   //  - recentDonations : 이 기부처의 donations 최신순 8건 + 회원 이름(마스킹)
 
-  const store = getStore();
-  const target = store.targets.find((t) => t.targetId === targetId);
-  if (!target) return null;
-
-  const counts = store.counts[targetId] ?? { donors: 0, count: 0 };
-  return {
-    target: { ...target },
-    donorCount: counts.donors,
-    donationCount: counts.count,
-    recentDonations: store.donations
-      .filter((d) => d.targetId === targetId)
-      .slice(0, 8)
-      .map((d) => ({ ...d })),
-  };
+  const res = await fetch(`${process.env.API_BASE_URL}/api/donation-targets/${targetId}`, {
+    next: { revalidate: 30 },
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("기부처를 불러오지 못했어요.");
+  return res.json();
 }
 
 /* ---------- 기부하기 ---------- */
