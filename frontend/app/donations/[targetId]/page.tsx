@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { getDonationTarget, getMyPoints, type DonationRecord, type DonationTarget } from "../data";
 import { body, display } from "../fonts";
+import FlipText from "../flip-text";
 import DonateForm from "./donate-form";
 import styles from "./page.module.css";
 
@@ -108,9 +109,15 @@ async function TargetContent({ params }: { params: Promise<{ targetId: string }>
 
         <div className={styles.progressBlock}>
           <div className={styles.progressTop}>
-            <span className={`${styles.pct} ${display.className}`}>{pct}%</span>
+            <span className={`${styles.pct} ${display.className}`}>
+              <FlipText text={`${pct}%`} />
+            </span>
             <span className={styles.progressNote}>
-              {remaining > 0 ? `목표까지 ${won(remaining)} 남았어요` : "목표 금액을 모두 채웠어요"}
+              {remaining > 0 ? (
+                <FlipText text={`목표까지 ${won(remaining)} 남았어요`} />
+              ) : (
+                "목표 금액을 모두 채웠어요"
+              )}
             </span>
           </div>
           <div
@@ -127,8 +134,12 @@ async function TargetContent({ params }: { params: Promise<{ targetId: string }>
             ))}
           </div>
           <div className={styles.amounts}>
-            <span className={styles.raised}>{won(target.totalDonation)} 모였어요</span>
-            <span className={styles.goal}>목표 {won(target.targetAmount)}</span>
+            <span className={styles.raised}>
+              <FlipText text={`${won(target.totalDonation)} 모였어요`} />
+            </span>
+            <span className={styles.goal}>
+              목표 <FlipText text={won(target.targetAmount)} />
+            </span>
           </div>
         </div>
 
@@ -235,7 +246,7 @@ function Stat({ label, value, unit }: { label: string; value: number; unit: stri
       <dt className={styles.statLabel}>{label}</dt>
       <dd className={styles.statValue}>
         <span className={`${styles.statNum} ${display.className}`}>
-          {value.toLocaleString("ko-KR")}
+          <FlipText text={value.toLocaleString("ko-KR")} />
         </span>
         <span className={styles.statUnit}>{unit}</span>
       </dd>
@@ -248,9 +259,13 @@ function DonationRow({ record }: { record: DonationRecord }) {
     <li className={styles.donation}>
       <div>
         <p className={styles.donationName}>{record.donorName}님이 기부했어요</p>
-        <p className={styles.donationTime}>{relativeTime(record.createdAt)}</p>
+        <p className={styles.donationTime}>
+          <FlipText text={relativeTime(record.createdAt)} />
+        </p>
       </div>
-      <p className={styles.donationAmount}>{won(record.donationAmount)}</p>
+      <p className={styles.donationAmount}>
+        <FlipText text={won(record.donationAmount)} />
+      </p>
     </li>
   );
 }

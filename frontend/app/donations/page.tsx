@@ -12,6 +12,7 @@ import {
 	type MyPoints,
 	type PointEntry
 } from "./data";
+import FlipText from "./flip-text";
 import styles from "./page.module.css";
 
 // 제목과 숫자는 굵은 포스터 느낌의 글꼴, 본문은 읽기 편한 글꼴을 씁니다.
@@ -110,7 +111,7 @@ async function DonationsContent() {
 						id="hero-title"
 						className={`${styles.heroTitle} ${display.className}`}
 					>
-						{heroTitle}
+						<FlipText text={heroTitle} />
 					</h1>
 					<p className={styles.heroText}>
 						기부처마다 목표 금액 대비 얼마나 모였는지 확인하고,
@@ -248,7 +249,7 @@ function Stat({
 			<dt className={styles.statLabel}>{label}</dt>
 			<dd className={styles.statValue}>
 				<span className={`${styles.statNum} ${display.className}`}>
-					{value.toLocaleString("ko-KR")}
+					<FlipText text={value.toLocaleString("ko-KR")} />
 				</span>
 				<span className={styles.statUnit}>{unit}</span>
 			</dd>
@@ -276,13 +277,15 @@ function LatestTicket({ record }: { record: DonationRecord }) {
 				</p>
 				<p className={styles.ticketMeta}>
 					<span>{record.donorName}님</span>
-					<span>{relativeTime(record.createdAt)}</span>
+					<span>
+						<FlipText text={relativeTime(record.createdAt)} />
+					</span>
 				</p>
 			</div>
 			<div className={styles.ticketStub}>
 				<p className={styles.ticketPriceLabel}>기부금</p>
 				<p className={`${styles.ticketPrice} ${display.className}`}>
-					{won(record.donationAmount)}
+					<FlipText text={won(record.donationAmount)} />
 				</p>
 			</div>
 		</div>
@@ -361,10 +364,10 @@ function TargetCard({
 			<div className={styles.progress}>
 				<div className={styles.progressTop}>
 					<span className={`${styles.pct} ${display.className}`}>
-						{pct}%
+						<FlipText text={`${pct}%`} />
 					</span>
 					<span className={styles.goal}>
-						목표 {won(target.targetAmount)}
+						목표 <FlipText text={won(target.targetAmount)} />
 					</span>
 				</div>
 				<div
@@ -381,7 +384,7 @@ function TargetCard({
 					/>
 				</div>
 				<p className={styles.raised}>
-					{won(target.totalDonation)} 모였어요
+					<FlipText text={`${won(target.totalDonation)} 모였어요`} />
 				</p>
 			</div>
 		</article>
@@ -405,10 +408,10 @@ function DonationRow({ record }: { record: DonationRecord }) {
 				</p>
 			</div>
 			<p className={styles.donationTime}>
-				{relativeTime(record.createdAt)}
+				<FlipText text={relativeTime(record.createdAt)} />
 			</p>
 			<p className={styles.donationAmount}>
-				{won(record.donationAmount)}
+				<FlipText text={won(record.donationAmount)} />
 			</p>
 		</li>
 	);
@@ -528,7 +531,7 @@ function WalletCard({ points }: { points: MyPoints }) {
 						<p
 							className={`${styles.walletBalance} ${display.className}`}
 						>
-							{points.balance.toLocaleString("ko-KR")}
+							<FlipText text={points.balance.toLocaleString("ko-KR")} />
 							<span className={styles.walletUnit}>P</span>
 						</p>
 					</div>
@@ -554,7 +557,7 @@ function WalletCard({ points }: { points: MyPoints }) {
 							label={`최근 포인트 변화예요. 지금은 ${pt(points.balance)}를 갖고 있어요.`}
 						/>
 						<p className={styles.sparkCaption}>
-							최근 {points.recent.length}번의 포인트 변화
+							<FlipText text={`최근 ${points.recent.length}번의 포인트 변화`} />
 						</p>
 						<ul className={styles.entryList}>
 							{entries.map((e) => (
@@ -565,7 +568,7 @@ function WalletCard({ points }: { points: MyPoints }) {
 										</p>
 										<p className={styles.entryTime}>
 											{e.pointType}{" "}
-											{relativeTime(e.createdAt)}
+											<FlipText text={relativeTime(e.createdAt)} />
 										</p>
 									</div>
 									<p
@@ -574,7 +577,7 @@ function WalletCard({ points }: { points: MyPoints }) {
 										{e.pointType === "적립" ?
 											"+"
 										:	"\u2212"}
-										{pt(Math.abs(e.pointAmount))}
+										<FlipText text={pt(Math.abs(e.pointAmount))} />
 									</p>
 								</li>
 							))}

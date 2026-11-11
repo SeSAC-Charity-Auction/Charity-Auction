@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { donateAction, type DonateState } from "../actions";
 import { display } from "../fonts";
+import FlipText from "../flip-text";
 import { DONATION_STEP, MIN_DONATION } from "../rules";
 import styles from "./page.module.css";
 
@@ -48,8 +49,9 @@ export default function DonateForm({
       <div className={styles.panelQuiet}>
         <h2 className={`${styles.panelQuietTitle} ${display.className}`}>기부하기</h2>
         <p className={styles.panelQuietText}>
-          기부하려면 포인트가 {pt(MIN_DONATION)} 이상 있어야 해요. 지금은 {pt(balance)}를 갖고
-          있어요.
+          <FlipText
+            text={`기부하려면 포인트가 ${pt(MIN_DONATION)} 이상 있어야 해요. 지금은 ${pt(balance)}를 갖고 있어요.`}
+          />
         </p>
         <Link href="/mypage/points" className={styles.textLink}>
           내 포인트 확인하기
@@ -78,14 +80,16 @@ export default function DonateForm({
 
       <div className={styles.panelHead}>
         <h2 className={`${styles.panelTitle} ${display.className}`}>기부하기</h2>
-        <p className={styles.panelBalance}>내 포인트 {pt(balance)}</p>
+        <p className={styles.panelBalance}>
+          <FlipText text={`내 포인트 ${pt(balance)}`} />
+        </p>
       </div>
 
       <label htmlFor="donation-amount" className={styles.amountLabel}>
         기부할 포인트
       </label>
       <output htmlFor="donation-amount" className={`${styles.amountValue} ${display.className}`}>
-        {amount.toLocaleString("ko-KR")}
+        <FlipText text={amount.toLocaleString("ko-KR")} />
         <span className={styles.amountUnit}>P</span>
       </output>
 
@@ -103,8 +107,12 @@ export default function DonateForm({
         style={{ "--pct": `${fillPct}%` } as React.CSSProperties}
       />
       <div className={styles.rangeScale} aria-hidden="true">
-        <span>{pt(MIN_DONATION)}</span>
-        <span>{pt(max)}</span>
+        <span>
+          <FlipText text={pt(MIN_DONATION)} />
+        </span>
+        <span>
+          <FlipText text={pt(max)} />
+        </span>
       </div>
 
       <div className={styles.chips} role="group" aria-label="자주 쓰는 금액">
@@ -127,25 +135,30 @@ export default function DonateForm({
           <div className={styles.previewAdd} style={{ width: `${addWidth}%` }} />
         </div>
         <p className={styles.previewText}>
-          지금 {formatPct(nowPct)}가 모였고, 이 기부로 {formatPct(addPct)}가 더 채워져요.
+          <FlipText
+            text={`지금 ${formatPct(nowPct)}가 모였고, 이 기부로 ${formatPct(addPct)}가 더 채워져요.`}
+          />
         </p>
-        <p className={styles.previewText}>기부하면 내 포인트는 {pt(balance - amount)}가 돼요.</p>
+        <p className={styles.previewText}>
+          <FlipText text={`기부하면 내 포인트는 ${pt(balance - amount)}가 돼요.`} />
+        </p>
       </div>
 
       {state.status === "error" && (
         <p className={styles.messageError} role="alert">
-          {state.message}
+          <FlipText text={state.message} />
         </p>
       )}
       {state.status === "success" && (
         <p className={styles.messageSuccess} role="status">
-          {targetName}에 {pt(state.amount)}를 기부했어요. 고마워요! 남은 포인트는{" "}
-          {pt(state.balance)}예요.
+          <FlipText
+            text={`${targetName}에 ${pt(state.amount)}를 기부했어요. 고마워요! 남은 포인트는 ${pt(state.balance)}예요.`}
+          />
         </p>
       )}
 
       <button type="submit" className={styles.submit} disabled={isPending}>
-        {isPending ? "기부하는 중이에요" : `${pt(amount)} 기부하기`}
+        {isPending ? "기부하는 중이에요" : <FlipText text={`${pt(amount)} 기부하기`} />}
       </button>
     </form>
   );
