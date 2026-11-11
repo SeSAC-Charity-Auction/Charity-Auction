@@ -13,7 +13,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 -- 로그인 기능(5단계) 전이라 password는 의미 없는 자리표시 값이에요.
 INSERT INTO users (user_id, login_id, password, name, email, role, point_balance, created_at) VALUES
-(1, 'dummy1', 'PLACEHOLDER_NOT_A_REAL_HASH', '김민준', 'dummy1@example.com', 'USER', 50000, UTC_TIMESTAMP()),
+(1, 'dummy1', 'PLACEHOLDER_NOT_A_REAL_HASH', '김민준', 'dummy1@example.com', 'USER', 52000, UTC_TIMESTAMP()),
 (2, 'dummy2', 'PLACEHOLDER_NOT_A_REAL_HASH', '이서연', 'dummy2@example.com', 'USER', 50000, UTC_TIMESTAMP()),
 (3, 'dummy3', 'PLACEHOLDER_NOT_A_REAL_HASH', '박지호', 'dummy3@example.com', 'USER', 50000, UTC_TIMESTAMP()),
 (4, 'dummy4', 'PLACEHOLDER_NOT_A_REAL_HASH', '정하윤', 'dummy4@example.com', 'USER', 50000, UTC_TIMESTAMP()),
