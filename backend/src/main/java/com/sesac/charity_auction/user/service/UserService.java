@@ -1,6 +1,7 @@
 package com.sesac.charity_auction.user.service;
 
-import com.sesac.charity_auction.global.common.exception.BusinessException;
+import com.sesac.charity_auction.global.exception.BusinessException;
+import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.user.dto.request.SignupRequest;
 import com.sesac.charity_auction.user.dto.response.DuplicateCheckResponse;
 import com.sesac.charity_auction.user.dto.response.SignupResponse;
@@ -20,13 +21,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public SignupResponse signup(SignupRequest request) {
-        if (userRepository.existsByEmailAndIsDeletedFalse(request.email())) {
-            throw new BusinessException(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다.");
+    public SignupResponse signup(SignupRequest request){
+
+        if(userRepository.existsByEmailAndIsDeletedFalse(request.email())){
+            throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
 
-        if (userRepository.existsByNicknameAndIsDeletedFalse(request.nickname())) {
-            throw new BusinessException(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다.");
+        if(userRepository.existsByNicknameAndIsDeletedFalse(request.nickname())){
+            throw new BusinessException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
         final User user = User.create(request.email(), passwordEncoder.encode(request.password()), request.nickname(), request.name());
@@ -39,12 +41,16 @@ public class UserService {
     public DuplicateCheckResponse checkEmail(final String email) {
         final boolean exists = userRepository.existsByEmailAndIsDeletedFalse(email);
 
-        return new DuplicateCheckResponse(!exists, exists ? "이미 사용 중인 이메일입니다." : "사용 가능한 이메일입니다.");
+        boolean exists = userRepository.existsByEmailAndIsDeletedFalse(email);
+
+        return new DuplicateCheckResponse(!exists, exists? ErrorCode.DUPLICATE_EMAIL.getMessage(): "사용 가능한 이메일입니다.");
     }
 
     public DuplicateCheckResponse checkNickname(final String nickname) {
         final boolean exists = userRepository.existsByNicknameAndIsDeletedFalse(nickname);
 
-        return new DuplicateCheckResponse(!exists, exists ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다.");
+        boolean exists = userRepository.existsByNicknameAndIsDeletedFalse(nickname);
+
+        return new DuplicateCheckResponse(!exists, exists? ErrorCode.DUPLICATE_NICKNAME.getMessage(): "사용 가능한 닉네임입니다.");
     }
 }
