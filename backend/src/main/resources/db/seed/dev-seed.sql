@@ -1,35 +1,33 @@
 -- 개발용 더미 데이터 (학습용 모의 서비스)
--- Flyway가 자동으로 실행하지 않아요. 앱을 한 번 실행해 테이블을 만든 뒤, 비어 있는 DB에 직접 넣어요.
+-- Flyway가 자동으로 실행하지 않아요. 앱을 한 번 실행해서 테이블을 만든 뒤, "비어 있는" 내 로컬 DB에 직접 넣어요.
 --   mysql -uroot auctions < backend/src/main/resources/db/seed/dev-seed.sql
--- 다시 넣고 싶으면 아래 DELETE가 기존 데이터를 지우니, 팀 DB가 아닌 내 로컬 DB에서만 쓰세요.
+-- 이 파일은 데이터를 지우지 않아요. 이미 회원이나 기부 데이터가 있으면 번호가 겹쳐서 실패하고, 아무것도 바꾸지 않아요.
+-- 처음부터 다시 넣고 싶으면 내 로컬 DB를 직접 비운 뒤(예: DROP DATABASE auctions; CREATE DATABASE auctions;)
+-- 앱을 다시 실행해서 테이블을 만들고 이 파일을 넣으세요. (팀 DB가 아닌 내 로컬 DB에서만!)
 -- 날짜는 넣는 시점의 UTC 시각 기준이에요.
 
-SET FOREIGN_KEY_CHECKS = 0;
-DELETE FROM point_histories;
-DELETE FROM donations;
-DELETE FROM donation_targets;
-DELETE FROM users;
-SET FOREIGN_KEY_CHECKS = 1;
+-- 하나라도 실패하면 전부 되돌려지도록 트랜잭션으로 감쌌어요. (mysql은 오류가 나면 거기서 멈춰서 COMMIT까지 가지 않아요.)
+START TRANSACTION;
 
--- 로그인 기능(5단계) 전이라 password는 의미 없는 자리표시 값이에요.
-INSERT INTO users (user_id, login_id, password, name, email, role, point_balance, created_at) VALUES
-(1, 'dummy1', 'PLACEHOLDER_NOT_A_REAL_HASH', '김민준', 'dummy1@example.com', 'USER', 52000, UTC_TIMESTAMP()),
-(2, 'dummy2', 'PLACEHOLDER_NOT_A_REAL_HASH', '이서연', 'dummy2@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(3, 'dummy3', 'PLACEHOLDER_NOT_A_REAL_HASH', '박지호', 'dummy3@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(4, 'dummy4', 'PLACEHOLDER_NOT_A_REAL_HASH', '정하윤', 'dummy4@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(5, 'dummy5', 'PLACEHOLDER_NOT_A_REAL_HASH', '최도윤', 'dummy5@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(6, 'dummy6', 'PLACEHOLDER_NOT_A_REAL_HASH', '오서윤', 'dummy6@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(7, 'dummy7', 'PLACEHOLDER_NOT_A_REAL_HASH', '한지우', 'dummy7@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(8, 'dummy8', 'PLACEHOLDER_NOT_A_REAL_HASH', '서예준', 'dummy8@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(9, 'dummy9', 'PLACEHOLDER_NOT_A_REAL_HASH', '윤하준', 'dummy9@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(10, 'dummy10', 'PLACEHOLDER_NOT_A_REAL_HASH', '강지민', 'dummy10@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(11, 'dummy11', 'PLACEHOLDER_NOT_A_REAL_HASH', '조수아', 'dummy11@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(12, 'dummy12', 'PLACEHOLDER_NOT_A_REAL_HASH', '임채원', 'dummy12@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(13, 'dummy13', 'PLACEHOLDER_NOT_A_REAL_HASH', '신유진', 'dummy13@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(14, 'dummy14', 'PLACEHOLDER_NOT_A_REAL_HASH', '권태양', 'dummy14@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(15, 'dummy15', 'PLACEHOLDER_NOT_A_REAL_HASH', '황나리', 'dummy15@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(16, 'dummy16', 'PLACEHOLDER_NOT_A_REAL_HASH', '안도현', 'dummy16@example.com', 'USER', 50000, UTC_TIMESTAMP()),
-(17, 'dummy17', 'PLACEHOLDER_NOT_A_REAL_HASH', '송하늘', 'dummy17@example.com', 'USER', 50000, UTC_TIMESTAMP());
+-- 로그인 기능 전이라 password는 의미 없는 자리표시 값이에요. 1번 회원(김민준)이 기부 화면의 기본 사용자(DEV_USER_ID=1)예요.
+INSERT INTO users (user_id, password, name, nickname, email, image, is_deleted, role, point_balance, created_at, updated_at) VALUES
+(1, 'PLACEHOLDER_NOT_A_REAL_HASH', '김민준', 'donor1', 'dummy1@example.com', NULL, 0, 'USER', 52000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(2, 'PLACEHOLDER_NOT_A_REAL_HASH', '이서연', 'donor2', 'dummy2@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(3, 'PLACEHOLDER_NOT_A_REAL_HASH', '박지호', 'donor3', 'dummy3@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(4, 'PLACEHOLDER_NOT_A_REAL_HASH', '정하윤', 'donor4', 'dummy4@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(5, 'PLACEHOLDER_NOT_A_REAL_HASH', '최도윤', 'donor5', 'dummy5@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(6, 'PLACEHOLDER_NOT_A_REAL_HASH', '오서윤', 'donor6', 'dummy6@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(7, 'PLACEHOLDER_NOT_A_REAL_HASH', '한지우', 'donor7', 'dummy7@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(8, 'PLACEHOLDER_NOT_A_REAL_HASH', '서예준', 'donor8', 'dummy8@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(9, 'PLACEHOLDER_NOT_A_REAL_HASH', '윤하준', 'donor9', 'dummy9@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(10, 'PLACEHOLDER_NOT_A_REAL_HASH', '강지민', 'donor10', 'dummy10@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(11, 'PLACEHOLDER_NOT_A_REAL_HASH', '조수아', 'donor11', 'dummy11@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(12, 'PLACEHOLDER_NOT_A_REAL_HASH', '임채원', 'donor12', 'dummy12@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(13, 'PLACEHOLDER_NOT_A_REAL_HASH', '신유진', 'donor13', 'dummy13@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(14, 'PLACEHOLDER_NOT_A_REAL_HASH', '권태양', 'donor14', 'dummy14@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(15, 'PLACEHOLDER_NOT_A_REAL_HASH', '황나리', 'donor15', 'dummy15@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(16, 'PLACEHOLDER_NOT_A_REAL_HASH', '안도현', 'donor16', 'dummy16@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+(17, 'PLACEHOLDER_NOT_A_REAL_HASH', '송하늘', 'donor17', 'dummy17@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP());
 
 INSERT INTO donation_targets (target_id, target_name, description, target_image, is_active, total_donation, target_amount, created_at) VALUES
 (1, '푸른숲 어린이 도서관', '낡은 책장과 오래된 도서를 새로 채워서, 방과 후 아이들이 편하게 머물 수 있는 도서관을 만들어요.', NULL, 1, 6800000, 10000000, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 40 DAY)),
@@ -84,3 +82,5 @@ INSERT INTO donations (donation_id, target_id, user_id, donation_amount, created
 -- 기부마다 '사용' 기록 하나씩 (장부)
 INSERT INTO point_histories (auction_id, user_id, donation_id, point_amount, point_type, created_at)
 SELECT NULL, user_id, donation_id, donation_amount, 'USE', created_at FROM donations;
+
+COMMIT;

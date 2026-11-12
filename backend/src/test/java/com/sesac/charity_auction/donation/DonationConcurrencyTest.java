@@ -1,8 +1,8 @@
 package com.sesac.charity_auction.donation;
 
 import com.sesac.charity_auction.donation.service.DonationService;
-import com.sesac.charity_auction.global.error.BusinessException;
-import com.sesac.charity_auction.global.error.ErrorCode;
+import com.sesac.charity_auction.global.common.exception.BusinessException;
+import com.sesac.charity_auction.global.common.exception.ErrorCode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -58,9 +58,9 @@ class DonationConcurrencyTest {
 
     private long createUser(long balance) {
         String key = UUID.randomUUID().toString().substring(0, 8);
-        jdbc.update("INSERT INTO users (login_id, password, name, email, role, point_balance, created_at) "
-                + "VALUES (?, 'x', '동시성', ?, 'USER', ?, UTC_TIMESTAMP())", "c_" + key, key + "@test.local", balance);
-        long id = jdbc.queryForObject("SELECT user_id FROM users WHERE login_id = ?", Long.class, "c_" + key);
+        jdbc.update("INSERT INTO users (password, name, nickname, email, role, point_balance, created_at, updated_at) "
+                + "VALUES ('x', '동시성', ?, ?, 'USER', ?, UTC_TIMESTAMP(), UTC_TIMESTAMP())", key, key + "@test.local", balance);
+        long id = jdbc.queryForObject("SELECT user_id FROM users WHERE email = ?", Long.class, key + "@test.local");
         userIds.add(id);
         return id;
     }
@@ -70,7 +70,7 @@ class DonationConcurrencyTest {
         ExecutorService pool = Executors.newFixedThreadPool(jobs.size());
         CountDownLatch ready = new CountDownLatch(jobs.size());
         CountDownLatch go = new CountDownLatch(1);
-        List<Future<ErrorCode>> futures = new ArrayList<>();
+        List<Future<String>> futures = new ArrayList<>();
         try {
             for (Callable<Void> job : jobs) {
                 futures.add(pool.submit(() -> {
@@ -80,7 +80,7 @@ class DonationConcurrencyTest {
                         job.call();
                         return null;            // 성공
                     } catch (BusinessException e) {
-                        return e.getErrorCode(); // 규칙에 따른 실패
+                        return e.getCode() != null ? e.getCode() : "NO_CODE"; // 규칙에 따른 실패 (에러 코드 이름). null이면 성공으로 오해하지 않게 따로 표시해요
                     }
                 }));
             }
@@ -88,8 +88,8 @@ class DonationConcurrencyTest {
             go.countDown();                     // 한꺼번에 출발!
 
             Result result = new Result();
-            for (Future<ErrorCode> f : futures) {
-                ErrorCode code = f.get(30, TimeUnit.SECONDS); // 예상 못 한 예외는 여기서 테스트 실패로 드러나요
+            for (Future<String> f : futures) {
+                String code = f.get(30, TimeUnit.SECONDS); // 예상 못 한 예외는 여기서 테스트 실패로 드러나요
                 if (code == null) result.success++;
                 else result.failures.merge(code, 1, Integer::sum);
             }
@@ -101,8 +101,8 @@ class DonationConcurrencyTest {
 
     static class Result {
         int success;
-        final java.util.Map<ErrorCode, Integer> failures = new java.util.EnumMap<>(ErrorCode.class);
-        int failed(ErrorCode code) { return failures.getOrDefault(code, 0); }
+        final java.util.Map<String, Integer> failures = new java.util.HashMap<>();
+        int failed(ErrorCode code) { return failures.getOrDefault(code.name(), 0); }
     }
 
     private long balance(long userId) {

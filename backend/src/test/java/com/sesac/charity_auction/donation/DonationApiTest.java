@@ -37,9 +37,9 @@ class DonationApiTest {
     @BeforeEach
     void setUp() {
         String key = UUID.randomUUID().toString().substring(0, 8);
-        jdbc.update("INSERT INTO users (login_id, password, name, email, role, point_balance, created_at) "
-                + "VALUES (?, 'x', '테스터', ?, 'USER', 50000, UTC_TIMESTAMP())", "t_" + key, key + "@test.local");
-        userId = jdbc.queryForObject("SELECT user_id FROM users WHERE login_id = ?", Long.class, "t_" + key);
+        jdbc.update("INSERT INTO users (password, name, nickname, email, role, point_balance, created_at, updated_at) "
+                + "VALUES ('x', '테스터', ?, ?, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP())", key, key + "@test.local");
+        userId = jdbc.queryForObject("SELECT user_id FROM users WHERE email = ?", Long.class, key + "@test.local");
         openTargetId = createTarget("테스트 열린 기부처", true);
         closedTargetId = createTarget("테스트 닫힌 기부처", false);
     }

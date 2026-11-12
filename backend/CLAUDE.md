@@ -13,8 +13,8 @@ docker-compose.yml   로컬 MySQL (mysql:8.4, utf8mb4, UTC)
 
 ## 지금 상태
 
-- **프론트엔드**: `/donations`(기부 현황)와 `/donations/[targetId]`(기부처 상세 + 슬라이더 기부 폼)가 끝났어요. 아직 가짜(mock) 데이터를 써요. (`frontend/app/donations/data.ts`)
-- **백엔드**: `CharityAuctionApplication.java`만 있어요. 이제부터 만들어요. (아래 "작업 순서" 참고)
+- **프론트엔드**: `/donations`(기부 현황)와 `/donations/[targetId]`(기부처 상세 + 슬라이더 기부 폼)가 끝났고, 실제 백엔드 API를 불러요. (`frontend/app/donations/data.ts`)
+- **백엔드**: 기부 조회·기부하기·내 포인트 API와 회원가입(`/api/v1/users/...`)이 있어요. 로그인(JWT)은 아직 없어서, 개발 중에는 `X-Dev-User-Id` 헤더로 임시 처리해요. (아래 "작업 순서" 참고)
 
 ## 명령어
 
@@ -32,7 +32,9 @@ cd frontend && npm run build
 - 엔티티를 API 응답으로 직접 돌려주지 않고 DTO를 써요.
 - **금액은 정수**(`long`)로만 다뤄요. `float`와 `double`은 쓰지 않아요.
 - 시간은 UTC로 저장하고, 응답은 ISO 8601 문자열로 줘요.
-- **성공 응답은 DTO 그대로**(감싸지 않음), **실패 응답은 HTTP 상태 코드 + `{ "code": "...", "message": "..." }`** 예요.
+- **성공 응답은 DTO 그대로**(감싸지 않음), **실패 응답은 HTTP 상태 코드 + 아래 모양의 JSON**이에요. 예외 클래스는 `global/common/exception`의 `BusinessException`, `ErrorResponse`, `GlobalExceptionHandler` 하나만 써요. (같은 이름의 클래스를 다른 패키지에 또 만들지 않아요.)
+  - `{ "timestamp", "status", "error", "code"(있을 때만), "message", "path" }`
+  - `code`는 프론트가 실패 이유를 구분해야 할 때만 넣어요. 기부 쪽은 `throw new BusinessException(ErrorCode.INSUFFICIENT_POINT)`, 그 외에는 `throw new BusinessException(HttpStatus.CONFLICT, "메시지")`예요.
 - 에러 코드는 프론트의 `DonateErrorCode`와 이름이 같아야 해요: `NOT_LOGGED_IN`, `TARGET_NOT_FOUND`, `TARGET_CLOSED`, `INVALID_AMOUNT`, `INSUFFICIENT_POINT`, `UNKNOWN`.
 - 화면의 검증은 믿지 않아요. 금액, 권한, 상태는 서버에서 다시 검사해요.
 - 개인정보는 서버에서 마스킹해서 내려줘요. (예: 기부자 이름 `김**`)
@@ -44,10 +46,11 @@ cd frontend && npm run build
 ## DB (ERD 기준, 일부는 가정)
 
 - 테이블: `users`, `donation_targets`, `donations`, `point_histories`. 처음 테이블 정의는 `V1__create_core_tables.sql` (이미 있으면 그대로 쓰고, 없으면 ERD에 맞춰 만들어요).
-- **가정 1**: `users`는 ERD에 안 보여서 `login_id`, `password`(BCrypt), `name`, `email`, `role`, `point_balance`를 가진 최소 구조로 잡았어요.
+- **`users`** (ERD에 없어서 팀이 정한 구조): 엔티티는 `user.entity.User` 하나예요. `email`(로그인 아이디 역할), `password`(BCrypt), `name`, `nickname`, `role`, `point_balance`, `is_deleted`, `image`(비울 수 있음), `created_at`, `updated_at`이에요. 예전에 있던 `login_id`는 없어요.
 - **가정 2**: 잔액은 `users.point_balance`에 두고 조건부 `UPDATE`로 차감해요. `point_histories`는 기록(장부)이에요.
 - **가정 3**: `point_type`은 DB에 `EARN`/`USE`로 저장하고, API 응답에서는 `"적립"`/`"사용"`으로 바꿔요.
-- `point_histories.auction_id`의 외래키는 경매 테이블이 생기면 `V2`에서 추가해요.
+- `point_histories.auction_id`의 외래키는 경매 테이블이 생기면 새 마이그레이션(V3 이후)으로 추가해요. (`V2`는 `users`를 회원가입 엔티티에 맞추는 데 썼어요.)
+- **더미 데이터**: `backend/src/main/resources/db/seed/dev-seed.sql`을 내 로컬의 비어 있는 DB에 직접 넣어요. (Flyway가 자동 실행하지 않고, 데이터를 지우지도 않아요.)
 
 ## API 계약 (프론트 `data.ts`의 타입이 기준이에요)
 

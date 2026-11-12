@@ -9,7 +9,7 @@ public interface CurrentUserProvider {
 
     /**
      * @return 로그인한 회원의 user_id
-     * @throws com.sesac.charity_auction.global.error.BusinessException 로그인하지 않았으면 NOT_LOGGED_IN
+     * @throws com.sesac.charity_auction.global.common.exception.BusinessException 로그인하지 않았으면 NOT_LOGGED_IN
      */
     long currentUserId();
 }

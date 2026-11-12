@@ -1,7 +1,7 @@
 package com.sesac.charity_auction.global.auth;
 
-import com.sesac.charity_auction.global.error.BusinessException;
-import com.sesac.charity_auction.global.error.ErrorCode;
+import com.sesac.charity_auction.global.common.exception.BusinessException;
+import com.sesac.charity_auction.global.common.exception.ErrorCode;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

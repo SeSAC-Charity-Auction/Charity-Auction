@@ -1,4 +1,4 @@
-package com.sesac.charity_auction.global.error;
+package com.sesac.charity_auction.global.common.exception;
 
 import org.springframework.http.HttpStatus;
 
