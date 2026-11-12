@@ -53,7 +53,7 @@ export default function DonateForm({
             text={`기부하려면 포인트가 ${pt(MIN_DONATION)} 이상 있어야 해요. 지금은 ${pt(balance)}를 갖고 있어요.`}
           />
         </p>
-        <Link href="/mypage/points" className={styles.textLink}>
+        <Link href="/mypage#points" className={styles.textLink}>
           내 포인트 확인하기
         </Link>
       </div>

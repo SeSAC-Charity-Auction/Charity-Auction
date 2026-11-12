@@ -50,6 +50,18 @@ export type MyPoints = {
   recent: PointEntry[]; // 최신순으로 6~8건 정도
 };
 
+// 마이페이지의 내 정보 (GET /api/me). 필드 이름은 회원 ERD(users)를 따라요.
+export type MyProfile = {
+  userId: number; // user_id
+  email: string; // email
+  nickname: string; // nickname
+  userImage: string | null; // 프로필 이미지 주소 (없으면 null)
+  point: number; // point (지금 기부할 수 있는 포인트)
+  createdAt: string; // created_at (가입일시, ISO 8601)
+  donationCount: number; // 내가 기부한 횟수
+  totalDonation: number; // 내가 기부한 총 포인트
+};
+
 // 기부처 상세 페이지에 필요한 값
 export type DonationTargetDetail = {
   target: DonationTarget;
@@ -95,6 +107,22 @@ export async function getDonationSummary(): Promise<DonationSummary> {
     cache: "no-store", // 캐시하지 않고 접속할 때마다 DB의 최신 값을 가져와요
   });
   if (!res.ok) throw new Error("기부 현황을 불러오지 못했어요.");
+  return res.json();
+}
+
+/* ---------- 내 정보 (마이페이지) ---------- */
+
+// 지금 로그인한 사용자의 정보예요. 로그인하지 않았으면 null을 돌려줘요.
+export async function getMyProfile(): Promise<MyProfile | null> {
+  const headers = await authHeaders();
+  if (!headers) return null; // 로그인하지 않음
+
+  const res = await fetch(`${process.env.API_BASE_URL}/api/me`, {
+    headers,
+    cache: "no-store", // 사람마다 다른 값이라 캐시하지 않아요
+  });
+  if (res.status === 401) return null;
+  if (!res.ok) throw new Error("내 정보를 불러오지 못했어요.");
   return res.json();
 }
 

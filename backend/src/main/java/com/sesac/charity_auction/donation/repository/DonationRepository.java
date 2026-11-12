@@ -18,6 +18,12 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
 
     long countByTargetId(Long targetId);
 
+    // 마이페이지: 내가 한 기부의 횟수와 총액
+    long countByUserId(Long userId);
+
+    @Query("select coalesce(sum(d.donationAmount), 0) from Donation d where d.user.id = :userId")
+    long sumAmountByUserId(@Param("userId") long userId);
+
     @Query("select count(distinct d.user.id) from Donation d where d.target.id = :targetId")
     long countDistinctDonorsByTargetId(@Param("targetId") Long targetId);
 

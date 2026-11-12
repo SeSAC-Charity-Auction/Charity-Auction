@@ -78,6 +78,14 @@
 .btnPrimary:hover {
 	background: #2f3ea8;
 }
+.btnGhost {
+	border-color: var(--ink);
+	background: transparent;
+	color: var(--ink);
+}
+.btnGhost:hover {
+	background: var(--mist);
+}
 .btn:focus-visible,
 .textLink:focus-visible,
 .plainLink:focus-visible {

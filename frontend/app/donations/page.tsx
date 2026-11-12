@@ -124,6 +124,12 @@ async function DonationsContent() {
 						>
 							기부처 둘러보기
 						</a>
+						<Link
+							href="/mypage"
+							className={`${styles.btn} ${styles.btnGhost}`}
+						>
+							마이페이지
+						</Link>
 					</div>
 				</div>
 
@@ -543,7 +549,7 @@ function WalletCard({ points }: { points: MyPoints }) {
 					>
 						기부하러 가기
 					</a>
-					<Link href="/mypage/points" className={styles.textLink}>
+					<Link href="/mypage#points" className={styles.textLink}>
 						포인트 내역 전체 보기
 					</Link>
 				</div>
