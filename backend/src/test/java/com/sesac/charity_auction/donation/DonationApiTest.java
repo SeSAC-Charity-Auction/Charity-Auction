@@ -21,14 +21,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * POST /api/donations 통합 테스트. 실제 DB(MySQL)를 쓰고, 테스트마다 자기 데이터를 만들고 지워요.
  * (서비스가 직접 트랜잭션을 열기 때문에 테스트에 @Transactional을 붙이지 않았어요.
- *  붙이면 "실패하면 되돌려지는지"를 확인할 수 없어요.)
+ * 붙이면 "실패하면 되돌려지는지"를 확인할 수 없어요.)
  */
 @SpringBootTest
 @AutoConfigureMockMvc
 class DonationApiTest {
-
-    @Autowired MockMvc mockMvc;
-    @Autowired JdbcTemplate jdbc;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    JdbcTemplate jdbc;
 
     long userId;
     long openTargetId;
@@ -36,7 +37,7 @@ class DonationApiTest {
 
     @BeforeEach
     void setUp() {
-        String key = UUID.randomUUID().toString().substring(0, 8);
+        final String key = UUID.randomUUID().toString().substring(0, 8);
         jdbc.update("INSERT INTO users (password, name, nickname, email, role, point_balance, created_at, updated_at) "
                 + "VALUES ('x', '테스터', ?, ?, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP())", key, key + "@test.local");
         userId = jdbc.queryForObject("SELECT user_id FROM users WHERE email = ?", Long.class, key + "@test.local");
@@ -53,14 +54,14 @@ class DonationApiTest {
         jdbc.update("DELETE FROM donation_targets WHERE target_id IN (?, ?)", openTargetId, closedTargetId);
     }
 
-    private long createTarget(String name, boolean active) {
+    private long createTarget(final String name, final boolean active) {
         jdbc.update("INSERT INTO donation_targets (target_name, is_active, total_donation, target_amount, created_at) "
                 + "VALUES (?, ?, 0, 1000000, UTC_TIMESTAMP())", name, active);
         return jdbc.queryForObject("SELECT MAX(target_id) FROM donation_targets WHERE target_name = ?", Long.class, name);
     }
 
-    private ResultActions donate(Long asUser, long targetId, Object amount) throws Exception {
-        var req = post("/api/donations").contentType(MediaType.APPLICATION_JSON)
+    private ResultActions donate(final Long asUser, final long targetId, final Object amount) throws Exception {
+        final var req = post("/api/donations").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"targetId\":" + targetId + ",\"amount\":" + amount + "}");
         if (asUser != null) req.header("X-Dev-User-Id", asUser);
         return mockMvc.perform(req);
@@ -70,11 +71,11 @@ class DonationApiTest {
         return jdbc.queryForObject("SELECT point_balance FROM users WHERE user_id = ?", Long.class, userId);
     }
 
-    private long targetTotal(long targetId) {
+    private long targetTotal(final long targetId) {
         return jdbc.queryForObject("SELECT total_donation FROM donation_targets WHERE target_id = ?", Long.class, targetId);
     }
 
-    private int count(String table) {
+    private int count(final String table) {
         return jdbc.queryForObject("SELECT COUNT(*) FROM " + table + " WHERE user_id = ?", Integer.class, userId);
     }
 
@@ -95,7 +96,7 @@ class DonationApiTest {
 
     @Test
     void 단위나_최소금액에_안_맞으면_INVALID_AMOUNT() throws Exception {
-        for (Object bad : new Object[]{3350, 999, 0, -1000}) {
+        for (final Object bad : new Object[]{3350, 999, 0, -1000}) {
             donate(userId, openTargetId, bad)
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.code").value("INVALID_AMOUNT"));

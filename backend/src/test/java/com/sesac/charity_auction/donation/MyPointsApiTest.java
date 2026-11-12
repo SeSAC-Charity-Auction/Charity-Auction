@@ -17,20 +17,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** GET /api/me/points: 기부하면 잔액과 내역(설명 문구 포함)에 실제로 반영되는지 확인해요. */
+/**
+ * GET /api/me/points: 기부하면 잔액과 내역(설명 문구 포함)에 실제로 반영되는지 확인해요.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class MyPointsApiTest {
-
-    @Autowired MockMvc mockMvc;
-    @Autowired JdbcTemplate jdbc;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    JdbcTemplate jdbc;
 
     long userId;
     long targetId;
 
     @BeforeEach
     void setUp() {
-        String key = UUID.randomUUID().toString().substring(0, 8);
+        final String key = UUID.randomUUID().toString().substring(0, 8);
         jdbc.update("INSERT INTO users (password, name, nickname, email, role, point_balance, created_at, updated_at) "
                 + "VALUES ('x', '테스터', ?, ?, 'USER', 52000, UTC_TIMESTAMP(), UTC_TIMESTAMP())", key, key + "@test.local");
         userId = jdbc.queryForObject("SELECT user_id FROM users WHERE email = ?", Long.class, key + "@test.local");

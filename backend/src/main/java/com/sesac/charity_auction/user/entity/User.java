@@ -17,6 +17,9 @@ public class User extends BaseTimeEntity {
     @ColumnDefault("0")
     @Column(name = "point_balance", nullable = false)
     private final long pointBalance = 0L;
+    @ColumnDefault("false")
+    @Column(nullable = false)
+    private final boolean isDeleted = false;
     // 탈퇴 회원의 이메일 및 닉네임 재사용을 위해 일반 UNIQUE 제약조건 대신 Generated Column 기반 UNIQUE 인덱스 사용
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +31,6 @@ public class User extends BaseTimeEntity {
     private String password;
     @Column(nullable = false, length = 10)
     private String nickname;
-    @ColumnDefault("false")
-    @Column(nullable = false)
-    private boolean isDeleted = false;
     @Column(length = 300)
     private String image;
     @Column(nullable = false, length = 50)
