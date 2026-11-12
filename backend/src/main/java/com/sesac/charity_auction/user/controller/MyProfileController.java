@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/me")
 public class MyProfileController {
-
     private final MyProfileService myProfileService;
     private final CurrentUserProvider currentUser;
 

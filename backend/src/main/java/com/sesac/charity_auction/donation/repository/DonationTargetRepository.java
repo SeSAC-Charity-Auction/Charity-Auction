@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface DonationTargetRepository extends JpaRepository<DonationTarget, Long> {
-
     List<DonationTarget> findAllByOrderByIdAsc();
 
     /**
@@ -20,5 +19,5 @@ public interface DonationTargetRepository extends JpaRepository<DonationTarget, 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update DonationTarget t set t.totalDonation = t.totalDonation + :amount "
             + "where t.id = :targetId and t.active = true")
-    int addDonation(@Param("targetId") long targetId, @Param("amount") long amount);
+    int addDonation(final @Param("targetId") long targetId, final @Param("amount") long amount);
 }

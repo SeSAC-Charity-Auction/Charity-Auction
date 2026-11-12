@@ -13,9 +13,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
-
     // 탈퇴 회원의 이메일 및 닉네임 재사용을 위해 일반 UNIQUE 제약조건 대신 Generated Column 기반 UNIQUE 인덱스 사용
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -49,16 +47,8 @@ public class User extends BaseTimeEntity {
     @Column(name = "point_balance", nullable = false)
     private long pointBalance = 0L;
 
-    /** 개인정보 보호용: 첫 글자만 보이고 나머지는 가려요. (예: 김민준 -> 김**) */
-    public String getMaskedName() {
-        if (name == null || name.isEmpty()) {
-            return "**";
-        }
-        return name.substring(0, 1) + "**";
-    }
-
     // 회원가입
-    public static User create(String email, String password, String nickname, String name){
+    public static User create(String email, String password, String nickname, String name) {
         User user = new User();
         user.email = email;
         user.password = password;
@@ -66,5 +56,15 @@ public class User extends BaseTimeEntity {
         user.role = Role.USER;
         user.name = name;
         return user;
+    }
+
+    /**
+     * 개인정보 보호용: 첫 글자만 보이고 나머지는 가려요. (예: 김민준 -> 김**)
+     */
+    public String getMaskedName() {
+        if (name == null || name.isEmpty()) {
+            return "**";
+        }
+        return name.charAt(0) + "**";
     }
 }

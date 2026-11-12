@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DonationService {
-
     private final UserRepository userRepository;
     private final DonationTargetRepository targetRepository;
     private final DonationRepository donationRepository;
@@ -37,7 +36,7 @@ public class DonationService {
      * 하나의 트랜잭션: 중간에 BusinessException이 나면 앞에서 바꾼 것(잔액 차감 등)이 모두 되돌려져요.
      */
     @Transactional
-    public DonationResponse donate(long userId, Long targetId, Long amount) {
+    public DonationResponse donate(final long userId, final Long targetId, final Long amount) {
         // 화면의 검증은 믿지 않아요. 값이 없거나 규칙에 안 맞으면 여기서 막아요.
         if (targetId == null) {
             throw new BusinessException(ErrorCode.TARGET_NOT_FOUND);

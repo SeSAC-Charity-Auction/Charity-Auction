@@ -12,7 +12,7 @@ public record PointEntryResponse(
         String description, // donation_id / auction_id를 보고 서버가 만든 문구
         String createdAt
 ) {
-    public static PointEntryResponse from(PointHistory h) {
+    public static PointEntryResponse from(final PointHistory h) {
         return new PointEntryResponse(
                 h.getId(),
                 h.getPointType().getLabel(),
@@ -22,7 +22,7 @@ public record PointEntryResponse(
         );
     }
 
-    private static String describe(PointHistory h) {
+    private static String describe(final PointHistory h) {
         if (h.getDonation() != null) {
             return h.getDonation().getTarget().getTargetName() + " 기부"; // 예: 푸른숲 어린이 도서관 기부
         }

@@ -19,33 +19,31 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Validated
 public class UserController {
-
     private final UserService userService;
 
     @GetMapping("/check-email")
-    public ResponseEntity<DuplicateCheckResponse> checkEmail(
-            @RequestParam
-            @NotBlank(message = "이메일을 입력해주세요.")
-            @Email(message = "올바른 이메일 형식이 아닙니다.")
-            String email
-    ){
+    public ResponseEntity<DuplicateCheckResponse> checkEmail(final
+                                                             @RequestParam
+                                                             @NotBlank(message = "이메일을 입력해주세요.")
+                                                             @Email(message = "올바른 이메일 형식이 아닙니다.")
+                                                             String email
+    ) {
         return ResponseEntity.ok(userService.checkEmail(email));
     }
 
     @GetMapping("/check-nickname")
-    public ResponseEntity<DuplicateCheckResponse> checkNickname(
-            @RequestParam
-            @NotBlank(message = "닉네임을 입력해주세요.")
-            @Size(min = 2, max = 10, message = "닉네임은 2자 이상 10자 이하로 입력해야 합니다.")
-            String nickname
-    ){
+    public ResponseEntity<DuplicateCheckResponse> checkNickname(final
+                                                                @RequestParam
+                                                                @NotBlank(message = "닉네임을 입력해주세요.")
+                                                                @Size(min = 2, max = 10, message = "닉네임은 2자 이상 10자 이하로 입력해야 합니다.")
+                                                                String nickname
+    ) {
         return ResponseEntity.ok(userService.checkNickname(nickname));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest request){
-
-        SignupResponse response = userService.signup(request);
+    public ResponseEntity<SignupResponse> signup(final @Valid @RequestBody SignupRequest request) {
+        final SignupResponse response = userService.signup(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

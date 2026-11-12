@@ -12,7 +12,7 @@ public record DonationRecordResponse(
         long donationAmount,
         String createdAt
 ) {
-    public static DonationRecordResponse from(Donation d) {
+    public static DonationRecordResponse from(final Donation d) {
         return new DonationRecordResponse(
                 d.getId(),
                 d.getTarget().getId(),

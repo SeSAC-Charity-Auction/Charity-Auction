@@ -9,10 +9,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    boolean existsByEmailAndIsDeletedFalse(final String email);
 
-    boolean existsByEmailAndIsDeletedFalse(String email);
-
-    boolean existsByNicknameAndIsDeletedFalse(String nickname);
+    boolean existsByNicknameAndIsDeletedFalse(final String nickname);
 
     /**
      * 잔액이 충분할 때만 차감해요. 조회와 차감이 한 문장이라, 동시에 여러 번 와도
@@ -23,8 +22,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update User u set u.pointBalance = u.pointBalance - :amount "
             + "where u.id = :userId and u.pointBalance >= :amount")
-    int deductBalance(@Param("userId") long userId, @Param("amount") long amount);
+    int deductBalance(final @Param("userId") long userId, final @Param("amount") long amount);
 
     @Query("select u.pointBalance from User u where u.id = :userId")
-    long findBalanceById(@Param("userId") long userId);
+    long findBalanceById(final @Param("userId") long userId);
 }

@@ -14,7 +14,7 @@ public record DonationTargetResponse(
         long targetAmount,
         String createdAt
 ) {
-    public static DonationTargetResponse from(DonationTarget t) {
+    public static DonationTargetResponse from(final DonationTarget t) {
         return new DonationTargetResponse(
                 t.getId(),
                 t.getTargetName(),

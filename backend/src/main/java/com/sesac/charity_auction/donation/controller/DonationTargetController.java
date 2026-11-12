@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/donation-targets")
 public class DonationTargetController {
-
     private final DonationQueryService queryService;
 
     public DonationTargetController(DonationQueryService queryService) {
@@ -18,7 +17,7 @@ public class DonationTargetController {
     }
 
     @GetMapping("/{targetId}")
-    public DonationTargetDetailResponse detail(@PathVariable long targetId) {
+    public DonationTargetDetailResponse detail(final @PathVariable long targetId) {
         return queryService.getTargetDetail(targetId);
     }
 }

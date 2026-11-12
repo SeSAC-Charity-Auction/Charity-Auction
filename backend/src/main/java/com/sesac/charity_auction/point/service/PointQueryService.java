@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class PointQueryService {
-
     private static final int RECENT_SIZE = 8;
 
     private final UserRepository userRepository;
@@ -24,7 +23,7 @@ public class PointQueryService {
         this.historyRepository = historyRepository;
     }
 
-    public MyPointsResponse getMyPoints(long userId) {
+    public MyPointsResponse getMyPoints(final long userId) {
         if (!userRepository.existsById(userId)) {
             throw new BusinessException(ErrorCode.NOT_LOGGED_IN); // 없는 회원
         }

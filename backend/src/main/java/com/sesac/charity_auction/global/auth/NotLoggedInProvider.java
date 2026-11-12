@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class NotLoggedInProvider {
-
     @Bean
     @ConditionalOnMissingBean(CurrentUserProvider.class)
     public CurrentUserProvider notLoggedInCurrentUserProvider() {

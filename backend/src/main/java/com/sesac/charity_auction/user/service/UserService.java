@@ -16,40 +16,37 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public SignupResponse signup(SignupRequest request){
+    public SignupResponse signup(SignupRequest request) {
 
-        if(userRepository.existsByEmailAndIsDeletedFalse(request.email())){
+        if (userRepository.existsByEmailAndIsDeletedFalse(request.email())) {
             throw new BusinessException(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다.");
         }
 
-        if(userRepository.existsByNicknameAndIsDeletedFalse(request.nickname())){
+        if (userRepository.existsByNicknameAndIsDeletedFalse(request.nickname())) {
             throw new BusinessException(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다.");
         }
 
-        User user = User.create(request.email(), passwordEncoder.encode(request.password()), request.nickname(), request.name());
+        final User user = User.create(request.email(), passwordEncoder.encode(request.password()), request.nickname(), request.name());
 
         User savedUser = userRepository.save(user);
 
         return new SignupResponse(savedUser.getId(), savedUser.getEmail(), savedUser.getNickname());
     }
 
-    public DuplicateCheckResponse checkEmail(String email){
-
+    public DuplicateCheckResponse checkEmail(final String email) {
         boolean exists = userRepository.existsByEmailAndIsDeletedFalse(email);
 
-        return new DuplicateCheckResponse(!exists, exists? "이미 사용 중인 이메일입니다.": "사용 가능한 이메일입니다.");
+        return new DuplicateCheckResponse(!exists, exists ? "이미 사용 중인 이메일입니다." : "사용 가능한 이메일입니다.");
     }
 
-    public DuplicateCheckResponse checkNickname(String nickname){
-
+    public DuplicateCheckResponse checkNickname(final String nickname) {
         boolean exists = userRepository.existsByNicknameAndIsDeletedFalse(nickname);
 
-        return new DuplicateCheckResponse(!exists, exists? "이미 사용 중인 닉네임입니다.": "사용 가능한 닉네임입니다.");
+        return new DuplicateCheckResponse(!exists, exists ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다.");
     }
 
 

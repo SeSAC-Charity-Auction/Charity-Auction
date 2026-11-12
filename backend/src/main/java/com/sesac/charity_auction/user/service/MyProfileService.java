@@ -14,7 +14,6 @@ import java.time.ZoneOffset;
 @Service
 @Transactional(readOnly = true)
 public class MyProfileService {
-
     private final UserRepository userRepository;
     private final DonationRepository donationRepository;
 
@@ -25,7 +24,7 @@ public class MyProfileService {
 
     public MyProfileResponse getMyProfile(long userId) {
         // 없는 회원이거나 탈퇴한 회원이면 로그인하지 않은 것과 같이 처리해요.
-        User user = userRepository.findById(userId)
+        final User user = userRepository.findById(userId)
                 .filter(u -> !u.isDeleted())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_LOGGED_IN));
 

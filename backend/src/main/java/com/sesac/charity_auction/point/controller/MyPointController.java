@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/me")
 public class MyPointController {
-
     private final PointQueryService pointQueryService;
     private final CurrentUserProvider currentUser;
 

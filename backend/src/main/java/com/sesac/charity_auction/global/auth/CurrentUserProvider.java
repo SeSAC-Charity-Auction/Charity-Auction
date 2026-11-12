@@ -6,7 +6,6 @@ package com.sesac.charity_auction.global.auth;
  * 서비스와 컨트롤러는 이 인터페이스만 바라보기 때문에, 그때 다른 코드는 바꿀 필요가 없어요.
  */
 public interface CurrentUserProvider {
-
     /**
      * @return 로그인한 회원의 user_id
      * @throws com.sesac.charity_auction.global.common.exception.BusinessException 로그인하지 않았으면 NOT_LOGGED_IN

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("local")
 public class DevCurrentUserProvider implements CurrentUserProvider {
-
     public static final String HEADER = "X-Dev-User-Id";
 
     private final HttpServletRequest request;
@@ -31,7 +30,7 @@ public class DevCurrentUserProvider implements CurrentUserProvider {
         }
         try {
             return Long.parseLong(value.trim());
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new BusinessException(ErrorCode.NOT_LOGGED_IN);
         }
     }
