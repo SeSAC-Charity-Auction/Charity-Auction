@@ -78,7 +78,10 @@ async function MyPageContent() {
 	// "여기부터는 요청이 올 때 그린다"는 표시예요. 현재 시각을 쓰는 코드보다 먼저 있어야 해요.
 	await connection();
 
-	const [profile, points] = await Promise.all([getMyProfile(), getMyPoints()]);
+	const [profile, points] = await Promise.all([
+		getMyProfile(),
+		getMyPoints()
+	]);
 	if (!profile || !points) return <SignedOut />;
 
 	return (
@@ -104,7 +107,10 @@ function SignedOut() {
 			<p className={styles.muted}>
 				내 정보와 포인트 내역은 로그인한 뒤에 확인할 수 있어요.
 			</p>
-			<Link href="/login" className={`${styles.btn} ${styles.btnPrimary}`}>
+			<Link
+				href="/login"
+				className={`${styles.btn} ${styles.btnPrimary}`}
+			>
 				로그인하기
 			</Link>
 		</div>
@@ -167,7 +173,11 @@ function Stats({ profile }: { profile: MyProfile }) {
 				value={profile.point}
 				unit="P"
 			/>
-			<Stat label="내가 기부한 횟수" value={profile.donationCount} unit="번" />
+			<Stat
+				label="내가 기부한 횟수"
+				value={profile.donationCount}
+				unit="번"
+			/>
 			<Stat
 				label="내가 기부한 포인트"
 				value={profile.totalDonation}
@@ -207,13 +217,22 @@ function PointSection({
 	balance: number;
 }) {
 	return (
-		<section id="points" className={styles.points} aria-labelledby="points-title">
+		<section
+			id="points"
+			className={styles.points}
+			aria-labelledby="points-title"
+		>
 			<div className={styles.sectionHead}>
-				<h2 id="points-title" className={`${styles.h2} ${display.className}`}>
+				<h2
+					id="points-title"
+					className={`${styles.h2} ${display.className}`}
+				>
 					포인트 내역
 				</h2>
 				<p className={styles.muted}>
-					<FlipText text={`지금 ${pt(balance)}를 갖고 있어요. 최근 ${points.recent.length}건만 보여요.`} />
+					<FlipText
+						text={`지금 ${pt(balance)}를 갖고 있어요. 최근 ${points.recent.length}건만 보여요.`}
+					/>
 				</p>
 			</div>
 
@@ -245,7 +264,9 @@ function EntryRow({ entry }: { entry: PointEntry }) {
 					<FlipText text={relativeTime(entry.createdAt)} />
 				</p>
 			</div>
-			<p className={`${styles.entryAmount} ${earn ? styles.earn : styles.spend}`}>
+			<p
+				className={`${styles.entryAmount} ${earn ? styles.earn : styles.spend}`}
+			>
 				{earn ? "+" : "−"}
 				<FlipText text={pt(Math.abs(entry.pointAmount))} />
 			</p>

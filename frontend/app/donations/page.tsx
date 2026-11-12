@@ -537,7 +537,9 @@ function WalletCard({ points }: { points: MyPoints }) {
 						<p
 							className={`${styles.walletBalance} ${display.className}`}
 						>
-							<FlipText text={points.balance.toLocaleString("ko-KR")} />
+							<FlipText
+								text={points.balance.toLocaleString("ko-KR")}
+							/>
 							<span className={styles.walletUnit}>P</span>
 						</p>
 					</div>
@@ -563,7 +565,9 @@ function WalletCard({ points }: { points: MyPoints }) {
 							label={`최근 포인트 변화예요. 지금은 ${pt(points.balance)}를 갖고 있어요.`}
 						/>
 						<p className={styles.sparkCaption}>
-							<FlipText text={`최근 ${points.recent.length}번의 포인트 변화`} />
+							<FlipText
+								text={`최근 ${points.recent.length}번의 포인트 변화`}
+							/>
 						</p>
 						<ul className={styles.entryList}>
 							{entries.map((e) => (
@@ -574,7 +578,9 @@ function WalletCard({ points }: { points: MyPoints }) {
 										</p>
 										<p className={styles.entryTime}>
 											{e.pointType}{" "}
-											<FlipText text={relativeTime(e.createdAt)} />
+											<FlipText
+												text={relativeTime(e.createdAt)}
+											/>
 										</p>
 									</div>
 									<p
@@ -583,7 +589,9 @@ function WalletCard({ points }: { points: MyPoints }) {
 										{e.pointType === "적립" ?
 											"+"
 										:	"\u2212"}
-										<FlipText text={pt(Math.abs(e.pointAmount))} />
+										<FlipText
+											text={pt(Math.abs(e.pointAmount))}
+										/>
 									</p>
 								</li>
 							))}

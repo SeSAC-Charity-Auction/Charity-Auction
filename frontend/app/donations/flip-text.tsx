@@ -28,7 +28,11 @@ function Tile({
 	spin: boolean; // true가 되면 한 바퀴 돌아요
 	delay: number;
 }) {
-	const [flip, setFlip] = useState<Flip>({ prev: digit, shown: digit, tick: 0 });
+	const [flip, setFlip] = useState<Flip>({
+		prev: digit,
+		shown: digit,
+		tick: 0
+	});
 
 	// 타이머 안에서 "지금 값"을 읽어야 해서 ref에도 들고 있어요.
 	const shownRef = useRef(digit);
@@ -102,19 +106,28 @@ function Tile({
 				key={`sb${tick}`}
 				className={`${styles.half} ${styles.bottom} ${tick > 0 ? styles.staticBottomOld : ""}`}
 			>
-				<span className={`${styles.glyph} ${styles.glyphBottom}`}>{tick > 0 ? prev : shown}</span>
+				<span className={`${styles.glyph} ${styles.glyphBottom}`}>
+					{tick > 0 ? prev : shown}
+				</span>
 			</span>
 			{/* 넘어가는 판: key가 바뀔 때마다 애니메이션이 처음부터 다시 시작해요 */}
 			{tick > 0 && (
 				<>
-					<span key={`t${tick}`} className={`${styles.half} ${styles.top} ${styles.flapTop}`}>
+					<span
+						key={`t${tick}`}
+						className={`${styles.half} ${styles.top} ${styles.flapTop}`}
+					>
 						<span className={styles.glyph}>{prev}</span>
 					</span>
 					<span
 						key={`b${tick}`}
 						className={`${styles.half} ${styles.bottom} ${styles.flapBottom}`}
 					>
-						<span className={`${styles.glyph} ${styles.glyphBottom}`}>{shown}</span>
+						<span
+							className={`${styles.glyph} ${styles.glyphBottom}`}
+						>
+							{shown}
+						</span>
 					</span>
 				</>
 			)}
@@ -168,8 +181,16 @@ export default function FlipText({ text }: { text: string }) {
 										</span>
 									);
 								}
-								const delay = Math.min(digitIndex++, 12) * STAGGER_MS;
-								return <Tile key={j} digit={Number(ch)} spin={spin} delay={delay} />;
+								const delay =
+									Math.min(digitIndex++, 12) * STAGGER_MS;
+								return (
+									<Tile
+										key={j}
+										digit={Number(ch)}
+										spin={spin}
+										delay={delay}
+									/>
+								);
 							})}
 						</span>
 					);

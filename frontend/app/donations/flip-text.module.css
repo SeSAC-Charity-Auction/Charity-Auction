@@ -83,7 +83,8 @@
 
 .flapBottom {
 	z-index: 4;
-	animation: flipUp calc(var(--flip-ms) / 2) ease-out calc(var(--flip-ms) / 2) both;
+	animation: flipUp calc(var(--flip-ms) / 2) ease-out calc(var(--flip-ms) / 2)
+		both;
 }
 
 @keyframes showAtHalf {

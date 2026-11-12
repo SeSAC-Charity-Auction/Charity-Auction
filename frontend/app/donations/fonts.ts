@@ -4,9 +4,13 @@
 import { Black_Han_Sans, Noto_Sans_KR } from "next/font/google";
 
 // 제목과 숫자는 굵은 포스터 느낌의 글꼴, 본문은 읽기 편한 글꼴이에요.
-export const display = Black_Han_Sans({ weight: "400", preload: false, display: "swap" });
+export const display = Black_Han_Sans({
+	weight: "400",
+	preload: false,
+	display: "swap"
+});
 export const body = Noto_Sans_KR({
-  weight: ["400", "500", "700"],
-  preload: false,
-  display: "swap",
+	weight: ["400", "500", "700"],
+	preload: false,
+	display: "swap"
 });
