@@ -21,7 +21,6 @@ public class UserService {
 
     @Transactional
     public SignupResponse signup(SignupRequest request) {
-
         if (userRepository.existsByEmailAndIsDeletedFalse(request.email())) {
             throw new BusinessException(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다.");
         }
@@ -32,22 +31,20 @@ public class UserService {
 
         final User user = User.create(request.email(), passwordEncoder.encode(request.password()), request.nickname(), request.name());
 
-        User savedUser = userRepository.save(user);
+        final User savedUser = userRepository.save(user);
 
         return new SignupResponse(savedUser.getId(), savedUser.getEmail(), savedUser.getNickname());
     }
 
     public DuplicateCheckResponse checkEmail(final String email) {
-        boolean exists = userRepository.existsByEmailAndIsDeletedFalse(email);
+        final boolean exists = userRepository.existsByEmailAndIsDeletedFalse(email);
 
         return new DuplicateCheckResponse(!exists, exists ? "이미 사용 중인 이메일입니다." : "사용 가능한 이메일입니다.");
     }
 
     public DuplicateCheckResponse checkNickname(final String nickname) {
-        boolean exists = userRepository.existsByNicknameAndIsDeletedFalse(nickname);
+        final boolean exists = userRepository.existsByNicknameAndIsDeletedFalse(nickname);
 
         return new DuplicateCheckResponse(!exists, exists ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다.");
     }
-
-
 }

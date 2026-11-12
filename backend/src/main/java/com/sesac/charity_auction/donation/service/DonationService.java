@@ -62,9 +62,9 @@ public class DonationService {
         }
 
         // 4. 기부 기록. 참조만 가져와서(getReference) 불필요한 조회 쿼리를 줄여요.
-        User user = userRepository.getReferenceById(userId);
-        DonationTarget target = targetRepository.getReferenceById(targetId);
-        Donation donation = donationRepository.save(new Donation(target, user, amount));
+        final User user = userRepository.getReferenceById(userId);
+        final DonationTarget target = targetRepository.getReferenceById(targetId);
+        final Donation donation = donationRepository.save(new Donation(target, user, amount));
 
         // 5. 포인트 사용 기록(장부)
         pointHistoryRepository.save(PointHistory.usedForDonation(user, donation, amount));

@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PointHistoryRepository extends JpaRepository<PointHistory, Long> {
-
     // 기부 내역(donation)과 기부처 이름을 한 번에 가져와서(left join fetch) 설명 문구를 만들 때 쿼리가 반복되지 않게 해요.
     // 경매 내역처럼 donation이 없는 행도 있어서 left join이에요.
     @Query("select h from PointHistory h "

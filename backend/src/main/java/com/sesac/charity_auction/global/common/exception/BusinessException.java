@@ -15,11 +15,11 @@ public class BusinessException extends RuntimeException {
     }
 
     // 기부처럼 프론트가 코드로 구분해야 하는 예외는 ErrorCode로 만들어요.
-    public BusinessException(ErrorCode errorCode) {
+    public BusinessException(final ErrorCode errorCode) {
         this(errorCode.getStatus(), errorCode.name(), errorCode.getMessage());
     }
 
-    private BusinessException(HttpStatus status, String code, String message) {
+    private BusinessException(final HttpStatus status, final String code, final String message) {
         super(message);
         this.status = status;
         this.code = code;

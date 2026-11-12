@@ -1,10 +1,12 @@
 package com.sesac.charity_auction.global.common.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
  * 실패 응답의 code 값. 이름은 프론트의 DonateErrorCode와 같아야 해요.
  */
+@Getter
 public enum ErrorCode {
     NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "로그인이 필요해요."),
     TARGET_NOT_FOUND(HttpStatus.NOT_FOUND, "기부처를 찾을 수 없어요."),
@@ -20,7 +22,4 @@ public enum ErrorCode {
         this.status = status;
         this.message = message;
     }
-
-    public HttpStatus getStatus() { return status; }
-    public String getMessage() { return message; }
 }

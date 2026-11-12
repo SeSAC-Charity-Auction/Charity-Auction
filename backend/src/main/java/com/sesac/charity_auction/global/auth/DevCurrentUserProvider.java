@@ -24,7 +24,7 @@ public class DevCurrentUserProvider implements CurrentUserProvider {
 
     @Override
     public long currentUserId() {
-        String value = request.getHeader(HEADER);
+        final String value = request.getHeader(HEADER);
         if (value == null || value.isBlank()) {
             throw new BusinessException(ErrorCode.NOT_LOGGED_IN);
         }

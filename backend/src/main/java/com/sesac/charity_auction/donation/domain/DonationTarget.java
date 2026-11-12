@@ -1,14 +1,15 @@
 package com.sesac.charity_auction.donation.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+@Getter
 @Entity
 @Table(name = "donation_targets")
 public class DonationTarget {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "target_id")
@@ -52,13 +53,4 @@ public class DonationTarget {
     void onCreate() {
         this.createdAt = LocalDateTime.now(ZoneOffset.UTC);
     }
-
-    public Long getId() { return id; }
-    public String getTargetName() { return targetName; }
-    public String getDescription() { return description; }
-    public String getTargetImage() { return targetImage; }
-    public boolean isActive() { return active; }
-    public long getTotalDonation() { return totalDonation; }
-    public long getTargetAmount() { return targetAmount; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
 }

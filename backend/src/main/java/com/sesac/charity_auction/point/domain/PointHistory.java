@@ -3,15 +3,18 @@ package com.sesac.charity_auction.point.domain;
 import com.sesac.charity_auction.donation.domain.Donation;
 import com.sesac.charity_auction.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-/** 포인트 장부. 잔액 자체는 users.point_balance에 있어요. */
+/**
+ * 포인트 장부. 잔액 자체는 users.point_balance에 있어요.
+ */
+@Getter
 @Entity
 @Table(name = "point_histories")
 public class PointHistory {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "point_id")
@@ -42,9 +45,11 @@ public class PointHistory {
     protected PointHistory() {
     }
 
-    /** 기부로 포인트를 쓴 기록 */
+    /**
+     * 기부로 포인트를 쓴 기록
+     */
     public static PointHistory usedForDonation(User user, Donation donation, long amount) {
-        PointHistory h = new PointHistory();
+        final PointHistory h = new PointHistory();
         h.user = user;
         h.donation = donation;
         h.pointAmount = amount;
@@ -56,12 +61,4 @@ public class PointHistory {
     void onCreate() {
         this.createdAt = LocalDateTime.now(ZoneOffset.UTC);
     }
-
-    public Long getId() { return id; }
-    public Long getAuctionId() { return auctionId; }
-    public User getUser() { return user; }
-    public Donation getDonation() { return donation; }
-    public long getPointAmount() { return pointAmount; }
-    public PointType getPointType() { return pointType; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
 }
