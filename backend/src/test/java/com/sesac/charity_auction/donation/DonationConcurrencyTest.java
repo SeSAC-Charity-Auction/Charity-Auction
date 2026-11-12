@@ -1,8 +1,8 @@
 package com.sesac.charity_auction.donation;
 
 import com.sesac.charity_auction.donation.service.DonationService;
-import com.sesac.charity_auction.global.error.BusinessException;
-import com.sesac.charity_auction.global.error.ErrorCode;
+import com.sesac.charity_auction.global.exception.BusinessException;
+import com.sesac.charity_auction.global.exception.ErrorCode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
