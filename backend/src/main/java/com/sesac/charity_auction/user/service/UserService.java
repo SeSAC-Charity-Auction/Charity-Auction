@@ -8,7 +8,6 @@ import com.sesac.charity_auction.user.dto.response.SignupResponse;
 import com.sesac.charity_auction.user.entity.User;
 import com.sesac.charity_auction.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +20,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public SignupResponse signup(SignupRequest request){
+    public SignupResponse signup(SignupRequest request) {
 
-        if(userRepository.existsByEmailAndIsDeletedFalse(request.email())){
+        if (userRepository.existsByEmailAndIsDeletedFalse(request.email())) {
             throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
 
-        if(userRepository.existsByNicknameAndIsDeletedFalse(request.nickname())){
+        if (userRepository.existsByNicknameAndIsDeletedFalse(request.nickname())) {
             throw new BusinessException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
@@ -41,16 +40,12 @@ public class UserService {
     public DuplicateCheckResponse checkEmail(final String email) {
         final boolean exists = userRepository.existsByEmailAndIsDeletedFalse(email);
 
-        boolean exists = userRepository.existsByEmailAndIsDeletedFalse(email);
-
-        return new DuplicateCheckResponse(!exists, exists? ErrorCode.DUPLICATE_EMAIL.getMessage(): "사용 가능한 이메일입니다.");
+        return new DuplicateCheckResponse(!exists, exists ? ErrorCode.DUPLICATE_EMAIL.getMessage() : "사용 가능한 이메일입니다.");
     }
 
     public DuplicateCheckResponse checkNickname(final String nickname) {
         final boolean exists = userRepository.existsByNicknameAndIsDeletedFalse(nickname);
 
-        boolean exists = userRepository.existsByNicknameAndIsDeletedFalse(nickname);
-
-        return new DuplicateCheckResponse(!exists, exists? ErrorCode.DUPLICATE_NICKNAME.getMessage(): "사용 가능한 닉네임입니다.");
+        return new DuplicateCheckResponse(!exists, exists ? ErrorCode.DUPLICATE_NICKNAME.getMessage() : "사용 가능한 닉네임입니다.");
     }
 }

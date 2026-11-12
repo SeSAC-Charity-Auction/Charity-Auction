@@ -1,8 +1,8 @@
 package com.sesac.charity_auction.user.service;
 
 import com.sesac.charity_auction.donation.repository.DonationRepository;
-import com.sesac.charity_auction.global.common.exception.BusinessException;
-import com.sesac.charity_auction.global.common.exception.ErrorCode;
+import com.sesac.charity_auction.global.exception.BusinessException;
+import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.user.dto.response.MyProfileResponse;
 import com.sesac.charity_auction.user.entity.User;
 import com.sesac.charity_auction.user.repository.UserRepository;
