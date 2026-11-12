@@ -1,7 +1,7 @@
 package com.sesac.charity_auction.point.service;
 
-import com.sesac.charity_auction.global.error.BusinessException;
-import com.sesac.charity_auction.global.error.ErrorCode;
+import com.sesac.charity_auction.global.exception.BusinessException;
+import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.point.dto.MyPointsResponse;
 import com.sesac.charity_auction.point.dto.PointEntryResponse;
 import com.sesac.charity_auction.point.repository.PointHistoryRepository;

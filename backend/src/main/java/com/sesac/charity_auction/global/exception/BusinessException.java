@@ -1,4 +1,4 @@
-package com.sesac.charity_auction.global.error;
+package com.sesac.charity_auction.global.exception;
 
 /** 서비스에서 규칙 위반이 생기면 이 예외를 던져요. GlobalExceptionHandler가 응답으로 바꿔 줘요. */
 public class BusinessException extends RuntimeException {
@@ -7,6 +7,11 @@ public class BusinessException extends RuntimeException {
 
     public BusinessException(ErrorCode errorCode) {
         super(errorCode.getMessage());
+        this.errorCode = errorCode;
+    }
+
+    public BusinessException(ErrorCode errorCode, Throwable cause) {
+        super(errorCode.getMessage(), cause);
         this.errorCode = errorCode;
     }
 

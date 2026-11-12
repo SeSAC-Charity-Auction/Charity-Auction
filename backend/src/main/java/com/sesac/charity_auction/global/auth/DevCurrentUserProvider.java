@@ -1,7 +1,7 @@
 package com.sesac.charity_auction.global.auth;
 
-import com.sesac.charity_auction.global.error.BusinessException;
-import com.sesac.charity_auction.global.error.ErrorCode;
+import com.sesac.charity_auction.global.exception.BusinessException;
+import com.sesac.charity_auction.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
