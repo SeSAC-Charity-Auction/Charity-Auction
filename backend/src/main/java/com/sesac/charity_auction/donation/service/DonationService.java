@@ -8,10 +8,10 @@ import com.sesac.charity_auction.donation.repository.DonationRepository;
 import com.sesac.charity_auction.donation.repository.DonationTargetRepository;
 import com.sesac.charity_auction.global.error.BusinessException;
 import com.sesac.charity_auction.global.error.ErrorCode;
-import com.sesac.charity_auction.member.domain.User;
-import com.sesac.charity_auction.member.repository.UserRepository;
 import com.sesac.charity_auction.point.domain.PointHistory;
 import com.sesac.charity_auction.point.repository.PointHistoryRepository;
+import com.sesac.charity_auction.user.entity.User;
+import com.sesac.charity_auction.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

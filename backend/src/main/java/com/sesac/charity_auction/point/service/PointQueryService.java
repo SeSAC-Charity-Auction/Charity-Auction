@@ -2,10 +2,10 @@ package com.sesac.charity_auction.point.service;
 
 import com.sesac.charity_auction.global.error.BusinessException;
 import com.sesac.charity_auction.global.error.ErrorCode;
-import com.sesac.charity_auction.member.repository.UserRepository;
 import com.sesac.charity_auction.point.dto.MyPointsResponse;
 import com.sesac.charity_auction.point.dto.PointEntryResponse;
 import com.sesac.charity_auction.point.repository.PointHistoryRepository;
+import com.sesac.charity_auction.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

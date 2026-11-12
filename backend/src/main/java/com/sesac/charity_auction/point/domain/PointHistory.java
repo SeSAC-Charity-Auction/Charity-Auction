@@ -1,7 +1,7 @@
 package com.sesac.charity_auction.point.domain;
 
 import com.sesac.charity_auction.donation.domain.Donation;
-import com.sesac.charity_auction.member.domain.User;
+import com.sesac.charity_auction.user.entity.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

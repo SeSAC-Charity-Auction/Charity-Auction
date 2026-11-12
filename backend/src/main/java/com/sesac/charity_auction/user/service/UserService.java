@@ -31,7 +31,7 @@ public class UserService {
             throw new BusinessException(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다.");
         }
 
-        User user = User.create(request.email(), passwordEncoder.encode(request.password()), request.nickname());
+        User user = User.create(request.email(), passwordEncoder.encode(request.password()), request.nickname(), request.name());
 
         User savedUser = userRepository.save(user);
 

@@ -4,15 +4,19 @@
 
 CREATE TABLE users (
     user_id       BIGINT       NOT NULL AUTO_INCREMENT,
-    login_id      VARCHAR(50)  NOT NULL,
+    -- login_id      VARCHAR(50)  NOT NULL,
     password      VARCHAR(100) NOT NULL COMMENT 'BCrypt 해시',
     name          VARCHAR(50)  NOT NULL,
+    nickname      VARCHAR(50)  NOT NULL,
     email         VARCHAR(100) NOT NULL,
+    image         VARCHAR(500) NOT NULL,
+    is_deleted    BOOLEAN NOT NULL DEFAULT FALSE,
     role          VARCHAR(20)  NOT NULL DEFAULT 'USER',
     point_balance BIGINT       NOT NULL DEFAULT 0 COMMENT '보유 포인트(잔액)',
     created_at    DATETIME     NOT NULL,
+    updated_at    DATETIME     NOT NULL,
     PRIMARY KEY (user_id),
-    UNIQUE KEY uk_users_login_id (login_id),
+    -- UNIQUE KEY uk_users_login_id (login_id),
     UNIQUE KEY uk_users_email (email),
     -- 코드에서 막지 못해도 DB가 마이너스 잔액을 한 번 더 막아 줘요.
     CONSTRAINT ck_users_point_balance CHECK (point_balance >= 0)
