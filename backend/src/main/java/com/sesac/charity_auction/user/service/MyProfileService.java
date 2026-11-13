@@ -72,4 +72,15 @@ public class MyProfileService {
         }
         return nickname;
     }
+
+    /**
+     * 회원 탈퇴. users.is_deleted를 true로 바꿔요. 이미 탈퇴한 회원이면 NOT_LOGGED_IN이에요.
+     */
+    @Transactional
+    public void withdraw(final long userId) {
+        final User user = userRepository.findById(userId)
+                .filter(filterUser -> !filterUser.isDeleted())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_LOGGED_IN));
+        user.withdraw();
+    }
 }

@@ -19,7 +19,7 @@ public class User extends BaseTimeEntity {
     private final long pointBalance = 0L;
     @ColumnDefault("false")
     @Column(nullable = false)
-    private final boolean isDeleted = false;
+    private boolean isDeleted = false;
     // 탈퇴 회원의 이메일 및 닉네임 재사용을 위해 일반 UNIQUE 제약조건 대신 Generated Column 기반 UNIQUE 인덱스 사용
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +48,11 @@ public class User extends BaseTimeEntity {
         user.role = Role.USER;
         user.name = name;
         return user;
+    }
+
+    // 탈퇴해요. 행은 지우지 않고 표시만 해서, 예전 기부·포인트 기록은 그대로 남아요.
+    public void withdraw() {
+        this.isDeleted = true;
     }
 
     public void changeNickname(final String nickname) {

@@ -4,12 +4,15 @@ import com.sesac.charity_auction.global.auth.CurrentUserProvider;
 import com.sesac.charity_auction.user.dto.response.MyProfileResponse;
 import com.sesac.charity_auction.user.service.MyProfileService;
 import com.sesac.charity_auction.user.service.ProfileImageService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,5 +48,12 @@ public class MyProfileController {
     @PatchMapping("/nickname")
     public Map<String, String> changeNickname(@RequestBody final Map<String, String> body) {
         return Map.of("nickname", myProfileService.changeNickname(currentUser.currentUserId(), body.get("nickname")));
+    }
+
+    // DELETE /api/me : 회원 탈퇴. 성공하면 204예요.
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void withdraw() {
+        myProfileService.withdraw(currentUser.currentUserId());
     }
 }

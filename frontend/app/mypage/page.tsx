@@ -12,6 +12,7 @@ import {
 	type PointEntry
 } from "../donations/data";
 import AvatarUploader from "./avatar-uploader";
+import WithdrawSection from "./withdraw-section";
 import NicknameEditor from "./nickname-editor";
 import FlipText from "../donations/flip-text";
 import { body, display } from "../donations/fonts";
@@ -94,6 +95,7 @@ async function MyPageContent() {
 			<ProfileCard profile={profile} />
 			<Stats profile={profile} />
 			<PointSection points={points} balance={profile.point} />
+			<WithdrawSection balance={profile.point} />
 		</>
 	);
 }
