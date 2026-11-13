@@ -78,7 +78,7 @@ class DonationConcurrencyTest {
                             job.call();
                             return null;            // 성공
                         } catch (final BusinessException e) {
-                            return e.getCode() != null ? e.getCode() : "NO_CODE"; // 규칙에 따른 실패 (에러 코드 이름). null이면 성공으로 오해하지 않게 따로 표시해요
+                            return e.getErrorCode() != null ? e.getErrorCode().name() : "NO_CODE"; // 규칙에 따른 실패 (에러 코드 이름). null이면 성공으로 오해하지 않게 따로 표시해요
                         }
                     }));
                 }
