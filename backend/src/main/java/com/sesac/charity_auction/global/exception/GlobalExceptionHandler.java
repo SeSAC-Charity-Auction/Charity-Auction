@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleOthers(final Exception exception, final HttpServletRequest request) throws Exception {
+    public ResponseEntity<ErrorResponse> handleOthers(final Exception exception, final HttpServletRequest request) {
         // 잘못된 JSON, 없는 주소 등 스프링이 상태 코드를 이미 아는 오류는 그 상태를 그대로 쓰고 code는 UNKNOWN으로 줘요.
         if (exception instanceof org.springframework.web.ErrorResponse springError) {
             return ResponseEntity.status(springError.getStatusCode())
