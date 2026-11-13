@@ -54,6 +54,7 @@ export type MyPoints = {
 export type MyProfile = {
 	userId: number; // user_id
 	email: string; // email
+	name: string; // name (실명)
 	nickname: string; // nickname
 	userImage: string | null; // 프로필 이미지 주소 (없으면 null)
 	point: number; // point (지금 기부할 수 있는 포인트)

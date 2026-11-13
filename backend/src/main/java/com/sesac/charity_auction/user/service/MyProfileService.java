@@ -32,6 +32,7 @@ public class MyProfileService {
         return new MyProfileResponse(
                 user.getId(),
                 user.getEmail(),
+                user.getName(),
                 user.getNickname(),
                 user.getImage(),
                 user.getPointBalance(),

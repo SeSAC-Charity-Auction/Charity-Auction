@@ -144,6 +144,7 @@ function ProfileCard({ profile }: { profile: MyProfile }) {
 					nickname={profile.nickname}
 					displayClassName={display.className}
 				/>
+				<p className={styles.realName}>{profile.name}</p>
 				<dl className={styles.facts}>
 					<div className={styles.fact}>
 						<dt>이메일</dt>

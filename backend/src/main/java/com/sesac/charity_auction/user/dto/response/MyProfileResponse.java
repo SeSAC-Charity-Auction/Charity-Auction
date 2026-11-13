@@ -7,6 +7,7 @@ package com.sesac.charity_auction.user.dto.response;
 public record MyProfileResponse(
         long userId,
         String email,
+        String name,         // 실명 (본인 화면이라 마스킹하지 않아요)
         String nickname,
         String userImage,    // 없으면 null
         long point,          // 지금 기부할 수 있는 포인트
