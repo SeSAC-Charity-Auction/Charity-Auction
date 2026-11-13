@@ -5,7 +5,9 @@ import com.sesac.charity_auction.user.dto.response.MyProfileResponse;
 import com.sesac.charity_auction.user.service.MyProfileService;
 import com.sesac.charity_auction.user.service.ProfileImageService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,5 +39,11 @@ public class MyProfileController {
     @PostMapping("/image")
     public Map<String, String> uploadImage(@RequestParam("file") final MultipartFile file) {
         return Map.of("userImage", profileImageService.upload(currentUser.currentUserId(), file));
+    }
+
+    // PATCH /api/me/nickname : 닉네임을 바꿔요. 요청 { nickname } → 성공 { nickname }
+    @PatchMapping("/nickname")
+    public Map<String, String> changeNickname(@RequestBody final Map<String, String> body) {
+        return Map.of("nickname", myProfileService.changeNickname(currentUser.currentUserId(), body.get("nickname")));
     }
 }

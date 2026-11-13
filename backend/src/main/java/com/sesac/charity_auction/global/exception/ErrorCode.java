@@ -18,6 +18,7 @@ public enum ErrorCode {
     // 회원 관련 비즈니스 예외
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
+    INVALID_NICKNAME(HttpStatus.BAD_REQUEST, "닉네임은 2자 이상 10자 이하로 입력해야 합니다."),
 
     // 프로필 사진
     INVALID_IMAGE(HttpStatus.BAD_REQUEST, "PNG, JPG, WEBP, GIF 이미지만 올릴 수 있어요."),

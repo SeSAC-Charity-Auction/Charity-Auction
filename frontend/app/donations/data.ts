@@ -221,3 +221,31 @@ export async function uploadMyImage(file: File): Promise<UploadImageResult> {
 		return { ok: false, code: "UNKNOWN" };
 	}
 }
+
+/* ---------- 닉네임 바꾸기 ---------- */
+
+export type ChangeNicknameResult =
+	| { ok: true; nickname: string }
+	| { ok: false; code: string };
+
+// 닉네임을 바꿔요. 길이·중복 검사는 백엔드(MyProfileService)가 해요.
+export async function changeMyNickname(
+	nickname: string
+): Promise<ChangeNicknameResult> {
+	const headers = await authHeaders();
+	if (!headers) return { ok: false, code: "NOT_LOGGED_IN" };
+
+	try {
+		const res = await fetch(`${process.env.API_BASE_URL}/api/me/nickname`, {
+			method: "PATCH",
+			headers: { "Content-Type": "application/json", ...headers },
+			body: JSON.stringify({ nickname }),
+			cache: "no-store"
+		});
+		const data = await res.json();
+		if (!res.ok) return { ok: false, code: data.code ?? "UNKNOWN" };
+		return { ok: true, nickname: data.nickname };
+	} catch {
+		return { ok: false, code: "UNKNOWN" };
+	}
+}

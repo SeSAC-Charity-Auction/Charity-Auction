@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByNicknameAndIsDeletedFalse(final String nickname);
 
+    boolean existsByNicknameAndIsDeletedFalseAndIdNot(final String nickname, final Long id);
+
     /**
      * 잔액이 충분할 때만 차감해요. 조회와 차감이 한 문장이라, 동시에 여러 번 와도
      * DB가 한 줄씩 처리해서 잔액이 마이너스가 되지 않아요.

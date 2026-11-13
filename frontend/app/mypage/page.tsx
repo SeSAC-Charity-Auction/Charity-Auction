@@ -12,6 +12,7 @@ import {
 	type PointEntry
 } from "../donations/data";
 import AvatarUploader from "./avatar-uploader";
+import NicknameEditor from "./nickname-editor";
 import FlipText from "../donations/flip-text";
 import { body, display } from "../donations/fonts";
 import styles from "./page.module.css";
@@ -142,9 +143,10 @@ function ProfileCard({ profile }: { profile: MyProfile }) {
 				}
 			</AvatarUploader>
 			<div className={styles.profileInfo}>
-				<p className={`${styles.nickname} ${display.className}`}>
-					{profile.nickname}
-				</p>
+				<NicknameEditor
+					nickname={profile.nickname}
+					displayClassName={display.className}
+				/>
 				<dl className={styles.facts}>
 					<div className={styles.fact}>
 						<dt>이메일</dt>

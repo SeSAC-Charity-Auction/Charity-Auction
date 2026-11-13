@@ -4,7 +4,7 @@
 // 프로필 사진을 올릴 때 서버에서 실행되는 함수예요.
 
 import { revalidatePath } from "next/cache";
-import { uploadMyImage } from "../donations/data";
+import { changeMyNickname, uploadMyImage } from "../donations/data";
 
 export type UploadState =
 	| { status: "idle" }
@@ -42,4 +42,40 @@ export async function uploadImageAction(
 
 	revalidatePath("/mypage"); // 새 사진으로 다시 그려요
 	return { status: "success" };
+}
+
+/* ---------- 닉네임 바꾸기 ---------- */
+
+export type NicknameState =
+	| { status: "idle" }
+	| { status: "success"; nickname: string }
+	| { status: "error"; message: string };
+
+const NICKNAME_MESSAGES: Record<string, string> = {
+	NOT_LOGGED_IN: MESSAGES.NOT_LOGGED_IN,
+	INVALID_NICKNAME: "닉네임은 2자 이상 10자 이하로 입력해 주세요.",
+	DUPLICATE_NICKNAME: "이미 사용 중인 닉네임이에요.",
+	UNKNOWN: "닉네임을 바꾸지 못했어요. 잠시 뒤에 다시 시도해 주세요."
+};
+
+export async function changeNicknameAction(
+	_prev: NicknameState,
+	formData: FormData
+): Promise<NicknameState> {
+	// 화면에서도 검사하지만, 요청은 조작될 수 있어서 서버에서 다시 확인해요.
+	const nickname = String(formData.get("nickname") ?? "").trim();
+	if (nickname.length < 2 || nickname.length > 10) {
+		return { status: "error", message: NICKNAME_MESSAGES.INVALID_NICKNAME };
+	}
+
+	const result = await changeMyNickname(nickname);
+	if (!result.ok) {
+		return {
+			status: "error",
+			message: NICKNAME_MESSAGES[result.code] ?? NICKNAME_MESSAGES.UNKNOWN
+		};
+	}
+
+	revalidatePath("/mypage");
+	return { status: "success", nickname: result.nickname };
 }

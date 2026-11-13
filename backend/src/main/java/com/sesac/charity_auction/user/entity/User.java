@@ -50,6 +50,10 @@ public class User extends BaseTimeEntity {
         return user;
     }
 
+    public void changeNickname(final String nickname) {
+        this.nickname = nickname;
+    }
+
     // 프로필 사진 주소를 바꿔요. null이면 사진을 지워요.
     public void changeImage(final String image) {
         this.image = image;
