@@ -17,6 +17,7 @@ public enum ErrorCode {
     // 회원 관련 비즈니스 예외
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
 
     // 인증 및 인가
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
@@ -28,6 +29,19 @@ public enum ErrorCode {
     TARGET_CLOSED(HttpStatus.CONFLICT, "기부가 마감된 기부처예요."),
     INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "기부 금액이 올바르지 않아요."),
     INSUFFICIENT_POINT(HttpStatus.CONFLICT, "포인트가 부족해요."),
+
+    // 경매 관련 비즈니스 예외
+    AUCTION_NOT_FOUND(HttpStatus.NOT_FOUND, "경매를 찾을 수 없습니다."),
+    AUCTION_NOT_STARTED(HttpStatus.CONFLICT, "아직 시작되지 않은 경매입니다."),
+    AUCTION_ALREADY_ENDED(HttpStatus.CONFLICT, "종료된 경매입니다."),
+    AUCTION_CANCELLED(HttpStatus.CONFLICT, "취소된 경매입니다."),
+    AUCTION_DELETED(HttpStatus.NOT_FOUND, "삭제된 경매입니다."),
+    AUCTION_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST, "진행 중인 경매가 아닙니다."),
+
+    // 입찰 관련 비즈니스 예외
+    BID_PRICE_TOO_LOW(HttpStatus.BAD_REQUEST, "현재 최고 입찰 금액보다 높은 금액을 입력해주세요."),
+    BID_NOT_ALLOWED(HttpStatus.FORBIDDEN, "본인이 등록한 경매에는 입찰할 수 없습니다."),
+    INVALID_BID_PRICE(HttpStatus.BAD_REQUEST, "입찰 금액은 0보다 커야 합니다."),
 
     // 기본 비즈니스 예외
     UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했어요.");
