@@ -61,6 +61,7 @@ export type MyProfile = {
 	createdAt: string; // created_at (가입일시, ISO 8601)
 	donationCount: number; // 내가 기부한 횟수
 	totalDonation: number; // 내가 기부한 총 포인트
+	canEditTargets: boolean; // 기부처 이미지를 고칠 수 있는지 (ADMIN 또는 개발 환경)
 };
 
 // 기부처 상세 페이지에 필요한 값
@@ -269,6 +270,35 @@ export async function withdrawMe(): Promise<WithdrawResult> {
 		if (res.ok) return { ok: true };
 		const data = await res.json().catch(() => null);
 		return { ok: false, code: data?.code ?? "UNKNOWN" };
+	} catch {
+		return { ok: false, code: "UNKNOWN" };
+	}
+}
+
+/* ---------- 기부처 이미지 올리기 ---------- */
+
+export type UploadTargetImageResult =
+	| { ok: true; targetImage: string }
+	| { ok: false; code: string };
+
+// 기부처 이미지를 올리거나 바꿔요. 권한(ADMIN 또는 개발 환경)과 파일 검사는 백엔드가 해요.
+export async function uploadTargetImage(
+	targetId: number,
+	file: File
+): Promise<UploadTargetImageResult> {
+	const headers = await authHeaders();
+	if (!headers) return { ok: false, code: "NOT_LOGGED_IN" };
+
+	try {
+		const body = new FormData();
+		body.append("file", file);
+		const res = await fetch(
+			`${process.env.API_BASE_URL}/api/donation-targets/${targetId}/image`,
+			{ method: "POST", headers, body, cache: "no-store" }
+		);
+		const data = await res.json();
+		if (!res.ok) return { ok: false, code: data.code ?? "UNKNOWN" };
+		return { ok: true, targetImage: data.targetImage };
 	} catch {
 		return { ok: false, code: "UNKNOWN" };
 	}

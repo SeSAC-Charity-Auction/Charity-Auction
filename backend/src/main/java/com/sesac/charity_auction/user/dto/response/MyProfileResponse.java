@@ -13,6 +13,7 @@ public record MyProfileResponse(
         long point,          // 지금 기부할 수 있는 포인트
         String createdAt,    // 가입일시 (ISO 8601, UTC)
         long donationCount,  // 내가 기부한 횟수
-        long totalDonation   // 내가 기부한 총 포인트
+        long totalDonation,  // 내가 기부한 총 포인트
+        boolean canEditTargets // 기부처 이미지를 고칠 수 있는지 (ADMIN 또는 개발 환경)
 ) {
 }

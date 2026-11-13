@@ -1,6 +1,7 @@
 package com.sesac.charity_auction.user.service;
 
 import com.sesac.charity_auction.donation.repository.DonationRepository;
+import com.sesac.charity_auction.donation.service.TargetEditPolicy;
 import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.user.dto.response.MyProfileResponse;
@@ -17,10 +18,13 @@ import java.time.ZoneOffset;
 public class MyProfileService {
     private final UserRepository userRepository;
     private final DonationRepository donationRepository;
+    private final TargetEditPolicy targetEditPolicy;
 
-    public MyProfileService(UserRepository userRepository, DonationRepository donationRepository) {
+    public MyProfileService(UserRepository userRepository, DonationRepository donationRepository,
+                            TargetEditPolicy targetEditPolicy) {
         this.userRepository = userRepository;
         this.donationRepository = donationRepository;
+        this.targetEditPolicy = targetEditPolicy;
     }
 
     public MyProfileResponse getMyProfile(final long userId) {
@@ -38,7 +42,8 @@ public class MyProfileService {
                 user.getPointBalance(),
                 user.getCreatedAt().toInstant(ZoneOffset.UTC).toString(),
                 donationRepository.countByUserId(userId),
-                donationRepository.sumAmountByUserId(userId)
+                donationRepository.sumAmountByUserId(userId),
+                targetEditPolicy.canEdit(user)
         );
     }
 

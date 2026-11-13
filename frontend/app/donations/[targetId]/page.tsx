@@ -7,12 +7,14 @@ import { Suspense } from "react";
 import {
 	getDonationTarget,
 	getMyPoints,
+	getMyProfile,
 	type DonationRecord,
 	type DonationTarget
 } from "../data";
 import FlipText from "../flip-text";
 import { body, display } from "../fonts";
 import DonateForm from "./donate-form";
+import TargetImageUploader from "./target-image-uploader";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -74,8 +76,13 @@ async function TargetContent({
 	const targetId = Number(rawId);
 	if (!Number.isInteger(targetId) || targetId <= 0) notFound();
 
-	const detail = await getDonationTarget(targetId);
+	// 이미지를 바꿀 수 있는 사람(ADMIN 또는 개발 환경)인지도 함께 확인해요.
+	const [detail, profile] = await Promise.all([
+		getDonationTarget(targetId),
+		getMyProfile()
+	]);
 	if (!detail) notFound();
+	const canEditImage = profile?.canEditTargets ?? false;
 
 	const { target, donorCount, donationCount, recentDonations } = detail;
 	const pct =
@@ -85,11 +92,8 @@ async function TargetContent({
 	const barWidth = Math.min(100, pct);
 	const remaining = Math.max(0, target.targetAmount - target.totalDonation);
 
-	return (
-		<div className={styles.layout}>
-			{/* 1. 기부처 소개와 진행 상황 */}
-			<section className={styles.head} aria-labelledby="target-title">
-				<div className={styles.heroThumb}>
+	const heroImage = (
+		<>
 					{target.targetImage ?
 						// 외부 주소의 이미지는 next/image 설정(허용 도메인)이 필요해서 일반 img를 썼어요.
 						// eslint-disable-next-line @next/next/no-img-element
@@ -105,7 +109,21 @@ async function TargetContent({
 							{target.targetName.slice(0, 1)}
 						</span>
 					}
-				</div>
+		</>
+	);
+
+	return (
+		<div className={styles.layout}>
+			{/* 1. 기부처 소개와 진행 상황 */}
+			<section className={styles.head} aria-labelledby="target-title">
+				{canEditImage ?
+					<TargetImageUploader
+						targetId={target.targetId}
+						targetName={target.targetName}
+					>
+						{heroImage}
+					</TargetImageUploader>
+				:	<div className={styles.heroThumb}>{heroImage}</div>}
 
 				<div className={styles.titleRow}>
 					<h1
