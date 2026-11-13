@@ -52,11 +52,6 @@ function joinedDate(iso: string) {
 export default function MyPage() {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<p className={styles.notice} role="note">
-				모의 포인트로 운영되는 학습용 서비스예요. 실제 결제와 모금은
-				이뤄지지 않아요.
-			</p>
-
 			<main className={styles.wrap}>
 				<Link href="/donations" className={styles.back}>
 					기부 현황으로 돌아가기

@@ -62,11 +62,6 @@ function progressOf(target: DonationTarget) {
 export default function DonationsPage() {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<p className={styles.notice} role="note">
-				모의 포인트로 운영되는 학습용 서비스예요. 실제 결제와 모금은
-				이뤄지지 않아요.
-			</p>
-
 			<main className={styles.wrap}>
 				<Suspense fallback={<LoadingState />}>
 					<DonationsContent />
