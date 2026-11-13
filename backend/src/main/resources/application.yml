@@ -8,6 +8,12 @@ spring:
   jackson:
     time-zone: UTC
 
+  servlet:
+    multipart:
+      # 프로필 사진은 2MB까지예요. (검사는 ProfileImageService가 한 번 더 해요)
+      max-file-size: 3MB
+      max-request-size: 3MB
+
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/auctions}
     username: ${DB_USERNAME:root}
@@ -25,3 +31,7 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+# 업로드한 파일을 저장할 폴더예요. 배포할 때는 UPLOAD_DIR로 영구 저장소를 지정하세요.
+app:
+  upload-dir: ${UPLOAD_DIR:uploads}

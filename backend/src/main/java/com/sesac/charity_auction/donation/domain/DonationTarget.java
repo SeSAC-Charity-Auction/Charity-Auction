@@ -49,6 +49,10 @@ public class DonationTarget {
         this.totalDonation = 0L;
     }
 
+    public void changeImage(final String targetImage) {
+        this.targetImage = targetImage;
+    }
+
     @PrePersist
     void onCreate() {
         this.createdAt = LocalDateTime.now(ZoneOffset.UTC);

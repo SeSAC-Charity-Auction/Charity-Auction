@@ -54,12 +54,14 @@ export type MyPoints = {
 export type MyProfile = {
 	userId: number; // user_id
 	email: string; // email
+	name: string; // name (실명)
 	nickname: string; // nickname
 	userImage: string | null; // 프로필 이미지 주소 (없으면 null)
 	point: number; // point (지금 기부할 수 있는 포인트)
 	createdAt: string; // created_at (가입일시, ISO 8601)
 	donationCount: number; // 내가 기부한 횟수
 	totalDonation: number; // 내가 기부한 총 포인트
+	canEditTargets: boolean; // 기부처 이미지를 고칠 수 있는지 (ADMIN 또는 개발 환경)
 };
 
 // 기부처 상세 페이지에 필요한 값
@@ -191,4 +193,113 @@ export async function donate(input: {
 		return { ok: false, code: "UNKNOWN" };
 	}
 	// 금액·잔액·마감 여부 검사와 트랜잭션 처리는 모두 백엔드(DonationService)가 해요.
+}
+
+/* ---------- 프로필 사진 올리기 ---------- */
+
+export type UploadImageResult =
+	| { ok: true; userImage: string }
+	| { ok: false; code: string };
+
+// 프로필 사진을 올려요. 종류·크기 검사와 저장은 백엔드(ProfileImageService)가 해요.
+export async function uploadMyImage(file: File): Promise<UploadImageResult> {
+	const headers = await authHeaders();
+	if (!headers) return { ok: false, code: "NOT_LOGGED_IN" };
+
+	try {
+		const body = new FormData();
+		body.append("file", file);
+		// Content-Type은 직접 정하지 않아요. (fetch가 multipart 경계값까지 알아서 붙여요)
+		const res = await fetch(`${process.env.API_BASE_URL}/api/me/image`, {
+			method: "POST",
+			headers,
+			body,
+			cache: "no-store"
+		});
+		const data = await res.json();
+		if (!res.ok) return { ok: false, code: data.code ?? "UNKNOWN" };
+		return { ok: true, userImage: data.userImage };
+	} catch {
+		return { ok: false, code: "UNKNOWN" };
+	}
+}
+
+/* ---------- 닉네임 바꾸기 ---------- */
+
+export type ChangeNicknameResult =
+	| { ok: true; nickname: string }
+	| { ok: false; code: string };
+
+// 닉네임을 바꿔요. 길이·중복 검사는 백엔드(MyProfileService)가 해요.
+export async function changeMyNickname(
+	nickname: string
+): Promise<ChangeNicknameResult> {
+	const headers = await authHeaders();
+	if (!headers) return { ok: false, code: "NOT_LOGGED_IN" };
+
+	try {
+		const res = await fetch(`${process.env.API_BASE_URL}/api/me/nickname`, {
+			method: "PATCH",
+			headers: { "Content-Type": "application/json", ...headers },
+			body: JSON.stringify({ nickname }),
+			cache: "no-store"
+		});
+		const data = await res.json();
+		if (!res.ok) return { ok: false, code: data.code ?? "UNKNOWN" };
+		return { ok: true, nickname: data.nickname };
+	} catch {
+		return { ok: false, code: "UNKNOWN" };
+	}
+}
+
+/* ---------- 회원 탈퇴 ---------- */
+
+export type WithdrawResult = { ok: true } | { ok: false; code: string };
+
+// 탈퇴해요. 백엔드가 users.is_deleted를 true로 바꿔요.
+export async function withdrawMe(): Promise<WithdrawResult> {
+	const headers = await authHeaders();
+	if (!headers) return { ok: false, code: "NOT_LOGGED_IN" };
+
+	try {
+		const res = await fetch(`${process.env.API_BASE_URL}/api/me`, {
+			method: "DELETE",
+			headers,
+			cache: "no-store"
+		});
+		if (res.ok) return { ok: true };
+		const data = await res.json().catch(() => null);
+		return { ok: false, code: data?.code ?? "UNKNOWN" };
+	} catch {
+		return { ok: false, code: "UNKNOWN" };
+	}
+}
+
+/* ---------- 기부처 이미지 올리기 ---------- */
+
+export type UploadTargetImageResult =
+	| { ok: true; targetImage: string }
+	| { ok: false; code: string };
+
+// 기부처 이미지를 올리거나 바꿔요. 권한(ADMIN 또는 개발 환경)과 파일 검사는 백엔드가 해요.
+export async function uploadTargetImage(
+	targetId: number,
+	file: File
+): Promise<UploadTargetImageResult> {
+	const headers = await authHeaders();
+	if (!headers) return { ok: false, code: "NOT_LOGGED_IN" };
+
+	try {
+		const body = new FormData();
+		body.append("file", file);
+		const res = await fetch(
+			`${process.env.API_BASE_URL}/api/donation-targets/${targetId}/image`,
+			{ method: "POST", headers, body, cache: "no-store" }
+		);
+		const data = await res.json();
+		if (!res.ok) return { ok: false, code: data.code ?? "UNKNOWN" };
+		return { ok: true, targetImage: data.targetImage };
+	} catch {
+		return { ok: false, code: "UNKNOWN" };
+	}
 }

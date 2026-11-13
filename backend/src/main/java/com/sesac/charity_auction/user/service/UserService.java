@@ -20,7 +20,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public SignupResponse signup(SignupRequest request) {
+    public SignupResponse signup(final SignupRequest request) {
 
         if (userRepository.existsByEmailAndIsDeletedFalse(request.email())) {
             throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);

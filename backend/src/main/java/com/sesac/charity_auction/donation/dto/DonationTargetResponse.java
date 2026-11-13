@@ -14,17 +14,17 @@ public record DonationTargetResponse(
         long targetAmount,
         String createdAt
 ) {
-    public static DonationTargetResponse from(final DonationTarget t) {
+    public static DonationTargetResponse from(final DonationTarget target) {
         return new DonationTargetResponse(
-                t.getId(),
-                t.getTargetName(),
-                t.getDescription(),
-                t.getTargetImage(),
-                t.isActive(),
-                t.getTotalDonation(),
-                t.getTargetAmount(),
+                target.getId(),
+                target.getTargetName(),
+                target.getDescription(),
+                target.getTargetImage(),
+                target.isActive(),
+                target.getTotalDonation(),
+                target.getTargetAmount(),
                 // DB는 UTC로 저장돼 있으니 UTC임을 표시해서 ISO 8601로 내려줘요. (예: 2026-11-11T06:00:00Z)
-                t.getCreatedAt().toInstant(ZoneOffset.UTC).toString()
+                target.getCreatedAt().toInstant(ZoneOffset.UTC).toString()
         );
     }
 }

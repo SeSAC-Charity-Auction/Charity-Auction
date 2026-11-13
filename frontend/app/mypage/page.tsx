@@ -11,6 +11,9 @@ import {
 	type MyProfile,
 	type PointEntry
 } from "../donations/data";
+import AvatarUploader from "./avatar-uploader";
+import WithdrawSection from "./withdraw-section";
+import NicknameEditor from "./nickname-editor";
 import FlipText from "../donations/flip-text";
 import { body, display } from "../donations/fonts";
 import styles from "./page.module.css";
@@ -49,11 +52,6 @@ function joinedDate(iso: string) {
 export default function MyPage() {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<p className={styles.notice} role="note">
-				모의 포인트로 운영되는 학습용 서비스예요. 실제 결제와 모금은
-				이뤄지지 않아요.
-			</p>
-
 			<main className={styles.wrap}>
 				<Link href="/donations" className={styles.back}>
 					기부 현황으로 돌아가기
@@ -92,6 +90,7 @@ async function MyPageContent() {
 			<ProfileCard profile={profile} />
 			<Stats profile={profile} />
 			<PointSection points={points} balance={profile.point} />
+			<WithdrawSection balance={profile.point} />
 		</>
 	);
 }
@@ -120,7 +119,7 @@ function SignedOut() {
 function ProfileCard({ profile }: { profile: MyProfile }) {
 	return (
 		<section className={styles.profile} aria-label="내 정보">
-			<div className={styles.avatar}>
+			<AvatarUploader nickname={profile.nickname}>
 				{
 					profile.userImage ?
 						// 외부 주소의 이미지는 next/image 설정(허용 도메인)이 필요해서 일반 img를 썼어요.
@@ -139,11 +138,13 @@ function ProfileCard({ profile }: { profile: MyProfile }) {
 						</span>
 
 				}
-			</div>
+			</AvatarUploader>
 			<div className={styles.profileInfo}>
-				<p className={`${styles.nickname} ${display.className}`}>
-					{profile.nickname}
-				</p>
+				<NicknameEditor
+					nickname={profile.nickname}
+					displayClassName={display.className}
+				/>
+				<p className={styles.realName}>{profile.name}</p>
 				<dl className={styles.facts}>
 					<div className={styles.fact}>
 						<dt>이메일</dt>
@@ -231,7 +232,7 @@ function PointSection({
 				</h2>
 				<p className={styles.muted}>
 					<FlipText
-						text={`지금 ${pt(balance)}를 갖고 있어요. 최근 ${points.recent.length}건만 보여요.`}
+						text={`지금 ${pt(balance)}을(를) 갖고 있어요. 최근 ${points.recent.length}건만 보여요.`}
 					/>
 				</p>
 			</div>

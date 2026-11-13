@@ -61,7 +61,7 @@ export default function DonateForm({
 				</h2>
 				<p className={styles.panelQuietText}>
 					<FlipText
-						text={`기부하려면 포인트가 ${pt(MIN_DONATION)} 이상 있어야 해요. 지금은 ${pt(balance)}를 갖고 있어요.`}
+						text={`기부하려면 포인트가 ${pt(MIN_DONATION)} 이상 있어야 해요. 지금은 ${pt(balance)}을(를) 갖고 있어요.`}
 					/>
 				</p>
 				<Link href="/mypage#points" className={styles.textLink}>
@@ -165,12 +165,12 @@ export default function DonateForm({
 				</div>
 				<p className={styles.previewText}>
 					<FlipText
-						text={`지금 ${formatPct(nowPct)}가 모였고, 이 기부로 ${formatPct(addPct)}가 더 채워져요.`}
+						text={`지금 ${formatPct(nowPct)}이(가) 모였고, 이 기부로 ${formatPct(addPct)}이(가) 더 채워져요.`}
 					/>
 				</p>
 				<p className={styles.previewText}>
 					<FlipText
-						text={`기부하면 내 포인트는 ${pt(balance - amount)}가 돼요.`}
+						text={`기부하면 내 포인트는 ${pt(balance - amount)}이(가) 돼요.`}
 					/>
 				</p>
 			</div>
@@ -183,7 +183,7 @@ export default function DonateForm({
 			{state.status === "success" && (
 				<p className={styles.messageSuccess} role="status">
 					<FlipText
-						text={`${targetName}에 ${pt(state.amount)}를 기부했어요. 고마워요! 남은 포인트는 ${pt(state.balance)}예요.`}
+						text={`${targetName}에 ${pt(state.amount)}을(를) 기부했어요. 고마워요! 남은 포인트는 ${pt(state.balance)}예요.`}
 					/>
 				</p>
 			)}
