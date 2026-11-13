@@ -231,7 +231,7 @@ function PointSection({
 				</h2>
 				<p className={styles.muted}>
 					<FlipText
-						text={`지금 ${pt(balance)}를 갖고 있어요. 최근 ${points.recent.length}건만 보여요.`}
+						text={`지금 ${pt(balance)}을(를) 갖고 있어요. 최근 ${points.recent.length}건만 보여요.`}
 					/>
 				</p>
 			</div>

@@ -562,7 +562,7 @@ function WalletCard({ points }: { points: MyPoints }) {
 					<>
 						<Sparkline
 							values={balanceSeries(points)}
-							label={`최근 포인트 변화예요. 지금은 ${pt(points.balance)}를 갖고 있어요.`}
+							label={`최근 포인트 변화예요. 지금은 ${pt(points.balance)}을(를) 갖고 있어요.`}
 						/>
 						<p className={styles.sparkCaption}>
 							<FlipText
