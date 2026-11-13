@@ -12,23 +12,23 @@ public record PointEntryResponse(
         String description, // donation_id / auction_id를 보고 서버가 만든 문구
         String createdAt
 ) {
-    public static PointEntryResponse from(final PointHistory h) {
+    public static PointEntryResponse from(final PointHistory history) {
         return new PointEntryResponse(
-                h.getId(),
-                h.getPointType().getLabel(),
-                h.getPointAmount(),
-                describe(h),
-                h.getCreatedAt().toInstant(ZoneOffset.UTC).toString()
+                history.getId(),
+                history.getPointType().getLabel(),
+                history.getPointAmount(),
+                describe(history),
+                history.getCreatedAt().toInstant(ZoneOffset.UTC).toString()
         );
     }
 
-    private static String describe(final PointHistory h) {
-        if (h.getDonation() != null) {
-            return h.getDonation().getTarget().getTargetName() + " 기부"; // 예: 푸른숲 어린이 도서관 기부
+    private static String describe(final PointHistory history) {
+        if (history.getDonation() != null) {
+            return history.getDonation().getTarget().getTargetName() + " 기부"; // 예: 푸른숲 어린이 도서관 기부
         }
-        if (h.getAuctionId() != null) {
-            return h.getPointType() == PointType.EARN ? "경매 판매 대금 적립" : "경매 낙찰 대금 사용";
+        if (history.getAuctionId() != null) {
+            return history.getPointType() == PointType.EARN ? "경매 판매 대금 적립" : "경매 낙찰 대금 사용";
         }
-        return h.getPointType() == PointType.EARN ? "포인트 적립" : "포인트 사용";
+        return history.getPointType() == PointType.EARN ? "포인트 적립" : "포인트 사용";
     }
 }

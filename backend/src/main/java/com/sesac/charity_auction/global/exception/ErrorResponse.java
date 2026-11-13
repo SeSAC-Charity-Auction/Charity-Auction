@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
-/** 실패 응답 본문: { "code": "...", "message": "..." } */
+/**
+ * 실패 응답 본문: { "code": "...", "message": "..." }
+ */
 public record ErrorResponse(
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime timestamp,
@@ -15,10 +17,9 @@ public record ErrorResponse(
         String path
 ) {
 
-//    public static ErrorResponse of(ErrorCode errorCode) {
+    //    public static ErrorResponse of(ErrorCode errorCode) {
 //        return new ErrorResponse(errorCode.name(), errorCode.getMessage());
 //    }
-
     public static ErrorResponse of(
             ErrorCode errorCode,
             String path
@@ -63,7 +64,5 @@ public record ErrorResponse(
                 message,
                 path
         );
-
-
     }
 }

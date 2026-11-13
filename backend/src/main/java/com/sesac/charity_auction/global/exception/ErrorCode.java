@@ -1,12 +1,13 @@
 package com.sesac.charity_auction.global.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
  * 실패 응답의 code 값. 이름은 프론트의 DonateErrorCode와 같아야 해요.
  */
+@Getter
 public enum ErrorCode {
-
     // 공통 예외
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "잘못된 입력값입니다."),
     INVALID_TYPE_VALUE(HttpStatus.BAD_REQUEST, "요청 데이터의 타입이 올바르지 않습니다."),
@@ -39,7 +40,4 @@ public enum ErrorCode {
         this.status = status;
         this.message = message;
     }
-
-    public HttpStatus getStatus() { return status; }
-    public String getMessage() { return message; }
 }

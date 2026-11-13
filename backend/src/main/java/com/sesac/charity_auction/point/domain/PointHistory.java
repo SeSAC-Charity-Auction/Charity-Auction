@@ -48,13 +48,13 @@ public class PointHistory {
     /**
      * 기부로 포인트를 쓴 기록
      */
-    public static PointHistory usedForDonation(User user, Donation donation, long amount) {
-        final PointHistory h = new PointHistory();
-        h.user = user;
-        h.donation = donation;
-        h.pointAmount = amount;
-        h.pointType = PointType.USE;
-        return h;
+    public static PointHistory usedForDonation(final User user, final Donation donation, final long amount) {
+        final PointHistory history = new PointHistory();
+        history.user = user;
+        history.donation = donation;
+        history.pointAmount = amount;
+        history.pointType = PointType.USE;
+        return history;
     }
 
     @PrePersist

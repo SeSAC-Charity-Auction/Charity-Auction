@@ -30,7 +30,7 @@ public class DevCurrentUserProvider implements CurrentUserProvider {
         }
         try {
             return Long.parseLong(value.trim());
-        } catch (final NumberFormatException e) {
+        } catch (final NumberFormatException exception) {
             throw new BusinessException(ErrorCode.NOT_LOGGED_IN);
         }
     }

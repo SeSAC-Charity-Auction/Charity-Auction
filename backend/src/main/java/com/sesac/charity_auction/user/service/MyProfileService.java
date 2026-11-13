@@ -22,10 +22,10 @@ public class MyProfileService {
         this.donationRepository = donationRepository;
     }
 
-    public MyProfileResponse getMyProfile(long userId) {
+    public MyProfileResponse getMyProfile(final long userId) {
         // 없는 회원이거나 탈퇴한 회원이면 로그인하지 않은 것과 같이 처리해요.
         final User user = userRepository.findById(userId)
-                .filter(u -> !u.isDeleted())
+                .filter(filterUser -> !filterUser.isDeleted())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_LOGGED_IN));
 
         return new MyProfileResponse(
