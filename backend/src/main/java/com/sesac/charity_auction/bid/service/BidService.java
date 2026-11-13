@@ -5,6 +5,7 @@ import com.sesac.charity_auction.auction.enums.AuctionStatus;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
 import com.sesac.charity_auction.bid.dto.request.BidCreateRequest;
 import com.sesac.charity_auction.bid.dto.response.BidCreateResponse;
+import com.sesac.charity_auction.bid.dto.response.BidListResponse;
 import com.sesac.charity_auction.bid.entity.Bid;
 import com.sesac.charity_auction.bid.repository.BidRepository;
 import com.sesac.charity_auction.global.exception.BusinessException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,18 @@ public class BidService {
     private final AuctionRepository auctionRepository;
 
     // 특정 경매의 입찰 내역 조회
+    public List<BidListResponse> getBidHistory(Long auctionId){
 
+        // 경매 존재 여부 확인
+        auctionRepository.findById(auctionId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
+
+        List<Bid> bids = bidRepository.findTop5ByAuction_IdOrderByBidAtDesc(auctionId);
+
+        return bids.stream()
+                .map(BidListResponse::from)
+                .toList();
+    }
 
     // 입찰 등록
     @Transactional
