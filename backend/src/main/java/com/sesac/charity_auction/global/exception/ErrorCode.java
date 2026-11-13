@@ -19,6 +19,10 @@ public enum ErrorCode {
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 사용 중인 닉네임입니다."),
 
+    // 프로필 사진
+    INVALID_IMAGE(HttpStatus.BAD_REQUEST, "PNG, JPG, WEBP, GIF 이미지만 올릴 수 있어요."),
+    IMAGE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "이미지는 2MB 이하만 올릴 수 있어요."),
+
     // 인증 및 인가
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
     NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "로그인이 필요해요."),

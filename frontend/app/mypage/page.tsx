@@ -11,6 +11,7 @@ import {
 	type MyProfile,
 	type PointEntry
 } from "../donations/data";
+import AvatarUploader from "./avatar-uploader";
 import FlipText from "../donations/flip-text";
 import { body, display } from "../donations/fonts";
 import styles from "./page.module.css";
@@ -120,7 +121,7 @@ function SignedOut() {
 function ProfileCard({ profile }: { profile: MyProfile }) {
 	return (
 		<section className={styles.profile} aria-label="내 정보">
-			<div className={styles.avatar}>
+			<AvatarUploader nickname={profile.nickname}>
 				{
 					profile.userImage ?
 						// 외부 주소의 이미지는 next/image 설정(허용 도메인)이 필요해서 일반 img를 썼어요.
@@ -139,7 +140,7 @@ function ProfileCard({ profile }: { profile: MyProfile }) {
 						</span>
 
 				}
-			</div>
+			</AvatarUploader>
 			<div className={styles.profileInfo}>
 				<p className={`${styles.nickname} ${display.className}`}>
 					{profile.nickname}

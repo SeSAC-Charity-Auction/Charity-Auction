@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,6 +21,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusiness(final BusinessException exception, final HttpServletRequest request) {
         final ErrorCode code = exception.getErrorCode();
+        return ResponseEntity.status(code.getStatus()).body(ErrorResponse.of(code, request.getRequestURI()));
+    }
+
+    // 업로드 파일이 설정한 크기를 넘음
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxUploadSize(final HttpServletRequest request) {
+        final ErrorCode code = ErrorCode.IMAGE_TOO_LARGE;
         return ResponseEntity.status(code.getStatus()).body(ErrorResponse.of(code, request.getRequestURI()));
     }
 

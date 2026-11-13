@@ -136,6 +136,64 @@
 	box-shadow: 3px 3px 0 var(--ink);
 }
 
+.avatarForm {
+	position: relative;
+}
+
+.avatarButton {
+	position: relative;
+	display: block;
+	cursor: pointer;
+}
+.avatarButton:focus-within {
+	outline: 3px solid var(--ink);
+	outline-offset: 3px;
+}
+
+/* 파일 입력은 숨기되, 키보드로는 쓸 수 있게 둬요. */
+.avatarInput {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+}
+.avatarInput:disabled {
+	cursor: progress;
+}
+
+.avatarHint {
+	position: absolute;
+	inset: auto 0 0;
+	padding: 4px 0 6px;
+	background: rgb(0 0 0 / 0.6);
+	color: #fff;
+	font-size: 0.7rem;
+	text-align: center;
+	opacity: 0;
+	transition: opacity 0.15s;
+	pointer-events: none;
+}
+.avatarButton:hover .avatarHint,
+.avatarButton:focus-within .avatarHint {
+	opacity: 1;
+}
+
+.avatarError {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: max-content;
+	max-width: 220px;
+	margin-top: 8px;
+	color: #b3261e;
+	font-size: 0.8rem;
+}
+.avatarError:empty {
+	display: none;
+}
+
 .avatarImg {
 	display: block;
 	width: 100%;

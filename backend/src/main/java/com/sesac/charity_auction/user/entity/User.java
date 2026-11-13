@@ -50,6 +50,11 @@ public class User extends BaseTimeEntity {
         return user;
     }
 
+    // 프로필 사진 주소를 바꿔요. null이면 사진을 지워요.
+    public void changeImage(final String image) {
+        this.image = image;
+    }
+
     /**
      * 개인정보 보호용: 첫 글자만 보이고 나머지는 가려요. (예: 김민준 -> 김**)
      */

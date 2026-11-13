@@ -42,3 +42,6 @@ out/
 !.env.example
 # 로컬 전용 설정 (커밋하지 않아요)
 application-local.yml
+
+### Uploaded files ###
+uploads/
