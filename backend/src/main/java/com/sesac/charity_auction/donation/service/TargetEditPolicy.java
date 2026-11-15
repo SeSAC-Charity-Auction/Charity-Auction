@@ -1,6 +1,5 @@
 package com.sesac.charity_auction.donation.service;
 
-import com.sesac.charity_auction.member.domain.Role;
 import com.sesac.charity_auction.user.entity.User;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -19,6 +18,6 @@ public class TargetEditPolicy {
     }
 
     public boolean canEdit(final User user) {
-        return devEnvironment || user.getRole() == Role.ADMIN;
+        return devEnvironment;
     }
 }
