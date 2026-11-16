@@ -5,6 +5,9 @@ spring:
     default: local
   application:
     name: charity-auction
+  config:
+    # backend/.env의 DB 접속 정보와 JWT_SECRET을 읽어요. (.env는 커밋하지 않아요)
+    import: optional:file:.env[.properties]
   jackson:
     time-zone: UTC
 
