@@ -26,7 +26,7 @@ public record PointEntryResponse(
         if (history.getDonation() != null) {
             return history.getDonation().getTarget().getTargetName() + " 기부"; // 예: 푸른숲 어린이 도서관 기부
         }
-        if (history.getAuctionId() != null) {
+        if (history.getAuction() != null) {
             return history.getPointType() == PointType.EARN ? "경매 판매 대금 적립" : "경매 낙찰 대금 사용";
         }
         return history.getPointType() == PointType.EARN ? "포인트 적립" : "포인트 사용";

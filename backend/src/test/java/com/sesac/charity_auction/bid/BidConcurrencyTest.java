@@ -1,6 +1,6 @@
 package com.sesac.charity_auction.bid;
 
-import com.sesac.charity_auction.auction.entity.Auction;
+import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
 import com.sesac.charity_auction.bid.dto.request.BidCreateRequest;
 import com.sesac.charity_auction.bid.repository.BidRepository;
