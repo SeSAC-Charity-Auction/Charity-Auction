@@ -469,6 +469,34 @@
 .dangerBtn:hover:not(:disabled) {
 	background: #8c1d18;
 }
+.dangerBtn:focus-visible {
+	outline-color: var(--danger);
+}
+
+/* 탈퇴 확인 창 */
+.dialog {
+	/* Tailwind 리셋이 margin을 0으로 만들어서, 가운데 정렬(auto)을 다시 지정해요. */
+	margin: auto;
+	width: min(92vw, 420px);
+	padding: 24px;
+	border: 1.5px solid var(--danger);
+	border-radius: 14px;
+	background: var(--surface);
+	color: var(--ink);
+}
+.dialog::backdrop {
+	background: rgb(0 0 0 / 0.55);
+}
+.dialogTitle {
+	margin: 0 0 8px;
+	color: var(--danger);
+	font-size: 1.125rem;
+}
+.dialogText {
+	margin: 0 0 16px;
+	font-size: 0.9rem;
+	line-height: 1.6;
+}
 .withdrawError {
 	margin: 8px 0 0;
 	color: var(--danger);
