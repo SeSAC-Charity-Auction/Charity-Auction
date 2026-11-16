@@ -12,13 +12,13 @@ public interface DonationTargetRepository extends JpaRepository<DonationTarget, 
     List<DonationTarget> findAllByOrderByIdAsc();
 
     /**
-     * 열려 있는 기부처에만 누적액을 더하고, 목표 금액에 닿으면 달성 여부(is_achieved)를 true로 바꿔요.
+     * 열려 있고 아직 목표를 채우지 못한 기부처에만 누적액을 더하고, 목표 금액에 닿으면 달성 여부(is_achieved)를 true로 바꿔요.
      *
-     * @return 바뀐 행 수. 0이면 마감됐거나 없는 기부처
+     * @return 바뀐 행 수. 0이면 마감됐거나, 목표를 이미 채웠거나, 없는 기부처
      */
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update DonationTarget t set t.totalDonation = t.totalDonation + :amount, "
             + "t.achieved = case when t.totalDonation + :amount >= t.targetAmount then true else t.achieved end "
-            + "where t.id = :targetId and t.active = true")
+            + "where t.id = :targetId and t.active = true and t.achieved = false")
     int addDonation(final @Param("targetId") long targetId, final @Param("amount") long amount);
 }

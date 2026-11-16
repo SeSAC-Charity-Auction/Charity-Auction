@@ -135,6 +135,32 @@ class DonationApiTest {
     }
 
     @Test
+    void 목표를_채운_기부처면_TARGET_CLOSED_이고_잔액은_그대로() throws Exception {
+        jdbc.update("UPDATE donation_targets SET is_achieved = TRUE WHERE target_id = ?", openTargetId);
+
+        donate(userId, openTargetId, 5000)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("TARGET_CLOSED"));
+
+        assertThat(balance()).isEqualTo(50000);
+        assertThat(targetTotal(openTargetId)).isZero();
+        assertThat(count("donations")).isZero();
+    }
+
+    @Test
+    void 기부로_목표에_닿으면_달성_표시가_켜지고_그_뒤_기부는_막힌다() throws Exception {
+        jdbc.update("UPDATE donation_targets SET target_amount = 5000 WHERE target_id = ?", openTargetId);
+
+        donate(userId, openTargetId, 5000).andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT is_achieved FROM donation_targets WHERE target_id = ?",
+                Boolean.class, openTargetId)).isTrue();
+
+        donate(userId, openTargetId, 1000)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("TARGET_CLOSED"));
+    }
+
+    @Test
     void 없는_기부처면_TARGET_NOT_FOUND_이고_잔액은_그대로() throws Exception {
         donate(userId, 999_999_999L, 5000)
                 .andExpect(status().isNotFound())

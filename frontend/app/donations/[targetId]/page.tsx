@@ -133,9 +133,11 @@ async function TargetContent({
 						{target.targetName}
 					</h1>
 					<span
-						className={`${styles.badge} ${target.isActive ? styles.badgeOpen : styles.badgeClosed}`}
+						className={`${styles.badge} ${target.isActive && !target.isAchieved ? styles.badgeOpen : styles.badgeClosed}`}
 					>
-						{target.isActive ? "기부 가능" : "기부 마감"}
+						{target.isAchieved ? "목표 달성"
+						: target.isActive ? "기부 가능"
+						: "기부 마감"}
 					</span>
 				</div>
 
@@ -248,17 +250,21 @@ async function TargetContent({
 
 // 내 포인트는 사람마다 다른 값이라 따로 <Suspense>로 감싸요. 늦어져도 소개 부분은 먼저 보여요.
 async function DonatePanel({ target }: { target: DonationTarget }) {
-	if (!target.isActive) {
+	if (!target.isActive || target.isAchieved) {
 		return (
 			<div className={styles.panelQuiet}>
 				<h2
 					className={`${styles.panelQuietTitle} ${display.className}`}
 				>
-					기부가 마감됐어요
+					{target.isAchieved ?
+						"목표 금액을 달성했어요"
+					:	"기부가 마감됐어요"}
 				</h2>
 				<p className={styles.panelQuietText}>
-					이 기부처는 더 이상 기부를 받지 않아요. 다른 기부처를
-					둘러보세요.
+					{target.isAchieved ?
+						"모금이 목표에 닿아서 더 이상 기부를 받지 않아요. 다른 기부처를 둘러보세요."
+					:	"이 기부처는 더 이상 기부를 받지 않아요. 다른 기부처를 둘러보세요."
+					}
 				</p>
 				<Link href="/donations#targets" className={styles.textLink}>
 					다른 기부처 보기
