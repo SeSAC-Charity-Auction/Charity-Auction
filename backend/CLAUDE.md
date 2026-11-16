@@ -60,6 +60,7 @@ cd frontend && npm run build
 | `GET /api/donations?page=0&size=20`    | 불필요 | 전체 기부 목록(최신순) `{ items[], page, size, totalElements, totalPages }`, size는 최대 50      |
 | `GET /api/donation-targets/{targetId}` | 불필요 | `{ target, donorCount, donationCount, recentDonations[] }`, 없으면 404 `TARGET_NOT_FOUND` |
 | `GET /api/me/points`                   | 필요   | `{ balance, recent[] }`, 로그인하지 않았으면 401                                          |
+| `GET /api/me/points/history?page=0&size=20` | 필요 | 내 포인트 내역 전체(최신순) `{ items[], page, size, totalElements, totalPages }`, size는 최대 50, 로그인하지 않았으면 401 |
 | `GET /api/me`                          | 필요   | 마이페이지 내 정보 `{ userId, email, name, nickname, userImage(null 가능), point, createdAt, donationCount, totalDonation, canEditTargets }`, 로그인하지 않았으면 401 |
 | `POST /api/donation-targets/{targetId}/image` | 필요 (ADMIN 또는 local 프로필) | multipart `file`(PNG/JPG/GIF/WEBP, 2MB 이하) → `{ targetImage }`. 권한 없으면 403 `FORBIDDEN`, 없는 기부처면 404 |
 | `POST /api/donations`                  | 필요   | 요청 `{ targetId, amount }` → 성공 `{ amount, balance }`, 실패 `{ code, message }`        |

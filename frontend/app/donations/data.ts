@@ -168,6 +168,31 @@ export async function getMyPoints(): Promise<MyPoints | null> {
 	return res.json();
 }
 
+// 내 포인트 내역 전체의 한 쪽이에요. page는 0부터 시작해요. 로그인하지 않았으면 null이에요.
+export type PointPage = {
+	items: PointEntry[]; // 최신순
+	page: number;
+	size: number;
+	totalElements: number;
+	totalPages: number;
+};
+
+export async function getMyPointPage(
+	page: number,
+	size = 20
+): Promise<PointPage | null> {
+	const headers = await authHeaders();
+	if (!headers) return null;
+
+	const res = await fetch(
+		`${process.env.API_BASE_URL}/api/me/points/history?page=${page}&size=${size}`,
+		{ headers, cache: "no-store" }
+	);
+	if (res.status === 401) return null;
+	if (!res.ok) throw new Error("포인트 내역을 불러오지 못했어요.");
+	return res.json();
+}
+
 /* ---------- 기부처 상세 ---------- */
 
 // 기부처 한 곳의 정보예요. 없는 기부처면 null을 돌려줘요. (비활성 기부처도 돌려줘요)
