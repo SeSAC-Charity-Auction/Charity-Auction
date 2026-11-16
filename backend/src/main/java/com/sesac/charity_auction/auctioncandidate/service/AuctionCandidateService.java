@@ -5,6 +5,7 @@ import com.sesac.charity_auction.auction.domain.AuctionStatus;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
 import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidate;
 import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidateStatus;
+import com.sesac.charity_auction.auctioncandidate.dto.MyOfferedCandidateResponse;
 import com.sesac.charity_auction.auctioncandidate.repository.AuctionCandidateRepository;
 import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,5 +67,43 @@ public class AuctionCandidateService {
         AuctionCandidate candidate = nextCandidate.get();
 
         candidate.offer(now.plusMinutes(OFFER_MINUTES));
+    }
+
+    // 유저 낙찰 기회 내역 상태별 조건 조회
+    public List<MyOfferedCandidateResponse> getMyOfferedCandidate(Long userId, AuctionCandidateStatus status){
+
+        List<AuctionCandidate> candidates = auctionCandidateRepository.findAllByUser_IdAndStatusOrderByIdDesc(userId, status);
+
+        return candidates.stream()
+                .map(candidate -> new MyOfferedCandidateResponse(
+                        candidate.getAuction().getId(),
+                        candidate.getAuction().getTitle(),
+                        candidate.getBidPrice(),
+                        candidate.getRank(),
+                        candidate.getStatus(),
+                        candidate.getOfferedAt(),
+                        candidate.getDeadlineAt(),
+                        candidate.getCompletedAt()
+                ))
+                .toList();
+    }
+
+    // 유저 낙찰 기회 내역 전체 조회
+    public List <MyOfferedCandidateResponse> getAllMyOfferedCandidate(Long userId){
+
+        List <AuctionCandidate> candidates = auctionCandidateRepository.findAllByUser_IdOrderByIdDesc(userId);
+
+        return candidates.stream()
+                .map(candidate -> new MyOfferedCandidateResponse(
+                        candidate.getAuction().getId(),
+                        candidate.getAuction().getTitle(),
+                        candidate.getBidPrice(),
+                        candidate.getRank(),
+                        candidate.getStatus(),
+                        candidate.getOfferedAt(),
+                        candidate.getDeadlineAt(),
+                        candidate.getCompletedAt()
+                ))
+                .toList();
     }
 }

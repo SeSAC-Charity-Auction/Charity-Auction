@@ -3,6 +3,7 @@ package com.sesac.charity_auction.auctioncandidate.repository;
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
 import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidate;
 import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidateStatus;
+import com.sesac.charity_auction.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +24,10 @@ public interface AuctionCandidateRepository extends JpaRepository<AuctionCandida
     List<Long> findExpiredCandidateAuctionIds(@Param("candidateStatus") AuctionCandidateStatus status,
                                               @Param("auctionStatus") AuctionStatus auctionStatus,
                                               @Param("now")LocalDateTime now);
+
+    // 낙찰 내역 상태 조건별 조회
+    List<AuctionCandidate> findAllByUser_IdAndStatusOrderByIdDesc(Long userId, AuctionCandidateStatus status);
+
+    // 낙찰 내역 전체 조회 (최신순)
+    List<AuctionCandidate> findAllByUser_IdOrderByIdDesc(Long userId);
 }
