@@ -34,6 +34,10 @@ public class DonationTarget {
     @Column(name = "target_amount", nullable = false)
     private long targetAmount;
 
+    // 누적액이 목표 이상이 되면 기부 처리(addDonation 쿼리)에서 true로 바꿔요.
+    @Column(name = "is_achieved", nullable = false)
+    private boolean achieved;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -47,6 +51,7 @@ public class DonationTarget {
         this.targetAmount = targetAmount;
         this.active = true;
         this.totalDonation = 0L;
+        this.achieved = false;
     }
 
     public void changeImage(final String targetImage) {

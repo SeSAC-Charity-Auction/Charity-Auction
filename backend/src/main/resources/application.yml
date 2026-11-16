@@ -5,6 +5,9 @@ spring:
     default: local
   application:
     name: charity-auction
+  config:
+    # backend/.env의 DB 접속 정보와 JWT_SECRET을 읽어요. (.env는 커밋하지 않아요)
+    import: optional:file:.env[.properties]
   jackson:
     time-zone: UTC
 
@@ -35,3 +38,13 @@ spring:
 # 업로드한 파일을 저장할 폴더예요. 배포할 때는 UPLOAD_DIR로 영구 저장소를 지정하세요.
 app:
   upload-dir: ${UPLOAD_DIR:uploads}
+
+# JWT 로그인 설정.
+security:
+  jwt:
+
+    secret: ${JWT_SECRET}
+    expiration-seconds: 3600
+  refresh-token:
+    expiration-seconds: 1209600
+    cookie-secure: false

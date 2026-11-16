@@ -1,6 +1,5 @@
 // app/donations/page.tsx
 import type { Metadata } from "next";
-import { Black_Han_Sans, Noto_Sans_KR } from "next/font/google";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -12,21 +11,12 @@ import {
 	type MyPoints,
 	type PointEntry
 } from "./data";
+import DonationRow from "./donation-row";
 import FlipText from "./flip-text";
+import { body, display } from "./fonts";
+import { relativeTime, won } from "./format";
 import styles from "./page.module.css";
-
-// 제목과 숫자는 굵은 포스터 느낌의 글꼴, 본문은 읽기 편한 글꼴을 씁니다.
-// (폰트는 빌드할 때 구글 폰트에서 내려받으므로 인터넷 연결이 필요해요.)
-const display = Black_Han_Sans({
-	weight: "400",
-	preload: false,
-	display: "swap"
-});
-const body = Noto_Sans_KR({
-	weight: ["400", "500", "700"],
-	preload: false,
-	display: "swap"
-});
+import TargetCarousel from "./target-carousel";
 
 export const metadata: Metadata = {
 	title: "기부 현황"
@@ -34,18 +24,7 @@ export const metadata: Metadata = {
 
 /* ---------- 표시용 도우미 함수 ---------- */
 
-const won = (n: number) => `${n.toLocaleString("ko-KR")}원`;
 const pt = (n: number) => `${n.toLocaleString("ko-KR")}P`;
-
-function relativeTime(iso: string) {
-	const diffSec = Math.round((new Date(iso).getTime() - Date.now()) / 1000);
-	const abs = Math.abs(diffSec);
-	if (abs < 60) return "방금 전";
-	const rtf = new Intl.RelativeTimeFormat("ko", { numeric: "auto" });
-	if (abs < 3600) return rtf.format(Math.round(diffSec / 60), "minute");
-	if (abs < 86_400) return rtf.format(Math.round(diffSec / 3600), "hour");
-	return rtf.format(Math.round(diffSec / 86_400), "day");
-}
 
 function progressOf(target: DonationTarget) {
 	const pct =
@@ -85,11 +64,10 @@ async function DonationsContent() {
 
 	const data = await getDonationSummary();
 
-	// 기부할 수 있는 기부처만 보여주고, 모금이 가장 많이 된 곳을 맨 앞(강조 카드)에 둡니다.
+	// 기부할 수 있는 기부처만 보여주고(목표 금액을 채운 곳은 목록에서 빠져요), 모금이 가장 많이 된 곳을 맨 앞에 둡니다.
 	const activeTargets = data.targets
-		.filter((t) => t.isActive)
+		.filter((t) => t.isActive && !t.isAchieved)
 		.sort((a, b) => b.totalDonation - a.totalDonation);
-	const [featured, ...others] = activeTargets;
 	const latest = data.recentDonations[0];
 
 	const heroTitle =
@@ -185,13 +163,13 @@ async function DonationsContent() {
 					</h2>
 				</div>
 
-				{featured ?
-					<div className={styles.targetGrid}>
-						<TargetCard target={featured} featured />
-						{others.map((t) => (
-							<TargetCard key={t.targetId} target={t} />
-						))}
-					</div>
+				{activeTargets.length > 0 ?
+					<TargetCarousel
+							items={activeTargets.map((t) => ({
+								key: String(t.targetId),
+								node: <TargetCard target={t} />
+							}))}
+						/>
 				:	<p className={styles.empty}>
 						지금 기부할 수 있는 기부처가 없어요. 새 기부처가
 						등록되면 이곳에 표시돼요.
@@ -208,9 +186,17 @@ async function DonationsContent() {
 					>
 						최근 기부
 					</h2>
-					<p className={styles.sectionNote}>
-						기부한 사람의 이름은 일부만 보여요.
-					</p>
+					<div className={styles.sectionSide}>
+						<p className={styles.sectionNote}>
+							기부한 사람의 이름은 일부만 보여요.
+						</p>
+						<Link
+							href="/donations/all"
+							className={`${styles.btn} ${styles.btnGhost} ${styles.btnSmall}`}
+						>
+							전체 조회
+						</Link>
+					</div>
 				</div>
 
 				{data.recentDonations.length > 0 ?
@@ -315,17 +301,15 @@ function EmptyTicket() {
 }
 
 function TargetCard({
-	target,
-	featured = false
+	target
 }: {
 	target: DonationTarget;
-	featured?: boolean;
 }) {
 	const { pct, barWidth } = progressOf(target);
 
 	return (
 		<article
-			className={`${styles.card} ${featured ? styles.cardFeatured : ""}`}
+			className={styles.card}
 		>
 			<div className={styles.thumb}>
 				{
@@ -389,32 +373,6 @@ function TargetCard({
 				</p>
 			</div>
 		</article>
-	);
-}
-
-function DonationRow({ record }: { record: DonationRecord }) {
-	return (
-		<li className={styles.donation}>
-			<div className={styles.donationMain}>
-				<p className={styles.donationName}>
-					<Link
-						href={`/donations/${record.targetId}`}
-						className={styles.plainLink}
-					>
-						{record.targetName}
-					</Link>
-				</p>
-				<p className={styles.donationDonor}>
-					{record.donorName}님이 기부했어요
-				</p>
-			</div>
-			<p className={styles.donationTime}>
-				<FlipText text={relativeTime(record.createdAt)} />
-			</p>
-			<p className={styles.donationAmount}>
-				<FlipText text={won(record.donationAmount)} />
-			</p>
-		</li>
 	);
 }
 

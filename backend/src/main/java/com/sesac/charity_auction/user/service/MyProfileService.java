@@ -1,5 +1,6 @@
 package com.sesac.charity_auction.user.service;
 
+import com.sesac.charity_auction.auth.service.RefreshTokenService;
 import com.sesac.charity_auction.donation.repository.DonationRepository;
 import com.sesac.charity_auction.donation.service.TargetEditPolicy;
 import com.sesac.charity_auction.global.exception.BusinessException;
@@ -19,12 +20,14 @@ public class MyProfileService {
     private final UserRepository userRepository;
     private final DonationRepository donationRepository;
     private final TargetEditPolicy targetEditPolicy;
+    private final RefreshTokenService refreshTokenService;
 
     public MyProfileService(UserRepository userRepository, DonationRepository donationRepository,
-                            TargetEditPolicy targetEditPolicy) {
+                            TargetEditPolicy targetEditPolicy, RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.donationRepository = donationRepository;
         this.targetEditPolicy = targetEditPolicy;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public MyProfileResponse getMyProfile(final long userId) {
@@ -73,7 +76,7 @@ public class MyProfileService {
         try {
             // 동시에 같은 닉네임을 고른 경우에는 DB의 UNIQUE 인덱스가 막아 줘요.
             userRepository.saveAndFlush(user);
-        } catch (DataIntegrityViolationException exception) {
+        } catch (final DataIntegrityViolationException exception) {
             throw new BusinessException(ErrorCode.DUPLICATE_NICKNAME, exception);
         }
         return nickname;
@@ -88,5 +91,6 @@ public class MyProfileService {
                 .filter(filterUser -> !filterUser.isDeleted())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_LOGGED_IN));
         user.withdraw();
+        refreshTokenService.revokeAll(userId);
     }
 }

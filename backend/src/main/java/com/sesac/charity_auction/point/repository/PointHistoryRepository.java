@@ -15,4 +15,6 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
             + "left join fetch h.donation d left join fetch d.target "
             + "where h.user.id = :userId order by h.createdAt desc, h.id desc")
     List<PointHistory> findRecentByUserId(final @Param("userId") long userId, final Pageable pageable);
+
+    long countByUserId(final long userId);
 }

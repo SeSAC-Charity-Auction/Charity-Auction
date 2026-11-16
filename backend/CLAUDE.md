@@ -57,15 +57,17 @@ cd frontend && npm run build
 | 요청                                   | 인증   | 응답                                                                                      |
 | -------------------------------------- | ------ | ----------------------------------------------------------------------------------------- |
 | `GET /api/donations/summary`           | 불필요 | `{ totalDonation, donationCount, donorCount, targets[], recentDonations[] }`              |
+| `GET /api/donations?page=0&size=20`    | 불필요 | 전체 기부 목록(최신순) `{ items[], page, size, totalElements, totalPages }`, size는 최대 50      |
 | `GET /api/donation-targets/{targetId}` | 불필요 | `{ target, donorCount, donationCount, recentDonations[] }`, 없으면 404 `TARGET_NOT_FOUND` |
 | `GET /api/me/points`                   | 필요   | `{ balance, recent[] }`, 로그인하지 않았으면 401                                          |
+| `GET /api/me/points/history?page=0&size=20` | 필요 | 내 포인트 내역 전체(최신순) `{ items[], page, size, totalElements, totalPages }`, size는 최대 50, 로그인하지 않았으면 401 |
 | `GET /api/me`                          | 필요   | 마이페이지 내 정보 `{ userId, email, name, nickname, userImage(null 가능), point, createdAt, donationCount, totalDonation, canEditTargets }`, 로그인하지 않았으면 401 |
 | `POST /api/donation-targets/{targetId}/image` | 필요 (ADMIN 또는 local 프로필) | multipart `file`(PNG/JPG/GIF/WEBP, 2MB 이하) → `{ targetImage }`. 권한 없으면 403 `FORBIDDEN`, 없는 기부처면 404 |
 | `POST /api/donations`                  | 필요   | 요청 `{ targetId, amount }` → 성공 `{ amount, balance }`, 실패 `{ code, message }`        |
 
 필드 모양:
 
-- **target**: `targetId, targetName, description(null 가능), targetImage(null 가능), isActive, totalDonation, targetAmount, createdAt`
+- **target**: `targetId, targetName, description(null 가능), targetImage(null 가능), isActive, isAchieved(목표 달성 여부), totalDonation, targetAmount, createdAt`
 - **donation record**: `donationId, targetId, targetName, donorName(마스킹), donationAmount, createdAt`
 - **point entry**: `pointId, pointType("적립"|"사용"), pointAmount, description, createdAt`. `description`은 `donation_id`/`auction_id`를 보고 서버가 만든 문구예요. (예: "푸른숲 어린이 도서관 기부")
 - `summary.recentDonations`는 최신 5건, 상세의 `recentDonations`는 최신 8건, `me/points.recent`는 최신 8건(모두 최신순)이에요.
@@ -78,7 +80,7 @@ cd frontend && npm run build
 
 1. 금액이 최소·단위에 맞는지 검사 → 아니면 `INVALID_AMOUNT`
 2. `UPDATE users SET point_balance = point_balance - :amount WHERE user_id = :id AND point_balance >= :amount` → 영향 행이 0이면 `INSUFFICIENT_POINT`
-3. `UPDATE donation_targets SET total_donation = total_donation + :amount WHERE target_id = :id AND is_active = TRUE` → 영향 행이 0이면 `TARGET_CLOSED` (없는 기부처는 `TARGET_NOT_FOUND`)
+3. `UPDATE donation_targets SET total_donation = total_donation + :amount, is_achieved = (누적액이 목표 이상이면 TRUE) WHERE target_id = :id AND is_active = TRUE` → 영향 행이 0이면 `TARGET_CLOSED` (없는 기부처는 `TARGET_NOT_FOUND`)
 4. `donations`에 기록
 5. `point_histories`에 `USE` 기록
 

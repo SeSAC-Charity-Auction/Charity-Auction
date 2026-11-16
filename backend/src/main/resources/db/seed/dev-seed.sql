@@ -29,12 +29,12 @@ INSERT INTO users (user_id, password, name, nickname, email, image, is_deleted, 
 (16, 'PLACEHOLDER_NOT_A_REAL_HASH', '안도현', 'donor16', 'dummy16@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
 (17, 'PLACEHOLDER_NOT_A_REAL_HASH', '송하늘', 'donor17', 'dummy17@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP());
 
-INSERT INTO donation_targets (target_id, target_name, description, target_image, is_active, total_donation, target_amount, created_at) VALUES
-(1, '푸른숲 어린이 도서관', '낡은 책장과 오래된 도서를 새로 채워서, 방과 후 아이들이 편하게 머물 수 있는 도서관을 만들어요.', NULL, 1, 6800000, 10000000, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 40 DAY)),
-(2, '다온 유기동물 보호소', '추운 겨울을 나는 보호소의 난방비와 사료를 지원해요.', NULL, 1, 3150000, 5000000, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 32 DAY)),
-(3, '한결 어르신 돌봄', '혼자 지내시는 어르신께 따뜻한 도시락을 전해요.', NULL, 1, 1900000, 4000000, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 25 DAY)),
-(4, '새움 청소년 쉼터', '청소년이 안전하게 머물고 공부할 수 있는 공간을 만들어요.', NULL, 1, 520000, 3000000, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 10 DAY)),
-(5, '맑은바다 지킴이', '해안 정화 활동에 쓰는 장비를 마련했어요.', NULL, 0, 2500000, 2500000, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 60 DAY));
+INSERT INTO donation_targets (target_id, target_name, description, target_image, is_active, total_donation, target_amount, is_achieved, created_at) VALUES
+(1, '푸른숲 어린이 도서관', '낡은 책장과 오래된 도서를 새로 채워서, 방과 후 아이들이 편하게 머물 수 있는 도서관을 만들어요.', NULL, 1, 6800000, 10000000, 0, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 40 DAY)),
+(2, '다온 유기동물 보호소', '추운 겨울을 나는 보호소의 난방비와 사료를 지원해요.', NULL, 1, 3150000, 5000000, 0, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 32 DAY)),
+(3, '한결 어르신 돌봄', '혼자 지내시는 어르신께 따뜻한 도시락을 전해요.', NULL, 1, 1900000, 4000000, 0, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 25 DAY)),
+(4, '새움 청소년 쉼터', '청소년이 안전하게 머물고 공부할 수 있는 공간을 만들어요.', NULL, 1, 520000, 3000000, 0, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 10 DAY)),
+(5, '맑은바다 지킴이', '해안 정화 활동에 쓰는 장비를 마련했어요.', NULL, 0, 2500000, 2500000, 1, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 60 DAY));
 
 INSERT INTO donations (donation_id, target_id, user_id, donation_amount, created_at) VALUES
 (160, 5, 17, 784000, DATE_SUB(UTC_TIMESTAMP(), INTERVAL 23225 MINUTE)),

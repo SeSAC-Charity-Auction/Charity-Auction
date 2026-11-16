@@ -13,6 +13,7 @@ export type DonationTarget = {
 	description: string | null; // description (NULL 가능)
 	targetImage: string | null; // target_image (NULL 가능, 이미지 주소)
 	isActive: boolean; // is_active (기부 가능 여부)
+	isAchieved: boolean; // is_achieved (목표 기부금 달성 여부)
 	totalDonation: number; // total_donation (누적 기부금)
 	targetAmount: number; // target_amount (목표 기부금)
 	createdAt: string; // created_at (ISO 8601)
@@ -115,6 +116,27 @@ export async function getDonationSummary(): Promise<DonationSummary> {
 	return res.json();
 }
 
+// 전체 기부 목록의 한 쪽이에요. page는 0부터 시작해요.
+export type DonationPage = {
+	items: DonationRecord[]; // 최신순
+	page: number;
+	size: number;
+	totalElements: number;
+	totalPages: number;
+};
+
+export async function getDonationPage(
+	page: number,
+	size = 20
+): Promise<DonationPage> {
+	const res = await fetch(
+		`${process.env.API_BASE_URL}/api/donations?page=${page}&size=${size}`,
+		{ cache: "no-store" }
+	);
+	if (!res.ok) throw new Error("기부 목록을 불러오지 못했어요.");
+	return res.json();
+}
+
 /* ---------- 내 정보 (마이페이지) ---------- */
 
 // 지금 로그인한 사용자의 정보예요. 로그인하지 않았으면 null을 돌려줘요.
@@ -144,6 +166,31 @@ export async function getMyPoints(): Promise<MyPoints | null> {
 	});
 	if (res.status === 401) return null;
 	if (!res.ok) throw new Error("포인트를 불러오지 못했어요.");
+	return res.json();
+}
+
+// 내 포인트 내역 전체의 한 쪽이에요. page는 0부터 시작해요. 로그인하지 않았으면 null이에요.
+export type PointPage = {
+	items: PointEntry[]; // 최신순
+	page: number;
+	size: number;
+	totalElements: number;
+	totalPages: number;
+};
+
+export async function getMyPointPage(
+	page: number,
+	size = 20
+): Promise<PointPage | null> {
+	const headers = await authHeaders();
+	if (!headers) return null;
+
+	const res = await fetch(
+		`${process.env.API_BASE_URL}/api/me/points/history?page=${page}&size=${size}`,
+		{ headers, cache: "no-store" }
+	);
+	if (res.status === 401) return null;
+	if (!res.ok) throw new Error("포인트 내역을 불러오지 못했어요.");
 	return res.json();
 }
 
