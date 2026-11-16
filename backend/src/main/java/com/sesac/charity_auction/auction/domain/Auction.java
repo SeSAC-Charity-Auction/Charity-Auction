@@ -1,6 +1,8 @@
 package com.sesac.charity_auction.auction.domain;
 
 import com.sesac.charity_auction.global.common.BaseTimeEntity;
+import com.sesac.charity_auction.global.exception.BusinessException;
+import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -48,7 +50,7 @@ public class Auction extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private AuctionStatus status;
+    private AuctionStatus status = AuctionStatus.SCHEDULED;
 
     @ColumnDefault("false")
     @Column(nullable = false)
@@ -77,21 +79,57 @@ public class Auction extends BaseTimeEntity {
         this.bidCount++;
     }
 
-    // 경매 상태 변경
-    public void close(){
+    // 경매 마감
+    public void close(LocalDateTime now){
+        validateStatus(AuctionStatus.IN_PROGRESS, ErrorCode.AUCTION_NOT_IN_PROGRESS);
+        validateEndTime(now);
         this.status = AuctionStatus.CLOSED;
     }
 
+    // 낙찰 완료
     public void complete(){
+        validateStatus(AuctionStatus.CLOSED, ErrorCode.AUCTION_NOT_CLOSED);
         this.status = AuctionStatus.COMPLETED;
     }
 
+    // 유찰
     public void fail(){
+
+        validateStatus(AuctionStatus.CLOSED, ErrorCode.AUCTION_NOT_CLOSED);
         this.status = AuctionStatus.FAILED;
     }
 
-    public void cancel(){
+    // 경매 취소
+    public void cancel(LocalDateTime now){
+        validateStatus(AuctionStatus.SCHEDULED, ErrorCode.AUCTION_NOT_SCHEDULED);
+
+        // 경매 시작 시간이 다 되었는데 스케줄러가 아직 실행되지 않아 DB 상태가 여전히 SCHEDULED인 경우
+        if(!now.isBefore(this.startAt)){
+            throw new BusinessException(ErrorCode.AUCTION_ALREADY_STARTED);
+        }
+
+        // 입찰 내역이 있는지 확인
+        if(this.bidCount > 0){
+            throw new BusinessException(ErrorCode.AUCTION_HAS_BIDS);
+        }
+
         this.status = AuctionStatus.CANCELED;
+    }
+
+    // 상태 검증
+    private void validateStatus(AuctionStatus expectedStatus, ErrorCode errorCode){
+
+        if(this.status != expectedStatus){
+            throw new BusinessException(errorCode);
+        }
+    }
+
+    // 기한 검증
+    private void validateEndTime(LocalDateTime now){
+
+        if(this.endAt == null || now.isBefore(this.endAt)){
+            throw new BusinessException(ErrorCode.AUCTION_NOT_ENDED);
+        }
     }
 
 }

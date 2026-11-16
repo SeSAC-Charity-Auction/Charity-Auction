@@ -12,6 +12,6 @@ public record MyOfferedCandidateResponse(
         AuctionCandidateStatus status,
         LocalDateTime offeredAt,
         LocalDateTime deadlineAt,
-        LocalDateTime completedAt
+        LocalDateTime processedAt
 ) {
 }

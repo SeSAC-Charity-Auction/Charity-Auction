@@ -5,5 +5,6 @@ public enum AuctionCandidateStatus {
     OFFERED,    // 낙찰 기회 부여
     COMPLETED,  // 낙찰 완료
     EXPIRED,    // 낙찰 기한 만료
-    REJECTED    // 낙찰 포기
+    REJECTED,    // 낙찰 포기
+    NOT_SELECTED   // 다른 후보자의 낙찰 완료로 기회 종료
 }

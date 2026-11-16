@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
         uniqueConstraints = {   // 유니크 제약 조건 설정
                 @UniqueConstraint(name = "uk_auction_candidate_user", columnNames = {"auction_id", "user_id"}), // 한 경매에서 한 사용자는 하나의 후보로만 등록
                 @UniqueConstraint(name = "uk_auction_candidate_bid", columnNames = {"bid_id"}), // 하나의 입찰 내역은 후보 하나에만 연결
-                @UniqueConstraint(name = "uk_auction_candidate_rank", columnNames = {"auction_id", "rank"}) // 한 경매에서 후보 순위 중복 방지
+                @UniqueConstraint(name = "uk_auction_candidate_rank", columnNames = {"auction_id", "candidate_rank"}) // 한 경매에서 후보 순위 중복 방지
         }
 )
 @Getter
@@ -46,7 +46,7 @@ public class AuctionCandidate {
 
     private LocalDateTime deadlineAt;
 
-    private LocalDateTime completedAt;
+    private LocalDateTime processedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -60,33 +60,88 @@ public class AuctionCandidate {
     @JoinColumn(name = "bid_id", nullable = false)
     private Bid bid;
 
-    public static AuctionCandidate create(Auction auction, User user, Bid bid, Long rank, Long bidPrice){
+    public static AuctionCandidate create(Auction auction, User user, Bid bid, Long rank, Long bidPrice) {
 
         AuctionCandidate auctionCandidate = new AuctionCandidate();
 
         auctionCandidate.auction = auction;
         auctionCandidate.user = user;
-        auctionCandidate.bid= bid;
+        auctionCandidate.bid = bid;
         auctionCandidate.rank = rank;
         auctionCandidate.bidPrice = bidPrice;
 
         return auctionCandidate;
     }
 
-    public void offer(LocalDateTime deadlineAt){
-        if(this.status !=AuctionCandidateStatus.WAITING){
-            throw new BusinessException(ErrorCode.CANDIDATE_NOT_WAITING);
+    public void offer(LocalDateTime now, LocalDateTime deadlineAt) {
+
+        validateStatus(AuctionCandidateStatus.WAITING, ErrorCode.CANDIDATE_NOT_WAITING);
+
+        if (deadlineAt == null || !deadlineAt.isAfter(now)) {
+            throw new BusinessException(ErrorCode.INVALID_CANDIDATE_DEADLINE);
         }
         this.status = AuctionCandidateStatus.OFFERED;
-        this.offeredAt = LocalDateTime.now();
+        this.offeredAt = now;
         this.deadlineAt = deadlineAt;
     }
 
-    public void complete(){
+    // 낙찰 완료
+    public void complete(LocalDateTime now) {
 
+        validateStatus(AuctionCandidateStatus.OFFERED, ErrorCode.CANDIDATE_NOT_OFFERED);
+        validateDeadline(now);
+
+        this.status = AuctionCandidateStatus.COMPLETED;
+        this.processedAt = now;
     }
 
-    public void expire(){
+    // 낙찰 거절
+    public void reject(LocalDateTime now) {
+
+        validateStatus(AuctionCandidateStatus.OFFERED, ErrorCode.CANDIDATE_NOT_OFFERED);
+        validateDeadline(now);
+
+        this.status = AuctionCandidateStatus.REJECTED;
+        this.processedAt = now;
+    }
+
+    public void expire(LocalDateTime now) {
+
+        validateStatus(AuctionCandidateStatus.OFFERED, ErrorCode.CANDIDATE_NOT_OFFERED);
+        validateExpired(now);
+
         this.status = AuctionCandidateStatus.EXPIRED;
+        this.processedAt = now;
+    }
+
+    // 다른 후보자의 낙찰 완료로 기회 종료
+    public void notSelected(LocalDateTime now){
+
+        validateStatus(AuctionCandidateStatus.WAITING, ErrorCode.CANDIDATE_NOT_WAITING);
+        this.status= AuctionCandidateStatus.NOT_SELECTED;
+        this.processedAt = now;
+    }
+
+    // 후보자 상태 검증
+    private void validateStatus(AuctionCandidateStatus expectedStatus, ErrorCode errorCode) {
+
+        if (this.status != expectedStatus) {
+            throw new BusinessException(errorCode);
+        }
+    }
+
+    // 아직 낙찰 기한이 유효한지 검증
+    private void validateDeadline(LocalDateTime now) {
+
+        if (this.deadlineAt == null || !now.isBefore(this.deadlineAt)) {
+            throw new BusinessException(ErrorCode.CANDIDATE_EXPIRED);
+        }
+    }
+
+    // 낙찰 기한이 만료되었는지 검증
+    private void validateExpired(LocalDateTime now) {
+        if (this.deadlineAt == null || now.isBefore(this.deadlineAt)) {
+            throw new BusinessException(ErrorCode.CANDIDATE_NOT_EXPIRED);
+        }
     }
 }
