@@ -9,8 +9,8 @@ import {
 	getMyProfile,
 	type MyPoints,
 	type MyProfile,
-	type PointEntry
 } from "../donations/data";
+import EntryRow from "./entry-row";
 import AvatarUploader from "./avatar-uploader";
 import WithdrawSection from "./withdraw-section";
 import NicknameEditor from "./nickname-editor";
@@ -25,16 +25,6 @@ export const metadata: Metadata = {
 /* ---------- 표시용 도우미 함수 ---------- */
 
 const pt = (n: number) => `${n.toLocaleString("ko-KR")}P`;
-
-function relativeTime(iso: string) {
-	const diffSec = Math.round((new Date(iso).getTime() - Date.now()) / 1000);
-	const abs = Math.abs(diffSec);
-	if (abs < 60) return "방금 전";
-	const rtf = new Intl.RelativeTimeFormat("ko", { numeric: "auto" });
-	if (abs < 3600) return rtf.format(Math.round(diffSec / 60), "minute");
-	if (abs < 86_400) return rtf.format(Math.round(diffSec / 3600), "hour");
-	return rtf.format(Math.round(diffSec / 86_400), "day");
-}
 
 // 서버가 UTC로 준 가입일을 한국 날짜로 보여줘요. (예: 2026년 11월 12일)
 function joinedDate(iso: string) {
@@ -230,11 +220,19 @@ function PointSection({
 				>
 					포인트 내역
 				</h2>
-				<p className={styles.muted}>
-					<FlipText
-						text={`지금 ${pt(balance)}을(를) 갖고 있어요. 최근 ${points.recent.length}건만 보여요.`}
-					/>
-				</p>
+				<div className={styles.sectionSide}>
+					<p className={styles.muted}>
+						<FlipText
+							text={`지금 ${pt(balance)}을(를) 갖고 있어요. 최근 ${points.recent.length}건만 보여요.`}
+						/>
+					</p>
+					<Link
+						href="/mypage/points"
+						className={`${styles.btn} ${styles.btnGhost} ${styles.btnSmall}`}
+					>
+						전체 조회
+					</Link>
+				</div>
 			</div>
 
 			{points.recent.length > 0 ?
@@ -251,26 +249,5 @@ function PointSection({
 				</p>
 			}
 		</section>
-	);
-}
-
-function EntryRow({ entry }: { entry: PointEntry }) {
-	const earn = entry.pointType === "적립";
-	return (
-		<li className={styles.entry}>
-			<div>
-				<p className={styles.entryDesc}>{entry.description}</p>
-				<p className={styles.entryTime}>
-					{entry.pointType}{" "}
-					<FlipText text={relativeTime(entry.createdAt)} />
-				</p>
-			</div>
-			<p
-				className={`${styles.entryAmount} ${earn ? styles.earn : styles.spend}`}
-			>
-				{earn ? "+" : "−"}
-				<FlipText text={pt(Math.abs(entry.pointAmount))} />
-			</p>
-		</li>
 	);
 }
