@@ -1,6 +1,5 @@
 // app/donations/page.tsx
 import type { Metadata } from "next";
-import { Black_Han_Sans, Noto_Sans_KR } from "next/font/google";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -14,22 +13,10 @@ import {
 } from "./data";
 import DonationRow from "./donation-row";
 import FlipText from "./flip-text";
+import { body, display } from "./fonts";
 import { relativeTime, won } from "./format";
 import styles from "./page.module.css";
 import TargetCarousel from "./target-carousel";
-
-// 제목과 숫자는 굵은 포스터 느낌의 글꼴, 본문은 읽기 편한 글꼴을 씁니다.
-// (폰트는 빌드할 때 구글 폰트에서 내려받으므로 인터넷 연결이 필요해요.)
-const display = Black_Han_Sans({
-	weight: "400",
-	preload: false,
-	display: "swap"
-});
-const body = Noto_Sans_KR({
-	weight: ["400", "500", "700"],
-	preload: false,
-	display: "swap"
-});
 
 export const metadata: Metadata = {
 	title: "기부 현황"
