@@ -1,0 +1,104 @@
+### JWT 로그인 직접 확인용 요청 모음 (IntelliJ HTTP Client)
+@host = http://localhost:8080
+
+### 1) 앱이 켜졌는지 확인 → 200 {"status":"UP"}
+GET {{host}}/api/health
+
+### 2) 토큰 없이 내 정보 → 401, code NOT_LOGGED_IN
+GET {{host}}/api/me
+
+### 3) 더미 회원으로 로그인 → 200, 본문 accessToken + Set-Cookie refresh_token
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "dummy1@example.com",
+  "password": "password1234"
+}
+
+> {% client.global.set("accessToken", response.body.accessToken); %}
+
+### 4) Access Token으로 내 정보 → 200, 김민준의 정보
+GET {{host}}/api/me
+Authorization: Bearer {{accessToken}}
+
+### 5) 틀린 토큰 → 401, code INVALID_TOKEN
+GET {{host}}/api/me
+Authorization: Bearer not.a.jwt
+
+### 6) 재발급 (쿠키 자동 전송) → 200, 새 accessToken + 새 refresh_token
+POST {{host}}/api/v1/auth/refresh
+
+> {% client.global.set("accessToken", response.body.accessToken); %}
+
+### 7) 새 Access Token으로 내 정보 → 200
+GET {{host}}/api/me
+Authorization: Bearer {{accessToken}}
+
+### 8) 로그아웃 → 204, Set-Cookie refresh_token=; Max-Age=0
+POST {{host}}/api/v1/auth/logout
+
+### 9) 로그아웃 뒤 재발급 → 401, code INVALID_REFRESH_TOKEN
+POST {{host}}/api/v1/auth/refresh
+
+### 10) 틀린 비밀번호 → 401, code LOGIN_FAILED
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "dummy1@example.com",
+  "password": "wrong-password"
+}
+
+###############################################################
+# 회원가입 → 로그인 → 탈퇴 흐름 (실행할 때마다 이메일을 바꿔요)
+###############################################################
+
+### 11) 새 회원가입 → 201 (이미 가입했다면 409 DUPLICATE_EMAIL. 이메일을 바꿔서 다시 해요)
+POST {{host}}/api/v1/users/signup
+Content-Type: application/json
+
+{
+  "email": "jwt-test1@example.com",
+  "password": "password1234",
+  "nickname": "jwt테스트1",
+  "name": "홍길동"
+}
+
+### 12) 방금 가입한 회원으로 로그인 → 200
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "jwt-test1@example.com",
+  "password": "password1234"
+}
+
+> {% client.global.set("accessToken", response.body.accessToken); %}
+
+### 13) 회원 탈퇴 → 204
+DELETE {{host}}/api/me
+Authorization: Bearer {{accessToken}}
+
+### 14) 탈퇴 뒤 재발급 → 401 (탈퇴하면 Refresh Token이 지워져요)
+POST {{host}}/api/v1/auth/refresh
+
+### 15) 탈퇴 뒤 다시 로그인 → 401, code LOGIN_FAILED
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "jwt-test1@example.com",
+  "password": "password1234"
+}
+
+### 16) 같은 이메일로 재가입 → 409, code DUPLICATE_EMAIL
+POST {{host}}/api/v1/users/signup
+Content-Type: application/json
+
+{
+  "email": "jwt-test1@example.com",
+  "password": "password1234",
+  "nickname": "jwt테스트2",
+  "name": "홍길동"
+}

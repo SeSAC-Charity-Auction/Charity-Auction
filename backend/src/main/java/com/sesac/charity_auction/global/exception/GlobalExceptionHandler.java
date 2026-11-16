@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,6 +23,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusiness(final BusinessException exception, final HttpServletRequest request) {
         final ErrorCode code = exception.getErrorCode();
+        return ResponseEntity.status(code.getStatus())
+                .body(ErrorResponse.of(code, exception.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(AuthenticationServiceException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationService(final AuthenticationServiceException exception,
+                                                                     final HttpServletRequest request) {
+        log.error("로그인 처리 중 서버 오류", exception);
+        final ErrorCode code = ErrorCode.UNKNOWN;
+        return ResponseEntity.status(code.getStatus()).body(ErrorResponse.of(code, request.getRequestURI()));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthentication(final HttpServletRequest request) {
+        final ErrorCode code = ErrorCode.LOGIN_FAILED;
         return ResponseEntity.status(code.getStatus()).body(ErrorResponse.of(code, request.getRequestURI()));
     }
 
