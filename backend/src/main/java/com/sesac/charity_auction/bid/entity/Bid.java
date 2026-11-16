@@ -1,6 +1,6 @@
 package com.sesac.charity_auction.bid.entity;
 
-import com.sesac.charity_auction.auction.entity.Auction;
+import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

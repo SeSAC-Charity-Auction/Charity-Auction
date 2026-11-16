@@ -1,6 +1,5 @@
-package com.sesac.charity_auction.auction.entity;
+package com.sesac.charity_auction.auction.domain;
 
-import com.sesac.charity_auction.auction.enums.AuctionStatus;
 import com.sesac.charity_auction.global.common.BaseTimeEntity;
 import com.sesac.charity_auction.user.entity.User;
 import jakarta.persistence.*;
@@ -34,6 +33,7 @@ public class Auction extends BaseTimeEntity {
     @Column(nullable = false)
     private Long startPrice;
 
+    @Column(nullable = false)
     private Long currentPrice;
 
     @ColumnDefault("0")
@@ -60,9 +60,38 @@ public class Auction extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // 경매 생성시 현재 가격을 시작 가격으로 초기화할 것
+    public static Auction create(User user, Long startPrice){
+
+        Auction auction = new Auction();
+        auction.user = user;
+        auction.startPrice = startPrice;
+        auction.currentPrice = startPrice;
+
+        return auction;
+    }
+
     // 입찰시 경매 정보 업데이트
     public void updateAuctionInfo(Long bidPrice){
         this.currentPrice = bidPrice;
         this.bidCount++;
     }
+
+    // 경매 상태 변경
+    public void close(){
+        this.status = AuctionStatus.CLOSED;
+    }
+
+    public void complete(){
+        this.status = AuctionStatus.COMPLETED;
+    }
+
+    public void fail(){
+        this.status = AuctionStatus.FAILED;
+    }
+
+    public void cancel(){
+        this.status = AuctionStatus.CANCELED;
+    }
+
 }

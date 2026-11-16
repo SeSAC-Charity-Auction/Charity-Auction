@@ -1,6 +1,6 @@
 package com.sesac.charity_auction.donation.service;
 
-import com.sesac.charity_auction.member.domain.Role;
+import com.sesac.charity_auction.user.domain.Role;
 import com.sesac.charity_auction.user.entity.User;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;

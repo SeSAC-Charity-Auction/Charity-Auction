@@ -30,7 +30,7 @@ public enum ErrorCode {
     NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "로그인이 필요해요."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
-    // 기부 및 경매 관련 비즈니스 예외
+    // 기부 관련 비즈니스 예외
     TARGET_NOT_FOUND(HttpStatus.NOT_FOUND, "기부처를 찾을 수 없어요."),
     TARGET_CLOSED(HttpStatus.CONFLICT, "기부가 마감된 기부처예요."),
     INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "기부 금액이 올바르지 않아요."),
@@ -43,11 +43,17 @@ public enum ErrorCode {
     AUCTION_CANCELLED(HttpStatus.CONFLICT, "취소된 경매입니다."),
     AUCTION_DELETED(HttpStatus.NOT_FOUND, "삭제된 경매입니다."),
     AUCTION_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST, "진행 중인 경매가 아닙니다."),
+    AUCTION_NOT_CLOSED(HttpStatus.BAD_REQUEST, "마감된 경매가 아닙니다."),
 
     // 입찰 관련 비즈니스 예외
     BID_PRICE_TOO_LOW(HttpStatus.BAD_REQUEST, "현재 최고 입찰 금액보다 높은 금액을 입력해주세요."),
     BID_NOT_ALLOWED(HttpStatus.FORBIDDEN, "본인이 등록한 경매에는 입찰할 수 없습니다."),
     INVALID_BID_PRICE(HttpStatus.BAD_REQUEST, "입찰 금액은 0보다 커야 합니다."),
+    BID_NOT_FOUND(HttpStatus.NOT_FOUND, "입찰 내역을 찾을 수 없습니다."),
+
+    // 낙찰 관련 비즈니스 예외
+    CANDIDATE_NOT_WAITING(HttpStatus.BAD_REQUEST, "낙찰 대기 상태의 후보만 기회를 부여할 수 있습니다."),
+    CANDIDATE_NOT_OFFERED(HttpStatus.BAD_REQUEST, "낙찰 기회를 받은 후보가 아닙니다."),
 
     // 기본 비즈니스 예외
     UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했어요.");
