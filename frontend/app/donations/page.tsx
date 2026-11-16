@@ -14,6 +14,7 @@ import {
 } from "./data";
 import FlipText from "./flip-text";
 import styles from "./page.module.css";
+import TargetCarousel from "./target-carousel";
 
 // 제목과 숫자는 굵은 포스터 느낌의 글꼴, 본문은 읽기 편한 글꼴을 씁니다.
 // (폰트는 빌드할 때 구글 폰트에서 내려받으므로 인터넷 연결이 필요해요.)
@@ -89,8 +90,7 @@ async function DonationsContent() {
 	const activeTargets = data.targets
 		.filter((t) => t.isActive)
 		.sort((a, b) => b.totalDonation - a.totalDonation);
-	const [featured, ...others] = activeTargets;
-	const latest = data.recentDonations[0];
+		const latest = data.recentDonations[0];
 
 	const heroTitle =
 		data.donationCount > 0 ?
@@ -185,13 +185,13 @@ async function DonationsContent() {
 					</h2>
 				</div>
 
-				{featured ?
-					<div className={styles.targetGrid}>
-						<TargetCard target={featured} featured />
-						{others.map((t) => (
-							<TargetCard key={t.targetId} target={t} />
-						))}
-					</div>
+				{activeTargets.length > 0 ?
+					<TargetCarousel
+							items={activeTargets.map((t) => ({
+								key: String(t.targetId),
+								node: <TargetCard target={t} />
+							}))}
+						/>
 				:	<p className={styles.empty}>
 						지금 기부할 수 있는 기부처가 없어요. 새 기부처가
 						등록되면 이곳에 표시돼요.
@@ -315,17 +315,15 @@ function EmptyTicket() {
 }
 
 function TargetCard({
-	target,
-	featured = false
+	target
 }: {
 	target: DonationTarget;
-	featured?: boolean;
 }) {
 	const { pct, barWidth } = progressOf(target);
 
 	return (
 		<article
-			className={`${styles.card} ${featured ? styles.cardFeatured : ""}`}
+			className={styles.card}
 		>
 			<div className={styles.thumb}>
 				{

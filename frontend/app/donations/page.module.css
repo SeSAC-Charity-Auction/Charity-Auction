@@ -8,6 +8,7 @@
 	font-size: 1rem;
 	line-height: 1.7;
 	word-break: keep-all; /* 한글이 단어 단위로 줄바꿈되게 */
+	overflow-x: clip; /* 전체 너비 영역 때문에 가로 스크롤바가 생기지 않게 */
 }
 
 .page :where(h1, h2, h3, p, ol, dl, dd, figure) {
@@ -287,10 +288,79 @@
 }
 
 /* ---------- 기부처 카드 ---------- */
-.targetGrid {
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+/* 가운데 정렬된 본문 폭을 벗어나 브라우저 전체 너비를 쓰는 회전목마 */
+.carousel {
+	position: relative;
+	width: 100vw;
+	margin-left: calc(50% - 50vw);
+}
+
+.targetScroller {
+	--edge: max(20px, calc((100vw - 1080px) / 2 + 20px)); /* 본문 왼쪽 선과 맞춤 */
+
+	position: relative;
+	display: flex;
 	gap: 20px;
+	padding: 4px var(--edge) 16px;
+	overflow-x: auto;
+	scroll-snap-type: x proximity;
+	scroll-padding-inline: var(--edge);
+	overscroll-behavior-x: contain;
+	scrollbar-width: none;
+}
+.targetScroller::-webkit-scrollbar {
+	display: none;
+}
+.targetScroller:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: -3px;
+}
+
+.slide {
+	display: flex;
+	flex: none;
+	width: 320px;
+	scroll-snap-align: start;
+}
+.slide > .card {
+	width: 100%;
+}
+
+.arrow {
+	position: absolute;
+	top: 45%;
+	z-index: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	padding: 0;
+	border: 2px solid var(--ink);
+	border-radius: 50%;
+	background: var(--hammer);
+	box-shadow: 3px 3px 0 var(--ink);
+	color: var(--ink);
+	font-size: 1.25rem;
+	line-height: 1;
+	cursor: pointer;
+	transform: translateY(-50%);
+}
+.arrow:hover {
+	background: var(--surface);
+}
+.arrow:active {
+	box-shadow: 1px 1px 0 var(--ink);
+}
+.arrow:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}
+.arrowPrev {
+	left: 12px;
+}
+.arrowNext {
+	right: 12px;
 }
 
 .card {
@@ -313,24 +383,6 @@
 	border-color: var(--ink);
 }
 
-/* .card 뒤에 두어서 같은 우선순위일 때 이쪽이 이기도록 */
-.cardFeatured {
-	--track: rgba(255, 255, 255, 0.22);
-	--fill: var(--hammer);
-	--soft: #cfd3ee;
-	--thumb-bg: rgba(255, 255, 255, 0.12);
-	--thumb-ink: var(--hammer);
-
-	grid-column: span 2;
-	padding: 32px;
-	background: var(--panel);
-	border-color: var(--panel);
-	color: #fff;
-}
-.cardFeatured:hover {
-	border-color: var(--hammer);
-}
-
 .thumb {
 	display: flex;
 	align-items: center;
@@ -339,9 +391,6 @@
 	overflow: hidden;
 	background: var(--thumb-bg);
 	border-radius: 8px;
-}
-.cardFeatured .thumb {
-	aspect-ratio: 21 / 9;
 }
 
 .thumbImg {
@@ -362,10 +411,6 @@
 	font-weight: 400;
 	line-height: 1.45;
 }
-.cardFeatured .cardTitle {
-	font-size: 1.875rem;
-	line-height: 1.35;
-}
 
 /* 제목 링크가 카드 전체를 누를 수 있게 넓힘 */
 .cardLink {
@@ -383,9 +428,6 @@
 .card:has(.cardLink:focus-visible) {
 	outline: 3px solid var(--bid-fg);
 	outline-offset: 3px;
-}
-.cardFeatured:has(.cardLink:focus-visible) {
-	outline-color: var(--hammer);
 }
 
 .cardSummary {
@@ -485,9 +527,6 @@
 		gap: 32px;
 		padding-top: 40px;
 	}
-	.targetGrid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
 }
 
 @media (max-width: 640px) {
@@ -505,18 +544,12 @@
 		font-size: 1.625rem;
 	}
 
-	.targetGrid {
-		grid-template-columns: minmax(0, 1fr);
+	.slide {
+		width: 78vw;
 	}
-	.cardFeatured {
-		grid-column: auto;
-		padding: 24px;
-	}
-	.cardFeatured .cardTitle {
-		font-size: 1.5rem;
-	}
-	.cardFeatured .thumb {
-		aspect-ratio: 16 / 9;
+	.arrow {
+		width: 40px;
+		height: 40px;
 	}
 
 	.donation {
