@@ -29,6 +29,9 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
     NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "로그인이 필요해요."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
+    LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않아요."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "로그인 정보가 만료되었거나 올바르지 않아요."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "로그인 유지 정보가 올바르지 않아요. 다시 로그인해 주세요."),
 
     // 기부 및 경매 관련 비즈니스 예외
     TARGET_NOT_FOUND(HttpStatus.NOT_FOUND, "기부처를 찾을 수 없어요."),
