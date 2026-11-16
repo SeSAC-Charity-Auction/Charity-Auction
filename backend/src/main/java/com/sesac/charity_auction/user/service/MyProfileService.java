@@ -73,7 +73,7 @@ public class MyProfileService {
         try {
             // 동시에 같은 닉네임을 고른 경우에는 DB의 UNIQUE 인덱스가 막아 줘요.
             userRepository.saveAndFlush(user);
-        } catch (DataIntegrityViolationException exception) {
+        } catch (final DataIntegrityViolationException exception) {
             throw new BusinessException(ErrorCode.DUPLICATE_NICKNAME, exception);
         }
         return nickname;
