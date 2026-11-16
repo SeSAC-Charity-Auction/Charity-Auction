@@ -66,7 +66,7 @@ async function DonationsContent() {
 
 	// 기부할 수 있는 기부처만 보여주고(목표 금액을 채운 곳은 목록에서 빠져요), 모금이 가장 많이 된 곳을 맨 앞에 둡니다.
 	const activeTargets = data.targets
-		.filter((t) => t.isActive && t.totalDonation < t.targetAmount)
+		.filter((t) => t.isActive && !t.isAchieved)
 		.sort((a, b) => b.totalDonation - a.totalDonation);
 	const latest = data.recentDonations[0];
 

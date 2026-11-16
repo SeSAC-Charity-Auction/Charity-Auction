@@ -67,7 +67,7 @@ cd frontend && npm run build
 
 필드 모양:
 
-- **target**: `targetId, targetName, description(null 가능), targetImage(null 가능), isActive, totalDonation, targetAmount, createdAt`
+- **target**: `targetId, targetName, description(null 가능), targetImage(null 가능), isActive, isAchieved(목표 달성 여부), totalDonation, targetAmount, createdAt`
 - **donation record**: `donationId, targetId, targetName, donorName(마스킹), donationAmount, createdAt`
 - **point entry**: `pointId, pointType("적립"|"사용"), pointAmount, description, createdAt`. `description`은 `donation_id`/`auction_id`를 보고 서버가 만든 문구예요. (예: "푸른숲 어린이 도서관 기부")
 - `summary.recentDonations`는 최신 5건, 상세의 `recentDonations`는 최신 8건, `me/points.recent`는 최신 8건(모두 최신순)이에요.
@@ -80,7 +80,7 @@ cd frontend && npm run build
 
 1. 금액이 최소·단위에 맞는지 검사 → 아니면 `INVALID_AMOUNT`
 2. `UPDATE users SET point_balance = point_balance - :amount WHERE user_id = :id AND point_balance >= :amount` → 영향 행이 0이면 `INSUFFICIENT_POINT`
-3. `UPDATE donation_targets SET total_donation = total_donation + :amount WHERE target_id = :id AND is_active = TRUE` → 영향 행이 0이면 `TARGET_CLOSED` (없는 기부처는 `TARGET_NOT_FOUND`)
+3. `UPDATE donation_targets SET total_donation = total_donation + :amount, is_achieved = (누적액이 목표 이상이면 TRUE) WHERE target_id = :id AND is_active = TRUE` → 영향 행이 0이면 `TARGET_CLOSED` (없는 기부처는 `TARGET_NOT_FOUND`)
 4. `donations`에 기록
 5. `point_histories`에 `USE` 기록
 
