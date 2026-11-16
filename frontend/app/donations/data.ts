@@ -115,6 +115,27 @@ export async function getDonationSummary(): Promise<DonationSummary> {
 	return res.json();
 }
 
+// 전체 기부 목록의 한 쪽이에요. page는 0부터 시작해요.
+export type DonationPage = {
+	items: DonationRecord[]; // 최신순
+	page: number;
+	size: number;
+	totalElements: number;
+	totalPages: number;
+};
+
+export async function getDonationPage(
+	page: number,
+	size = 20
+): Promise<DonationPage> {
+	const res = await fetch(
+		`${process.env.API_BASE_URL}/api/donations?page=${page}&size=${size}`,
+		{ cache: "no-store" }
+	);
+	if (!res.ok) throw new Error("기부 목록을 불러오지 못했어요.");
+	return res.json();
+}
+
 /* ---------- 내 정보 (마이페이지) ---------- */
 
 // 지금 로그인한 사용자의 정보예요. 로그인하지 않았으면 null을 돌려줘요.

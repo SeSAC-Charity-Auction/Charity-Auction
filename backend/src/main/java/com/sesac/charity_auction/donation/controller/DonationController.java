@@ -1,5 +1,6 @@
 package com.sesac.charity_auction.donation.controller;
 
+import com.sesac.charity_auction.donation.dto.DonationPageResponse;
 import com.sesac.charity_auction.donation.dto.DonationRequest;
 import com.sesac.charity_auction.donation.dto.DonationResponse;
 import com.sesac.charity_auction.donation.dto.DonationSummaryResponse;
@@ -26,6 +27,12 @@ public class DonationController {
     @GetMapping("/summary")
     public DonationSummaryResponse summary() {
         return queryService.getSummary();
+    }
+
+    @GetMapping
+    public DonationPageResponse list(final @RequestParam(defaultValue = "0") int page,
+                                     final @RequestParam(defaultValue = "20") int size) {
+        return queryService.getAll(page, size);
     }
 
     @PostMapping

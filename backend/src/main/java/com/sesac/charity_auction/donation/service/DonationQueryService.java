@@ -1,6 +1,7 @@
 package com.sesac.charity_auction.donation.service;
 
 import com.sesac.charity_auction.donation.domain.DonationTarget;
+import com.sesac.charity_auction.donation.dto.DonationPageResponse;
 import com.sesac.charity_auction.donation.dto.DonationRecordResponse;
 import com.sesac.charity_auction.donation.dto.DonationSummaryResponse;
 import com.sesac.charity_auction.donation.dto.DonationTargetDetailResponse;
@@ -23,6 +24,7 @@ import java.util.List;
 public class DonationQueryService {
     private static final int SUMMARY_RECENT_SIZE = 5;
     private static final int DETAIL_RECENT_SIZE = 8;
+    private static final int MAX_PAGE_SIZE = 50;
 
     private final DonationRepository donationRepository;
     private final DonationTargetRepository targetRepository;
@@ -49,6 +51,21 @@ public class DonationQueryService {
                 targets,
                 recent
         );
+    }
+
+    /** 전체 기부 목록이에요. 최신순이고, page는 0부터 시작해요. */
+    public DonationPageResponse getAll(final int page, final int size) {
+        int safePage = Math.max(0, page);
+        int safeSize = Math.min(Math.max(1, size), MAX_PAGE_SIZE);
+
+        long total = donationRepository.count();
+        List<DonationRecordResponse> items = donationRepository
+                .findRecent(PageRequest.of(safePage, safeSize)).stream()
+                .map(DonationRecordResponse::from)
+                .toList();
+
+        return new DonationPageResponse(
+                items, safePage, safeSize, total, (int) ((total + safeSize - 1) / safeSize));
     }
 
     public DonationTargetDetailResponse getTargetDetail(final long targetId) {

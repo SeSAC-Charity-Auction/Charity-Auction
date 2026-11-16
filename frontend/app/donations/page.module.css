@@ -280,6 +280,43 @@
 	font-size: 0.875rem;
 }
 
+.sectionSide {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 16px;
+}
+
+.btnSmall {
+	min-height: 36px;
+	padding: 0 16px;
+	font-size: 0.875rem;
+}
+
+/* ---------- 전체 기부 목록 페이지 ---------- */
+.back {
+	display: inline-block;
+	margin-top: 32px;
+	color: var(--ink-soft);
+	font-size: 0.875rem;
+}
+.pager {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	margin-top: 32px;
+}
+.pagerInfo {
+	color: var(--ink-soft);
+	font-size: 0.9375rem;
+	font-variant-numeric: tabular-nums;
+}
+.btnDisabled {
+	opacity: 0.4;
+	pointer-events: none;
+}
+
 .empty {
 	padding: 32px;
 	border: 1.5px dashed var(--mist-strong);

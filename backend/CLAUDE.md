@@ -57,6 +57,7 @@ cd frontend && npm run build
 | 요청                                   | 인증   | 응답                                                                                      |
 | -------------------------------------- | ------ | ----------------------------------------------------------------------------------------- |
 | `GET /api/donations/summary`           | 불필요 | `{ totalDonation, donationCount, donorCount, targets[], recentDonations[] }`              |
+| `GET /api/donations?page=0&size=20`    | 불필요 | 전체 기부 목록(최신순) `{ items[], page, size, totalElements, totalPages }`, size는 최대 50      |
 | `GET /api/donation-targets/{targetId}` | 불필요 | `{ target, donorCount, donationCount, recentDonations[] }`, 없으면 404 `TARGET_NOT_FOUND` |
 | `GET /api/me/points`                   | 필요   | `{ balance, recent[] }`, 로그인하지 않았으면 401                                          |
 | `GET /api/me`                          | 필요   | 마이페이지 내 정보 `{ userId, email, name, nickname, userImage(null 가능), point, createdAt, donationCount, totalDonation, canEditTargets }`, 로그인하지 않았으면 401 |
