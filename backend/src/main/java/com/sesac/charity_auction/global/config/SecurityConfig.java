@@ -63,7 +63,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/users/check-email", "/api/v1/users/check-nickname").permitAll()
                         .requestMatchers(HttpMethod.GET,
-                                "/api/donations/summary", "/api/donation-targets/*", "/api/v1/*/bids").permitAll()
+                                "/api/donations", "/api/donations/summary", "/api/donation-targets/*", "/api/v1/*/bids").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(resourceServer -> resourceServer
                         .bearerTokenResolver(bearerTokenResolver())
