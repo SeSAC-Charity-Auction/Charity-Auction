@@ -1,5 +1,6 @@
 package com.sesac.charity_auction.auction.domain;
 
+import com.sesac.charity_auction.category.domain.Category;
 import com.sesac.charity_auction.global.common.BaseTimeEntity;
 import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
@@ -59,14 +60,19 @@ public class Auction extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // 경매 생성시 현재 가격을 시작 가격으로 초기화할 것
-    public static Auction create(User user, Long startPrice, String title, LocalDateTime startAt, LocalDateTime endAt){
+    public static Auction create(User user, Category category ,Long startPrice, String title, LocalDateTime startAt, LocalDateTime endAt){
 
         Auction auction = new Auction();
         auction.user = user;
+        auction.category = category;
         auction.title = title;
         auction.startPrice = startPrice;
         auction.currentPrice = startPrice;
