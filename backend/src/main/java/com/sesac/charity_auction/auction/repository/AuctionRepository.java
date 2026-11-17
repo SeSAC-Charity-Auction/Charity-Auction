@@ -2,8 +2,6 @@ package com.sesac.charity_auction.auction.repository;
 
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
-import com.sesac.charity_auction.auction.dto.response.AuctionListResponse;
-import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidateStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface AuctionRepository extends JpaRepository<Auction, Long> {
+public interface AuctionRepository extends JpaRepository<Auction, Long>, AuctionQueryRepository {
 
     // 동시성 고려 - 비관적 락 적용(추후 데이터 변경 예정이므로 락 승격시 발생하는 문제를 방지하기 위해 WRITE 락 적용)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -31,14 +29,19 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     @Query("SELECT a.id FROM Auction a WHERE a.status = :status AND a.endAt <= :now AND a.isDeleted = false")
     List<Long> findExpiredAuctionIds(@Param("status")AuctionStatus status, @Param("now") LocalDateTime now);
 
-    @Query("""
-    SELECT new com.sesac.charity_auction.auction.dto.response.AuctionListResponse(a.id, a.title, c.bidPrice)
-    FROM Auction a
-    LEFT JOIN AuctionCandidate c
-        ON c.auction.id = a.id
-        AND c.status = :status
-    """)
-    List<AuctionListResponse> findAuctionList(@Param("status")AuctionCandidateStatus status);
+
+//    @Query("""
+//    SELECT new com.sesac.charity_auction.auction.dto.response.AuctionListResponse(a.id, a.title, c.bidPrice)
+//    FROM Auction a
+//    LEFT JOIN AuctionCandidate c
+//        ON c.auction.id = a.id
+//        AND c.status = :status
+//    """)
+//    List<AuctionListResponse> findAuctionList(@Param("status")AuctionCandidateStatus status);
+
+    // 경매 조회
+    Optional<Auction> findByIdAndIsDeletedFalse(Long id);
+
 
     // 경매 물품 목록: 삭제·취소되지 않은 경매를 보기 방식·카테고리·검색어로 걸러요. (null이면 그 조건은 쓰지 않아요)
     //  mode: ALL(전부) / IN_PROGRESS(지금 입찰할 수 있는 경매) / SCHEDULED(예정) / ENDED(마감)
@@ -108,4 +111,5 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
             """,
             countQuery = "SELECT COUNT(a) FROM Auction a WHERE a.user.id = :userId AND a.isDeleted = false")
     Page<Auction> findMine(@Param("userId") Long userId, Pageable pageable);
+
 }

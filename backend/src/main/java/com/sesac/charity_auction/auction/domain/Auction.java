@@ -89,6 +89,62 @@ public class Auction extends BaseTimeEntity {
         return auction;
     }
 
+    /* 경매 게시글 */
+    // 수정 - 경매 시작 전에만 가능
+    public void update(String title, String description, String image, Category category, Long startPrice, LocalDateTime startAt, LocalDateTime endAt,LocalDateTime now){
+
+        // 경매 상태 확인
+        validateStatus(AuctionStatus.SCHEDULED, ErrorCode.AUCTION_NOT_SCHEDULED);
+
+        // 실제 시간 확인
+        if(!now.isBefore(this.startAt)){
+            throw new BusinessException(ErrorCode.AUCTION_ALREADY_STARTED);
+        }
+
+        // 입찰 존재 여부 확인
+        if(this.bidCount > 0){
+            throw new BusinessException(ErrorCode.AUCTION_HAS_BIDS);
+        }
+
+        // 시작 가격 검증
+        if(startPrice == null || startPrice <= 0){
+            throw new BusinessException(ErrorCode.INVALID_START_PRICE);
+        }
+
+        // 경매 기간 검증
+        if(startAt == null || endAt == null || !startAt.isAfter(now) || !endAt.isAfter(startAt)){
+            throw new BusinessException(ErrorCode.INVALID_AUCTION_TIME);
+        }
+
+        this.title = title;
+        this.description = description;
+        this.image = image;
+        this.category = category;
+        this.startPrice = startPrice;
+        this.currentPrice = startPrice;
+        this.startAt = startAt;
+        this.endAt = endAt;
+    }
+
+    // 삭제
+    public void delete(LocalDateTime now){
+
+        // 경매 상태 확인
+        validateStatus(AuctionStatus.SCHEDULED, ErrorCode.AUCTION_NOT_SCHEDULED);
+
+        // 실제 시간 확인
+        if(!now.isBefore(this.startAt)){
+            throw new BusinessException(ErrorCode.AUCTION_ALREADY_STARTED);
+        }
+
+        if (this.bidCount > 0) {
+            throw new BusinessException(ErrorCode.AUCTION_HAS_BIDS);
+        }
+
+        this.isDeleted = true;
+        this.deletedAt = now;
+    }
+  
     // 상품 이미지를 바꿔요. (주소는 ImageStorage가 저장한 /uploads/auction/... 형태예요)
     public void changeImage(final String image){
         this.image = image;
@@ -104,6 +160,7 @@ public class Auction extends BaseTimeEntity {
         this.bidCount++;
     }
 
+    /* 경매 로직 */
     // 경매 마감
     public void close(LocalDateTime now){
         validateStatus(AuctionStatus.IN_PROGRESS, ErrorCode.AUCTION_NOT_IN_PROGRESS);
