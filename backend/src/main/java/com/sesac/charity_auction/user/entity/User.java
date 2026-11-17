@@ -31,7 +31,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, length = 10)
     private String nickname;
 
-    @Column(length = 300)
+    @Column(name = "user_image", length = 500)
     private String image;
 
     @Column(nullable = false, length = 50)
@@ -43,7 +43,7 @@ public class User extends BaseTimeEntity {
 
     // 잔액 변경은 조건부 UPDATE 쿼리로만 해요(6단계). setter는 일부러 만들지 않았어요.
     @ColumnDefault("0")
-    @Column(name = "point_balance", nullable = false)
+    @Column(name = "point", nullable = false)
     private long pointBalance = 0L;
 
     @ColumnDefault("false")

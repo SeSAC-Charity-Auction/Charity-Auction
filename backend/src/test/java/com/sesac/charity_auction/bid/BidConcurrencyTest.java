@@ -92,7 +92,7 @@ class BidConcurrencyTest {
         jdbc.update(
                 "INSERT INTO users " +
                         "(password, name, nickname, email, role, " +
-                        "point_balance, created_at, updated_at) " +
+                        "point, created_at, updated_at) " +
                         "VALUES (?, ?, ?, ?, ?, ?, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
                 "test1234",
                 "동시성테스트",
@@ -130,7 +130,7 @@ class BidConcurrencyTest {
 
             PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO auctions " +
-                            "(title, image, description, start_price, " +
+                            "(item_name, item_image, description, start_price, " +
                             "current_price, bid_count, start_at, end_at, " +
                             "status, is_deleted, deleted_at, user_id, " +
                             "created_at, updated_at) " +
