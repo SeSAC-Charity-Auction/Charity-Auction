@@ -74,7 +74,7 @@ class DonationRankingApiTest {
         addDonation(first, 1_000);
         addDonation(first, 2_500);
         addDonation(second, 3_000);
-        jdbc.update("UPDATE users SET point_balance = 1000000 WHERE user_id = ?", second.getId());
+        jdbc.update("UPDATE users SET point = 1000000 WHERE user_id = ?", second.getId());
 
         mockMvc.perform(get("/api/donations/ranking"))
                 .andExpect(status().isOk())

@@ -10,7 +10,7 @@
 START TRANSACTION;
 
 -- 로그인 기능 전이라 password는 의미 없는 자리표시 값이에요. 1번 회원(김민준)이 기부 화면의 기본 사용자(DEV_USER_ID=1)예요.
-INSERT INTO users (user_id, password, name, nickname, email, image, is_deleted, role, point_balance, created_at, updated_at) VALUES
+INSERT INTO users (user_id, password, name, nickname, email, user_image, is_deleted, role, point, created_at, updated_at) VALUES
 (1, 'PLACEHOLDER_NOT_A_REAL_HASH', '김민준', 'donor1', 'dummy1@example.com', NULL, 0, 'USER', 52000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
 (2, 'PLACEHOLDER_NOT_A_REAL_HASH', '이서연', 'donor2', 'dummy2@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),
 (3, 'PLACEHOLDER_NOT_A_REAL_HASH', '박지호', 'donor3', 'dummy3@example.com', NULL, 0, 'USER', 50000, UTC_TIMESTAMP(), UTC_TIMESTAMP()),

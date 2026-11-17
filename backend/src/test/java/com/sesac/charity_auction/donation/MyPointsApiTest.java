@@ -34,7 +34,7 @@ class MyPointsApiTest {
     @BeforeEach
     void setUp() {
         final String key = UUID.randomUUID().toString().substring(0, 8);
-        jdbc.update("INSERT INTO users (password, name, nickname, email, role, point_balance, created_at, updated_at) "
+        jdbc.update("INSERT INTO users (password, name, nickname, email, role, point, created_at, updated_at) "
                 + "VALUES ('x', '테스터', ?, ?, 'USER', 52000, UTC_TIMESTAMP(), UTC_TIMESTAMP())", key, key + "@test.local");
         userId = jdbc.queryForObject("SELECT user_id FROM users WHERE email = ?", Long.class, key + "@test.local");
         jdbc.update("INSERT INTO donation_targets (target_name, is_active, total_donation, target_amount, created_at) "

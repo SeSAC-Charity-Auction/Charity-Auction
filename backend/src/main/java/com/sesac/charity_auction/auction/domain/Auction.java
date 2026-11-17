@@ -24,16 +24,16 @@ public class Auction extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "item_name", nullable = false, length = 100)
     private String title;
 
-    @Column(length = 500)
+    @Column(name = "item_image", length = 500)
     private String image;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ColumnDefault("100")
+    @ColumnDefault("1000")
     @Column(nullable = false)
     private Long startPrice;
 
@@ -71,7 +71,7 @@ public class Auction extends BaseTimeEntity {
     // 경매 생성시 현재 가격을 시작 가격으로 초기화할 것
     public static Auction create(User user, Category category ,Long startPrice, String title, LocalDateTime startAt, LocalDateTime endAt){
 
-        // 시작 가격을 정하지 않았으면 기본값(100원)을 쓰고, 최소 금액보다 낮으면 막아요.
+        // 시작 가격을 정하지 않았으면 기본값(1,000원)을 쓰고, 최소 금액보다 낮으면 막아요.
         final long price = startPrice == null ? AuctionPolicy.DEFAULT_START_PRICE : startPrice;
         if (price < AuctionPolicy.MIN_START_PRICE) {
             throw new BusinessException(ErrorCode.INVALID_START_PRICE);
@@ -92,6 +92,10 @@ public class Auction extends BaseTimeEntity {
     // 상품 이미지를 바꿔요. (주소는 ImageStorage가 저장한 /uploads/auction/... 형태예요)
     public void changeImage(final String image){
         this.image = image;
+    }
+
+    public void describe(final String description) {
+        this.description = description;
     }
 
     // 입찰시 경매 정보 업데이트
@@ -153,7 +157,7 @@ public class Auction extends BaseTimeEntity {
         }
     }
 
-    // 경매 시작 (테스트 데이터 생성용)
+    // 경매 시작
     public void start(LocalDateTime now) {
         validateStatus(AuctionStatus.SCHEDULED,
                 ErrorCode.AUCTION_NOT_SCHEDULED);

@@ -47,7 +47,7 @@ public class AuctionController {
         return queryService.getDetail(auctionId);
     }
 
-    // POST /api/v1/auctions/{auctionId}/image : 경매 물품 이미지 올리기·바꾸기 (개발 환경에서만). 성공하면 { image }
+    // POST /api/v1/auctions/{auctionId}/image : 판매자가 경매 물품 이미지를 바꿔요. 성공하면 { image }
     @PostMapping("/{auctionId}/image")
     public Map<String, String> uploadImage(final @PathVariable long auctionId,
                                            final @RequestParam("file") MultipartFile file) {

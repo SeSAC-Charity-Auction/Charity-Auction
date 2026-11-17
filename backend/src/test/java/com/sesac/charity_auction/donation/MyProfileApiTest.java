@@ -35,7 +35,7 @@ class MyProfileApiTest {
     @BeforeEach
     void setUp() {
         key = UUID.randomUUID().toString().substring(0, 8);
-        jdbc.update("INSERT INTO users (password, name, nickname, email, role, point_balance, created_at, updated_at) "
+        jdbc.update("INSERT INTO users (password, name, nickname, email, role, point, created_at, updated_at) "
                         + "VALUES ('secret-hash', '테스터', ?, ?, 'USER', 30000, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
                 "닉" + key.substring(0, 4), key + "@test.local");
         userId = jdbc.queryForObject("SELECT user_id FROM users WHERE email = ?", Long.class, key + "@test.local");

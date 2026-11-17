@@ -54,7 +54,7 @@ class DonationConcurrencyTest {
 
     private long createUser(long balance) {
         String key = UUID.randomUUID().toString().substring(0, 8);
-        jdbc.update("INSERT INTO users (password, name, nickname, email, role, point_balance, created_at, updated_at) "
+        jdbc.update("INSERT INTO users (password, name, nickname, email, role, point, created_at, updated_at) "
                 + "VALUES ('x', '동시성', ?, ?, 'USER', ?, UTC_TIMESTAMP(), UTC_TIMESTAMP())", key, key + "@test.local", balance);
         long id = jdbc.queryForObject("SELECT user_id FROM users WHERE email = ?", Long.class, key + "@test.local");
         userIds.add(id);
@@ -99,7 +99,7 @@ class DonationConcurrencyTest {
     }
 
     private long balance(final long userId) {
-        return jdbc.queryForObject("SELECT point_balance FROM users WHERE user_id = ?", Long.class, userId);
+        return jdbc.queryForObject("SELECT point FROM users WHERE user_id = ?", Long.class, userId);
     }
 
     private long count(final String sql, final Object... args) {

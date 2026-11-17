@@ -2,7 +2,6 @@ package com.sesac.charity_auction.auction.service;
 
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
-import com.sesac.charity_auction.donation.service.TargetEditPolicy;
 import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.global.storage.ImageStorage;
@@ -18,16 +17,13 @@ public class AuctionImageService {
 
     private final UserRepository userRepository;
     private final AuctionRepository auctionRepository;
-    private final TargetEditPolicy editPolicy; // 기부처 이미지와 같은 규칙(개발 환경에서만)을 써요
     private final ImageStorage imageStorage;
 
     public AuctionImageService(final UserRepository userRepository,
                                final AuctionRepository auctionRepository,
-                               final TargetEditPolicy editPolicy,
                                final ImageStorage imageStorage) {
         this.userRepository = userRepository;
         this.auctionRepository = auctionRepository;
-        this.editPolicy = editPolicy;
         this.imageStorage = imageStorage;
     }
 
@@ -41,12 +37,12 @@ public class AuctionImageService {
         final User user = userRepository.findById(userId)
                 .filter(found -> !found.isDeleted())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_LOGGED_IN));
-        if (!editPolicy.canEdit(user)) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
-        }
         final Auction auction = auctionRepository.findById(auctionId)
                 .filter(found -> !found.isDeleted())
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
+        if (!auction.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         final String oldImage = auction.getImage();
         final String newImage = imageStorage.store(FOLDER, file);
