@@ -9,7 +9,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Flip from "./Flip";
-import styles from "./flip-text.module.css";
+import styles from "./FlipText.module.css";
 
 const STEP_MS = 50; // 한 칸 넘어가는 시간 (css의 --flip-ms와 같아야 해요)
 const STAGGER_MS = 20; // 자리마다 조금씩 늦게 시작해서 왼쪽부터 차례로 도는 느낌을 줘요

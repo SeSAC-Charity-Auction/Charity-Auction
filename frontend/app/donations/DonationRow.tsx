@@ -1,9 +1,9 @@
 // app/donations/donation-row.tsx
 import Link from "next/link";
-import FlipText from "./flip-text";
+import DonationRecord from "./DonationRecord";
+import FlipText from "./FlipText";
 import { relativeTime, won } from "./format";
 import styles from "./page.module.css";
-import DonationRecord from "./DonationRecord";
 
 export default function DonationRow({ record }: { record: DonationRecord }) {
 	return (

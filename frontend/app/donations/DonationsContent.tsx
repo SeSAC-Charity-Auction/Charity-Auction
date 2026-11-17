@@ -2,17 +2,17 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import Stat from "./[targetId]/Stat";
-import DonationRow from "./donation-row";
+import DonationRow from "./DonationRow";
 import EmptyTicket from "./EmptyTicket";
 import FlipText from "./FlipText";
 import { display } from "./fonts";
 import { won } from "./format";
 import { getDonationSummary } from "./getDonationSummary";
 import LatestTicket from "./LatestTicket";
+import MyWallet from "./MyWallet";
 import styles from "./page.module.css";
 import TargetCard from "./TargetCard";
 import TargetCarousel from "./TargetCarousel";
-import MyWallet from "./MyWallet";
 import WalletSkeleton from "./WalletSkeleton";
 
 export default async function DonationsContent() {

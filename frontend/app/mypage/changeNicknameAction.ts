@@ -1,3 +1,5 @@
+"use server";
+
 import { revalidatePath } from "next/cache";
 import changeMyNickname from "../donations/changeMyNickname";
 import { NICKNAME_MESSAGES } from "./constants";

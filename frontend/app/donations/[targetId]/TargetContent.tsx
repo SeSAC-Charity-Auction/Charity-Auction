@@ -1,17 +1,17 @@
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import DonationRow from "../donation-row";
+import DonationRow from "../DonationRow";
 import FlipText from "../FlipText";
 import { display } from "../fonts";
 import { won } from "../format";
+import getDonationTarget from "../getDonationTarget";
 import getMyProfile from "../getMyProfile";
 import DonatePanel from "./DonatePanel";
 import styles from "./page.module.css";
 import PanelSkeleton from "./PanelSkeleton";
 import Stat from "./Stat";
 import TargetImageUploader from "./TargetImageUploader";
-import getDonationTarget from "../getDonationTarget";
 
 export default async function TargetContent({
 	params

@@ -1,5 +1,5 @@
 import DonationRecord from "../DonationRecord";
-import FlipText from "../flip-text";
+import FlipText from "../FlipText";
 import { won } from "../format";
 import styles from "./page.module.css";
 import relativeTime from "./relativeTime";

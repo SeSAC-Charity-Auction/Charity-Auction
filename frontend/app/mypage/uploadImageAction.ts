@@ -1,3 +1,5 @@
+"use server";
+
 import { revalidatePath } from "next/cache";
 import uploadMyImage from "../donations/uploadMyImage";
 import UploadState from "./UploadState";

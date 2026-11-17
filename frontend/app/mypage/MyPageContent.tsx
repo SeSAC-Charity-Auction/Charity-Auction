@@ -1,4 +1,4 @@
-import { styles } from "next/dist/client/components/styles/access-error-styles";
+import styles from "./page.module.css";
 import { connection } from "next/server";
 import { display } from "../donations/fonts";
 import getMyPoints from "../donations/getMyPoints";
