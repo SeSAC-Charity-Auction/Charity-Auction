@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { pretendard } from "./fonts";
-import ThemeToggle from "./theme-toggle";
 import "./globals.css";
+import ThemeToggle from "./ThemeToggle";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
