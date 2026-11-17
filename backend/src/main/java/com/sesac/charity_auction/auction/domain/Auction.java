@@ -86,11 +86,6 @@ public class Auction extends BaseTimeEntity {
     // 수정 - 경매 시작 전에만 가능
     public void update(String title, String description, String image, Category category, Long startPrice, LocalDateTime startAt, LocalDateTime endAt,LocalDateTime now){
 
-        // 삭제 여부 확인
-        if(this.isDeleted){
-            throw new BusinessException(ErrorCode.AUCTION_NOT_FOUND);
-        }
-
         // 경매 상태 확인
         validateStatus(AuctionStatus.SCHEDULED, ErrorCode.AUCTION_NOT_SCHEDULED);
 
@@ -122,6 +117,25 @@ public class Auction extends BaseTimeEntity {
         this.currentPrice = startPrice;
         this.startAt = startAt;
         this.endAt = endAt;
+    }
+
+    // 삭제
+    public void delete(LocalDateTime now){
+
+        // 경매 상태 확인
+        validateStatus(AuctionStatus.SCHEDULED, ErrorCode.AUCTION_NOT_SCHEDULED);
+
+        // 실제 시간 확인
+        if(!now.isBefore(this.startAt)){
+            throw new BusinessException(ErrorCode.AUCTION_ALREADY_STARTED);
+        }
+
+        if (this.bidCount > 0) {
+            throw new BusinessException(ErrorCode.AUCTION_HAS_BIDS);
+        }
+
+        this.isDeleted = true;
+        this.deletedAt = now;
     }
 
     // 입찰시 경매 정보 업데이트

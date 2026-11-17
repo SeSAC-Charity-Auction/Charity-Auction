@@ -29,5 +29,11 @@ public class AuctionController {
     }
 
     // 삭제
+    @DeleteMapping("/{auctionId}")
+    public ResponseEntity<Void> deleteAuction(@PathVariable Long auctionId){
 
+        auctionManageService.deleteAuction(auctionId, currentUser.currentUserId());
+
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -11,6 +11,7 @@ import com.sesac.charity_auction.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.time.LocalDateTime;
 
@@ -28,14 +29,8 @@ public class AuctionManageService {
     @Transactional
     public AuctionDetailResponse updateAuction(Long auctionId, Long userId, AuctionUpdateRequest request){
 
-        // 경매 조회
-        Auction auction = auctionRepository.findByIdAndIsDeletedFalse(auctionId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
-
-        // 작성자 확인
-        if(!auction.getUser().getId().equals(userId)){
-            throw new BusinessException(ErrorCode.AUCTION_ACCESS_DENIED);
-        }
+        // 경매 조회 및 작성자 확인
+        Auction auction = getAuctionAndValidateOwner(auctionId, userId);
 
         // 카테고리 조회
         Category category = categoryRepository.findById(request.categoryId())
@@ -58,6 +53,33 @@ public class AuctionManageService {
     }
 
     // 삭제
+    @Transactional
+    public void deleteAuction(Long auctionId, Long userId){
 
+        // 경매 조회 및 작성자 확인
+        Auction auction = getAuctionAndValidateOwner(auctionId, userId);
+
+        LocalDateTime now = auctionRepository.findCurrentDatabaseTime();
+
+        // 논리적 삭제
+        auction.delete(now);
+    }
+
+    // 경매 조회 및 작성자 검증
+    private Auction getAuctionAndValidateOwner(Long auctionId, Long userId){
+
+        // 삭제되지 않은 경매 조회
+        Auction auction = auctionRepository.findByIdAndIsDeletedFalse(auctionId)
+                .orElseThrow(() ->
+                        new BusinessException(ErrorCode.AUCTION_NOT_FOUND)
+                );
+
+        // 작성자 확인
+        if (!auction.getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.AUCTION_ACCESS_DENIED);
+        }
+
+        return auction;
+    }
 
 }
