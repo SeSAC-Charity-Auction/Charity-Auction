@@ -1,3 +1,4 @@
+import FlipText from "../../donations/FlipText";
 import { relativeTime, won } from "../../donations/format";
 import BidHistoryItem from "../BidHistoryItem";
 import styles from "./page.module.css";
@@ -16,9 +17,13 @@ export default function BidHistory({
 					입찰 내역
 				</h2>
 				<p className={styles.muted}>
-					{total > bids.length ?
-						`전체 ${total.toLocaleString("ko-KR")}건 중 최근 ${bids.length}건`
-					:	`${total.toLocaleString("ko-KR")}건`}
+					<FlipText
+						text={
+							total > bids.length ?
+								`전체 ${total.toLocaleString("ko-KR")}건 중 최근 ${bids.length}건`
+							:	`${total.toLocaleString("ko-KR")}건`
+						}
+					/>
 				</p>
 			</div>
 
@@ -36,9 +41,9 @@ export default function BidHistory({
 										<span className={styles.topTag}>최고가</span>
 									)}
 								</p>
-								<p className={styles.bidTime}>{relativeTime(b.bidAt)}</p>
+								<p className={styles.bidTime}><FlipText text={relativeTime(b.bidAt)} /></p>
 							</div>
-							<p className={styles.bidPrice}>{won(b.bidPrice)}</p>
+							<p className={styles.bidPrice}><FlipText text={won(b.bidPrice)} /></p>
 						</li>
 					))}
 				</ol>

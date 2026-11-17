@@ -3,6 +3,7 @@
 // 입찰 폼이에요. 입력값에 따라 화면이 바뀌어서 클라이언트 컴포넌트예요.
 
 import { useActionState, useState } from "react";
+import FlipText from "../../donations/FlipText";
 import BidState from "../BidState";
 import placeBidAction from "../placeBidAction";
 import styles from "./page.module.css";
@@ -56,13 +57,14 @@ export default function BidForm({
 						className={styles.quickBtn}
 						onClick={() => setRaw(price + add)} // 누를 때마다 지금 입력된 금액에 더해져요
 					>
-						+{add.toLocaleString("ko-KR")}
+						+<FlipText text={add.toLocaleString("ko-KR")} />
 					</button>
 				))}
 			</div>
 			<p className={styles.hint}>
-				{won(min)} 이상, {BID_STEP.toLocaleString("ko-KR")}원 단위로 입찰할
-				수 있어요.
+				<FlipText text={won(min)} /> 이상,{" "}
+				<FlipText text={`${BID_STEP.toLocaleString("ko-KR")}원`} /> 단위로
+				입찰할 수 있어요.
 			</p>
 
 			{state.status === "error" && (
@@ -77,7 +79,9 @@ export default function BidForm({
 			)}
 
 			<button type="submit" className={styles.submit} disabled={pending}>
-				{pending ? "입찰하는 중이에요" : `${won(price)} 입찰하기`}
+				{pending ? "입찰하는 중이에요" : <>
+						<FlipText text={won(price)} /> 입찰하기
+					</>}
 			</button>
 		</form>
 	);

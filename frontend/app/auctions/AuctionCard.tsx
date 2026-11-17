@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { won } from "../donations/format";
+import FlipText from "../donations/FlipText";
 import AuctionSummary from "./AuctionSummary";
 import isClosedAuction from "./isClosedAuction";
 import styles from "./page.module.css";
@@ -48,15 +49,18 @@ export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
 						:	"시작 가격"}
 					</span>
 					<span className={styles.price}>
-						{won(auction.currentPrice)}
+						<FlipText text={won(auction.currentPrice)} />
 					</span>
 				</div>
 				<p className={styles.meta}>
 					<span>
-						입찰 {auction.bidCount.toLocaleString("ko-KR")}회
+						입찰{" "}
+						<FlipText
+							text={`${auction.bidCount.toLocaleString("ko-KR")}회`}
+						/>
 					</span>
 					<span className={time.urgent ? styles.urgent : undefined}>
-						{time.text}
+						<FlipText text={time.text} />
 					</span>
 				</p>
 			</div>

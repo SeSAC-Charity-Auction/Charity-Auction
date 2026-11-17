@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { connection } from "next/server";
+import FlipText from "../../donations/FlipText";
 import { won } from "../../donations/format";
 import formatDateTime from "../formatDateTime";
 import getAuction from "../getAuction";
@@ -114,34 +115,45 @@ export default async function AuctionDetailContent({
 					<dl className={styles.facts}>
 						<div className={styles.factWide}>
 							<dt>{auction.bidCount > 0 ? "현재 입찰가" : "시작 가격"}</dt>
-							<dd className={styles.price}>{won(auction.currentPrice)}</dd>
+							<dd className={styles.price}><FlipText text={won(auction.currentPrice)} /></dd>
 						</div>
 						<div>
 							<dt>시작 가격</dt>
-							<dd>{won(auction.startPrice)}</dd>
+							<dd>
+								<FlipText text={won(auction.startPrice)} />
+							</dd>
 						</div>
 						<div>
 							<dt>입찰</dt>
-							<dd>{auction.bidCount.toLocaleString("ko-KR")}회</dd>
+							<dd>
+								<FlipText
+									text={`${auction.bidCount.toLocaleString("ko-KR")}회`}
+								/>
+							</dd>
 						</div>
 						<div>
 							<dt>경매 시작</dt>
-							<dd>{formatDateTime(auction.startAt)}</dd>
+							<dd>
+								<FlipText text={formatDateTime(auction.startAt)} />
+							</dd>
 						</div>
 						<div>
 							<dt>경매 종료</dt>
-							<dd>{formatDateTime(auction.endAt)}</dd>
+							<dd>
+								<FlipText text={formatDateTime(auction.endAt)} />
+							</dd>
 						</div>
 					</dl>
 
 					{(live || auction.status === "SCHEDULED") && (
 						<p className={time.urgent ? styles.timeUrgent : styles.time}>
-							{time.text}
+							<FlipText text={time.text} />
 						</p>
 					)}
 					{closed && (
 						<p className={styles.timeClosed}>
-							마감 · {formatDateTime(auction.endAt)}
+							마감 ·{" "}
+							<FlipText text={formatDateTime(auction.endAt)} />
 						</p>
 					)}
 

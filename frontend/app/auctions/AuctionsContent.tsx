@@ -1,3 +1,4 @@
+import FlipText from "../donations/FlipText";
 import Link from "next/link";
 import { connection } from "next/server";
 import AuctionCard from "./AuctionCard";
@@ -42,7 +43,9 @@ export default async function AuctionsContent({
 				<SortLinks filters={filters} />
 			</div>
 			<p className={styles.count} role="status">
-				{data.totalElements.toLocaleString("ko-KR")}개의 경매
+				<FlipText
+					text={`${data.totalElements.toLocaleString("ko-KR")}개의 경매`}
+				/>
 			</p>
 			{data.items.length > 0 ?
 				<ul className={styles.grid}>
