@@ -1,17 +1,20 @@
 package com.sesac.charity_auction.auction.service;
 
 import com.sesac.charity_auction.auction.domain.Auction;
+import com.sesac.charity_auction.auction.dto.request.AuctionSearchCondition;
 import com.sesac.charity_auction.auction.dto.request.AuctionUpdateRequest;
 import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse;
+import com.sesac.charity_auction.auction.dto.response.AuctionListResponse;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
 import com.sesac.charity_auction.category.domain.Category;
 import com.sesac.charity_auction.category.repository.CategoryRepository;
 import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +27,22 @@ public class AuctionManageService {
     private final CategoryRepository categoryRepository;
 
     // 경매 목록 조회 및 검색
+    public Page<AuctionListResponse> getAuctions(AuctionSearchCondition condition, Pageable pageable){
+
+        System.out.println("service");
+        Page<Auction> auctions = auctionRepository.searchAuctions(condition, pageable);
+
+        return auctions.map(AuctionListResponse::from);
+    }
+
+    // 경매 상세 조회
+    public AuctionDetailResponse getAuctionDetail(Long auctionId){
+
+        Auction auction = auctionRepository.findByIdAndIsDeletedFalse(auctionId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
+
+        return AuctionDetailResponse.from(auction);
+    }
 
     // 수정
     @Transactional

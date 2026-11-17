@@ -53,3 +53,9 @@ security:
 scheduler:
   auction:
     enabled: false
+
+logging:
+  level:
+    org.springframework.security: TRACE
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
