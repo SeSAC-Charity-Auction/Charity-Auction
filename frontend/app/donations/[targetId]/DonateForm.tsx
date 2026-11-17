@@ -20,7 +20,6 @@ type Props = {
 };
 
 const initialState: DonateState = { status: "idle" };
-
 const pt = (n: number) => `${n.toLocaleString("ko-KR")}P`;
 const toStep = (n: number) => Math.floor(n / DONATION_STEP) * DONATION_STEP;
 const pctOf = (part: number, whole: number) =>
@@ -39,10 +38,8 @@ export default function DonateForm({
 		donateAction,
 		initialState
 	);
-
 	const max = toStep(balance); // 슬라이더 맨 오른쪽 (잔액을 단위에 맞춰 내림)
 	const canDonate = max >= MIN_DONATION;
-
 	// 처음에는 내 포인트의 4분의 1 정도로 시작해요.
 	const [rawAmount, setRawAmount] = useState(() =>
 		Math.max(MIN_DONATION, toStep(max / 4))
@@ -50,7 +47,6 @@ export default function DonateForm({
 	// 기부 후 잔액이 줄어들어도 슬라이더 범위를 벗어나지 않게 맞춰요.
 	const amount =
 		canDonate ? Math.min(Math.max(rawAmount, MIN_DONATION), max) : 0;
-
 	if (!canDonate) {
 		return (
 			<div className={styles.panelQuiet}>
@@ -70,28 +66,23 @@ export default function DonateForm({
 			</div>
 		);
 	}
-
 	const fillPct =
 		max > MIN_DONATION ?
 			((amount - MIN_DONATION) / (max - MIN_DONATION)) * 100
 		:	100;
-
 	// 이 기부로 목표 막대가 얼마나 더 채워지는지 미리 보여줘요.
 	const nowPct = pctOf(currentTotal, targetAmount);
 	const addPct = pctOf(amount, targetAmount);
 	const nowWidth = clampPct(nowPct);
 	const addWidth = clampPct(nowPct + addPct) - nowWidth;
-
 	const presets = [
 		{ label: "1/4", value: Math.max(MIN_DONATION, toStep(max / 4)) },
 		{ label: "절반", value: Math.max(MIN_DONATION, toStep(max / 2)) },
 		{ label: "전액", value: max }
 	];
-
 	return (
 		<form action={formAction} className={styles.panel}>
 			<input type="hidden" name="targetId" value={targetId} />
-
 			<div className={styles.panelHead}>
 				<h2 className={`${styles.panelTitle} ${display.className}`}>
 					기부하기
@@ -100,7 +91,6 @@ export default function DonateForm({
 					<FlipText text={`내 포인트 ${pt(balance)}`} />
 				</p>
 			</div>
-
 			<label htmlFor="donation-amount" className={styles.amountLabel}>
 				기부할 포인트
 			</label>
@@ -111,7 +101,6 @@ export default function DonateForm({
 				<FlipText text={amount.toLocaleString("ko-KR")} />
 				<span className={styles.amountUnit}>P</span>
 			</output>
-
 			<input
 				id="donation-amount"
 				name="amount"
@@ -133,7 +122,6 @@ export default function DonateForm({
 					<FlipText text={pt(max)} />
 				</span>
 			</div>
-
 			<div
 				className={styles.chips}
 				role="group"
@@ -151,7 +139,6 @@ export default function DonateForm({
 					</button>
 				))}
 			</div>
-
 			<div className={styles.preview}>
 				<div className={styles.previewBar} aria-hidden="true">
 					<div
@@ -174,7 +161,6 @@ export default function DonateForm({
 					/>
 				</p>
 			</div>
-
 			{state.status === "error" && (
 				<p className={styles.messageError} role="alert">
 					<FlipText text={state.message} />
@@ -187,7 +173,6 @@ export default function DonateForm({
 					/>
 				</p>
 			)}
-
 			<button
 				type="submit"
 				className={styles.submit}

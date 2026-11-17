@@ -4,8 +4,9 @@
 // 기부처 이미지를 누르면 파일을 고르고, 고르자마자 올려요. (ADMIN 또는 개발 환경에서만 쓰여요)
 
 import { useActionState, useRef } from "react";
-import { uploadTargetImageAction, type TargetImageState } from "./actions";
+import TargetImageState from "./TargetImageState";
 import styles from "./page.module.css";
+import uploadTargetImageAction from "./uploadTargetImageAction";
 
 const idle: TargetImageState = { status: "idle" };
 
@@ -23,7 +24,6 @@ export default function TargetImageUploader({
 		uploadTargetImageAction,
 		idle
 	);
-
 	return (
 		<form ref={formRef} action={formAction}>
 			<input type="hidden" name="targetId" value={targetId} />

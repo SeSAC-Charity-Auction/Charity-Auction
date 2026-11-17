@@ -5,11 +5,7 @@
 
 import { revalidatePath } from "next/cache";
 import { uploadTargetImage } from "../data";
-
-export type TargetImageState =
-	| { status: "idle" }
-	| { status: "success" }
-	| { status: "error"; message: string };
+import TargetImageState from "./TargetImageState";
 
 const MAX_BYTES = 2 * 1024 * 1024;
 
@@ -22,7 +18,7 @@ const MESSAGES: Record<string, string> = {
 	UNKNOWN: "이미지를 올리지 못했어요. 잠시 뒤에 다시 시도해 주세요."
 };
 
-export async function uploadTargetImageAction(
+export default async function uploadTargetImageAction(
 	_prev: TargetImageState,
 	formData: FormData
 ): Promise<TargetImageState> {
@@ -37,7 +33,6 @@ export async function uploadTargetImageAction(
 	if (file.size > MAX_BYTES) {
 		return { status: "error", message: MESSAGES.IMAGE_TOO_LARGE };
 	}
-
 	const result = await uploadTargetImage(targetId, file);
 	if (!result.ok) {
 		return {
@@ -45,7 +40,6 @@ export async function uploadTargetImageAction(
 			message: MESSAGES[result.code] ?? MESSAGES.UNKNOWN
 		};
 	}
-
 	// 목록과 이 기부처 상세가 새 이미지로 다시 그려지게 해요.
 	revalidatePath("/donations");
 	revalidatePath(`/donations/${targetId}`);
