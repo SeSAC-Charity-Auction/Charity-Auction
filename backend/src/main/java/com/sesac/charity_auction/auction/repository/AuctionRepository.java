@@ -37,4 +37,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
         AND c.status = :status
     """)
     List<AuctionListResponse> findAuctionList(@Param("status")AuctionCandidateStatus status);
+
+    // 경매 조회
+    Optional<Auction> findByIdAndIsDeletedFalse(Long id);
 }
