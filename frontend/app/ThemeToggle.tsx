@@ -23,7 +23,6 @@ export default function ThemeToggle() {
 	// 서버에서는 모양을 알 수 없으니 light 로 두고, 클라이언트에서 실제 값으로 맞춰요.
 	const theme = useSyncExternalStore(subscribe, getTheme, () => "light");
 	const isDark = theme === "dark";
-
 	function toggle() {
 		const next: Theme = isDark ? "light" : "dark";
 		document.documentElement.dataset.theme = next;
@@ -31,7 +30,6 @@ export default function ThemeToggle() {
 			localStorage.setItem(STORAGE_KEY, next);
 		} catch {}
 	}
-
 	return (
 		<button
 			type="button"
