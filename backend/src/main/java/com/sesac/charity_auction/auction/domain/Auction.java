@@ -69,7 +69,7 @@ public class Auction extends BaseTimeEntity {
     private User user;
 
     // 경매 생성시 현재 가격을 시작 가격으로 초기화할 것
-    public static Auction create(User user, Category category ,Long startPrice, String title, LocalDateTime startAt, LocalDateTime endAt){
+    public static Auction create(User user, Category category, Long startPrice, String title, LocalDateTime startAt, LocalDateTime endAt) {
 
         // 시작 가격을 정하지 않았으면 기본값(1,000원)을 쓰고, 최소 금액보다 낮으면 막아요.
         final long price = startPrice == null ? AuctionPolicy.DEFAULT_START_PRICE : startPrice;
@@ -90,7 +90,7 @@ public class Auction extends BaseTimeEntity {
     }
 
     // 상품 이미지를 바꿔요. (주소는 ImageStorage가 저장한 /uploads/auction/... 형태예요)
-    public void changeImage(final String image){
+    public void changeImage(final String image) {
         this.image = image;
     }
 
@@ -99,42 +99,41 @@ public class Auction extends BaseTimeEntity {
     }
 
     // 입찰시 경매 정보 업데이트
-    public void updateAuctionInfo(Long bidPrice){
+    public void updateAuctionInfo(final Long bidPrice) {
         this.currentPrice = bidPrice;
         this.bidCount++;
     }
 
     // 경매 마감
-    public void close(LocalDateTime now){
+    public void close(final LocalDateTime now) {
         validateStatus(AuctionStatus.IN_PROGRESS, ErrorCode.AUCTION_NOT_IN_PROGRESS);
         validateEndTime(now);
         this.status = AuctionStatus.CLOSED;
     }
 
     // 낙찰 완료
-    public void complete(){
+    public void complete() {
         validateStatus(AuctionStatus.CLOSED, ErrorCode.AUCTION_NOT_CLOSED);
         this.status = AuctionStatus.COMPLETED;
     }
 
     // 유찰
-    public void fail(){
-
+    public void fail() {
         validateStatus(AuctionStatus.CLOSED, ErrorCode.AUCTION_NOT_CLOSED);
         this.status = AuctionStatus.FAILED;
     }
 
     // 경매 취소
-    public void cancel(LocalDateTime now){
+    public void cancel(final LocalDateTime now) {
         validateStatus(AuctionStatus.SCHEDULED, ErrorCode.AUCTION_NOT_SCHEDULED);
 
         // 경매 시작 시간이 다 되었는데 스케줄러가 아직 실행되지 않아 DB 상태가 여전히 SCHEDULED인 경우
-        if(!now.isBefore(this.startAt)){
+        if (!now.isBefore(this.startAt)) {
             throw new BusinessException(ErrorCode.AUCTION_ALREADY_STARTED);
         }
 
         // 입찰 내역이 있는지 확인
-        if(this.bidCount > 0){
+        if (this.bidCount > 0) {
             throw new BusinessException(ErrorCode.AUCTION_HAS_BIDS);
         }
 
@@ -142,26 +141,23 @@ public class Auction extends BaseTimeEntity {
     }
 
     // 상태 검증
-    private void validateStatus(AuctionStatus expectedStatus, ErrorCode errorCode){
-
-        if(this.status != expectedStatus){
+    private void validateStatus(final AuctionStatus expectedStatus, final ErrorCode errorCode) {
+        if (this.status != expectedStatus) {
             throw new BusinessException(errorCode);
         }
     }
 
     // 기한 검증
-    private void validateEndTime(LocalDateTime now){
-
-        if(this.endAt == null || now.isBefore(this.endAt)){
+    private void validateEndTime(final LocalDateTime now) {
+        if (this.endAt == null || now.isBefore(this.endAt)) {
             throw new BusinessException(ErrorCode.AUCTION_NOT_ENDED);
         }
     }
 
     // 경매 시작
-    public void start(LocalDateTime now) {
+    public void start(final LocalDateTime now) {
         validateStatus(AuctionStatus.SCHEDULED,
                 ErrorCode.AUCTION_NOT_SCHEDULED);
-
         if (now.isBefore(this.startAt)) {
             throw new BusinessException(ErrorCode.AUCTION_NOT_STARTED);
         }
@@ -172,5 +168,4 @@ public class Auction extends BaseTimeEntity {
 
         this.status = AuctionStatus.IN_PROGRESS;
     }
-
 }

@@ -13,8 +13,7 @@ public record BidCreateResponse(
         Long bidCount
 
 ) {
-    public static BidCreateResponse from(Bid bid, Long currentPrice, Long bidCount){
-
+    public static BidCreateResponse from(final Bid bid, final Long currentPrice, final Long bidCount) {
         return new BidCreateResponse(
                 bid.getId(),
                 bid.getAuction().getId(),
@@ -22,6 +21,6 @@ public record BidCreateResponse(
                 bid.getBidAt(),
                 currentPrice,
                 bidCount
-            );
+        );
     }
 }

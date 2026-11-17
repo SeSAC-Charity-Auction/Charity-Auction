@@ -21,7 +21,6 @@ public class UserService {
 
     @Transactional
     public SignupResponse signup(final SignupRequest request) {
-
         if (userRepository.existsByEmail(request.email())) {
             throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }

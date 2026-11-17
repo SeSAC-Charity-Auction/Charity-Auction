@@ -22,10 +22,10 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
     long countByUserId(final long userId);
 
     // 경매별 적립 내역 확인
-    long countByUserIdAndAuctionIdAndPointType(Long userId, Long auctionId, PointType pointType);
+    long countByUserIdAndAuctionIdAndPointType(final Long userId, final Long auctionId, final PointType pointType);
 
     // 포인트 적립 확인용 테스트
-    Optional<PointHistory> findFirstByUser_IdAndAuction_IdAndPointType(Long userId, Long auctionId, PointType pointType);
+    Optional<PointHistory> findFirstByUser_IdAndAuction_IdAndPointType(final Long userId, final Long auctionId, final PointType pointType);
 
     @Query("select u.id as userId, u.nickname as nickname, u.image as userImage, "
             + "sum(h.pointAmount) as totalDonation, count(h.id) as donationCount "

@@ -25,8 +25,8 @@ public class AuctionRegistrationController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AuctionRegistrationResponse> register(
-            @Valid @RequestPart("auction") AuctionRegistrationRequest request,
-            @RequestPart("file") MultipartFile file) {
+            final @Valid @RequestPart("auction") AuctionRegistrationRequest request,
+            final @RequestPart("file") MultipartFile file) {
         var response = registrationService.register(currentUser.currentUserId(), request, file);
         return ResponseEntity.created(URI.create("/api/v1/auctions/" + response.auctionId())).body(response);
     }

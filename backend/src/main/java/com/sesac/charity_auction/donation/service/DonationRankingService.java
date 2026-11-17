@@ -15,20 +15,20 @@ import java.util.List;
 public class DonationRankingService {
     private final PointHistoryRepository pointHistoryRepository;
 
-    public DonationRankingService(PointHistoryRepository pointHistoryRepository) {
+    public DonationRankingService(final PointHistoryRepository pointHistoryRepository) {
         this.pointHistoryRepository = pointHistoryRepository;
     }
 
     public List<DonationRankingResponse> getRanking() {
-        List<DonationRankingProjection> totals = pointHistoryRepository.findDonationRanking(PointType.USE);
-        List<DonationRankingResponse> ranking = new ArrayList<>(totals.size());
+        final List<DonationRankingProjection> totals = pointHistoryRepository.findDonationRanking(PointType.USE);
+        final List<DonationRankingResponse> ranking = new ArrayList<>(totals.size());
 
         Long previousTotal = null;
         long currentRank = 0;
 
         for (int index = 0; index < totals.size(); index++) {
-            DonationRankingProjection member = totals.get(index);
-            long totalDonation = member.getTotalDonation();
+            final DonationRankingProjection member = totals.get(index);
+            final long totalDonation = member.getTotalDonation();
 
             if (previousTotal == null || totalDonation != previousTotal) {
                 currentRank = (long) index + 1;
@@ -44,7 +44,6 @@ public class DonationRankingService {
             ));
             previousTotal = totalDonation;
         }
-
         return ranking;
     }
 }

@@ -25,16 +25,16 @@ public class AuctionRegistrationService {
     private final ImageStorage imageStorage;
 
     @Transactional
-    public AuctionRegistrationResponse register(long userId, AuctionRegistrationRequest request, MultipartFile file) {
-        var user = userRepository.findById(userId).filter(found -> !found.isDeleted())
+    public AuctionRegistrationResponse register(final long userId, final AuctionRegistrationRequest request, final MultipartFile file) {
+        final var user = userRepository.findById(userId).filter(found -> !found.isDeleted())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_LOGGED_IN));
-        var category = categoryRepository.findById(request.categoryId())
+        final var category = categoryRepository.findById(request.categoryId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
-        var now = auctionRepository.findCurrentDatabaseTime();
-        var auction = Auction.create(user, category, request.startPrice(), request.title().trim(), now, now.plusHours(24));
+        final var now = auctionRepository.findCurrentDatabaseTime();
+        final var auction = Auction.create(user, category, request.startPrice(), request.title().trim(), now, now.plusHours(24));
         auction.describe(request.description());
         auction.start(now);
-        var image = imageStorage.store("auction", file);
+        final var image = imageStorage.store("auction", file);
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCompletion(int status) {

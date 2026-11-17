@@ -22,24 +22,22 @@ import java.util.List;
         havingValue = "true"
 )
 public class AuctionCandidateScheduler {
-
     private final AuctionRepository auctionRepository;
     private final AuctionCandidateRepository auctionCandidateRepository;
     private final AuctionCandidateService auctionCandidateService;
 
     // 10초마다 실행
     @Scheduled(fixedDelay = 10000)
-    public void processExpiredCandidates(){
-
+    public void processExpiredCandidates() {
         // 마감 상태인 경매 중에서 낙찰 기한이 만료된 후보자가 있는 경매 조회
-        List<Long> auctionIds = auctionCandidateRepository.findExpiredCandidateAuctionIds(
+        final List<Long> auctionIds = auctionCandidateRepository.findExpiredCandidateAuctionIds(
                 AuctionCandidateStatus.OFFERED, AuctionStatus.CLOSED, LocalDateTime.now()
         );
 
-        for(Long auctionId : auctionIds){
+        for (final Long auctionId : auctionIds) {
             try {
                 auctionCandidateService.processExpiredCandidate(auctionId);
-            }catch (Exception e){
+            } catch (final Exception e) {
                 log.error("낙찰 후보 만료 처리 실패. auctionId: {}", auctionId, e);
             }
         }

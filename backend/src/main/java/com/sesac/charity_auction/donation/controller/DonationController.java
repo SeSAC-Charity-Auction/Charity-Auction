@@ -38,7 +38,7 @@ public class DonationController {
     @PostMapping
     public DonationResponse donate(final @RequestBody DonationRequest request) {
         // 로그인 확인이 먼저예요. 로그인하지 않았으면 여기서 NOT_LOGGED_IN(401)이 나가요.
-        long userId = currentUser.currentUserId();
+        final long userId = currentUser.currentUserId();
         return donationService.donate(userId, request.targetId(), request.amount());
     }
 }
