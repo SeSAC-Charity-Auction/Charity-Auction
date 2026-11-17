@@ -1,6 +1,7 @@
 import Link from "next/link";
-import AuctionFilters, { STATUS_TABS } from "./AuctionFilters";
+import AuctionFilters from "./AuctionFilters";
 import buildHref from "./buildHref";
+import { STATUS_TABS } from "./constants";
 import styles from "./page.module.css";
 
 export default function StatusTabs({ filters }: { filters: AuctionFilters }) {

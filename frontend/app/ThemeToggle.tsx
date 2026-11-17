@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import subscribe from "./subscribe";
 
 type Theme = "light" | "dark";
 
@@ -8,15 +9,6 @@ const STORAGE_KEY = "theme";
 
 function getTheme(): Theme {
 	return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-}
-
-function subscribe(callback: () => void) {
-	const observer = new MutationObserver(callback);
-	observer.observe(document.documentElement, {
-		attributes: true,
-		attributeFilter: ["data-theme"]
-	});
-	return () => observer.disconnect();
 }
 
 export default function ThemeToggle() {

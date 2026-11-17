@@ -7,7 +7,6 @@ import MyPageNav from "./MyPageNav";
 export default async function MyPageLink() {
 	// 사람마다 다른 값이라 요청이 올 때 그려요.
 	await connection();
-
 	let image: string | null = null;
 	let hasNew = false;
 	let loggedIn = false;

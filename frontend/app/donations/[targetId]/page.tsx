@@ -2,9 +2,9 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { body } from "../fonts";
+import LoadingState from "./LoadingState";
 import styles from "./page.module.css";
 import TargetContent from "./TargetContent";
-import LoadingState from "./LoadingState";
 
 export default function TargetPage({
 	params

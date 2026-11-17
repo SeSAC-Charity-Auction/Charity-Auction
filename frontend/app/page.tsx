@@ -7,7 +7,9 @@ import styles from "./auctions/page.module.css";
 import { body } from "./donations/fonts";
 
 export const metadata: Metadata = {
-	title: "경매 물품"
+	title: "경매 물품",
+	description:
+		"카테고리와 검색으로 마음에 드는 물건을 찾아 입찰하세요. 낙찰금은 기부로 이어져요."
 };
 
 // 카테고리·정렬·쪽 번호(?category=&sort=&page=)는 요청이 와야 알 수 있어서 <Suspense> 안에서 읽어요.

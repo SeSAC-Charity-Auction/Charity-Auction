@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { connection } from "next/server";
+import { Suspense } from "react";
 import FlipText from "../../donations/FlipText";
 import { won } from "../../donations/format";
 import formatDateTime from "../formatDateTime";
@@ -11,22 +11,9 @@ import timeLabel from "../timeLabel";
 import AuctionImageUploader from "./AuctionImageUploader";
 import BidHistory from "./BidHistory";
 import BidPanel from "./BidPanel";
+import { CLOSED_NOTE, STATUS_LABEL } from "./constants";
 import OfferPanel from "./OfferPanel";
 import styles from "./page.module.css";
-
-const STATUS_LABEL = {
-	SCHEDULED: "예정",
-	IN_PROGRESS: "진행 중",
-	CANCELED: "취소"
-} as const;
-
-// 마감된 경매에 붙일 작은 설명이에요.
-const CLOSED_NOTE = {
-	CLOSED: "낙찰자를 정하는 중이에요",
-	COMPLETED: "낙찰 완료",
-	FAILED: "유찰",
-	IN_PROGRESS: "마감 처리 중이에요"
-} as const;
 
 export default async function AuctionDetailContent({
 	params
@@ -35,16 +22,13 @@ export default async function AuctionDetailContent({
 }) {
 	// 남은 시간(현재 시각)과 API 응답은 요청할 때마다 달라서 미리 만들어 둘 수 없어요.
 	await connection();
-
 	const id = Number((await params).auctionId);
 	if (!Number.isInteger(id) || id <= 0) notFound();
 	const auction = await getAuction(id);
 	if (!auction) notFound();
-
 	const closed = isClosedAuction(auction);
 	const live = auction.status === "IN_PROGRESS" && !closed;
 	const time = timeLabel(auction);
-
 	const photo =
 		auction.image ?
 			// 외부 주소의 이미지는 next/image 설정(허용 도메인)이 필요해서 일반 img를 썼어요.
@@ -57,7 +41,6 @@ export default async function AuctionDetailContent({
 		:	<span className={styles.photoFallback} aria-hidden="true">
 				{auction.title.slice(0, 1)}
 			</span>;
-
 	return (
 		<>
 			<nav className={styles.crumbs} aria-label="현재 위치">
@@ -72,7 +55,6 @@ export default async function AuctionDetailContent({
 					{auction.categoryName}
 				</Link>
 			</nav>
-
 			<div className={styles.layout}>
 				<div className={styles.media}>
 					{process.env.NODE_ENV === "development" ?
@@ -83,8 +65,10 @@ export default async function AuctionDetailContent({
 							{photo}
 						</AuctionImageUploader>
 					:	<div className={styles.photo}>{photo}</div>}
-
-					<section aria-labelledby="desc-title" className={styles.block}>
+					<section
+						aria-labelledby="desc-title"
+						className={styles.block}
+					>
 						<h2 id="desc-title" className={styles.h2}>
 							상품 설명
 						</h2>
@@ -93,17 +77,29 @@ export default async function AuctionDetailContent({
 						</p>
 					</section>
 				</div>
-
 				<aside className={styles.side}>
 					<div className={styles.head}>
 						<span
-							className={`${styles.badge} ${closed ? styles.badgeClosed : live ? styles.badgeLive : styles.badgeOther}`}
+							className={`${styles.badge} ${
+								closed ? styles.badgeClosed
+								: live ? styles.badgeLive
+								: styles.badgeOther
+							}`}
 						>
-							{closed ? "마감" : STATUS_LABEL[auction.status as keyof typeof STATUS_LABEL]}
+							{closed ?
+								"마감"
+							:	STATUS_LABEL[
+									auction.status as keyof typeof STATUS_LABEL
+								]
+							}
 						</span>
 						{closed && (
 							<span className={styles.closedNote}>
-								{CLOSED_NOTE[auction.status as keyof typeof CLOSED_NOTE]}
+								{
+									CLOSED_NOTE[
+										auction.status as keyof typeof CLOSED_NOTE
+									]
+								}
 							</span>
 						)}
 						<h1 className={styles.title}>{auction.title}</h1>
@@ -111,11 +107,16 @@ export default async function AuctionDetailContent({
 							판매자 {auction.sellerNickname}
 						</p>
 					</div>
-
 					<dl className={styles.facts}>
 						<div className={styles.factWide}>
-							<dt>{auction.bidCount > 0 ? "현재 입찰가" : "시작 가격"}</dt>
-							<dd className={styles.price}><FlipText text={won(auction.currentPrice)} /></dd>
+							<dt>
+								{auction.bidCount > 0 ?
+									"현재 입찰가"
+								:	"시작 가격"}
+							</dt>
+							<dd className={styles.price}>
+								<FlipText text={won(auction.currentPrice)} />
+							</dd>
 						</div>
 						<div>
 							<dt>시작 가격</dt>
@@ -134,19 +135,26 @@ export default async function AuctionDetailContent({
 						<div>
 							<dt>경매 시작</dt>
 							<dd>
-								<FlipText text={formatDateTime(auction.startAt)} />
+								<FlipText
+									text={formatDateTime(auction.startAt)}
+								/>
 							</dd>
 						</div>
 						<div>
 							<dt>경매 종료</dt>
 							<dd>
-								<FlipText text={formatDateTime(auction.endAt)} />
+								<FlipText
+									text={formatDateTime(auction.endAt)}
+								/>
 							</dd>
 						</div>
 					</dl>
-
 					{(live || auction.status === "SCHEDULED") && (
-						<p className={time.urgent ? styles.timeUrgent : styles.time}>
+						<p
+							className={
+								time.urgent ? styles.timeUrgent : styles.time
+							}
+						>
 							<FlipText text={time.text} />
 						</p>
 					)}
@@ -166,7 +174,6 @@ export default async function AuctionDetailContent({
 					<BidPanel auction={auction} />
 				</aside>
 			</div>
-
 			<BidHistory bids={auction.recentBids} total={auction.bidCount} />
 		</>
 	);

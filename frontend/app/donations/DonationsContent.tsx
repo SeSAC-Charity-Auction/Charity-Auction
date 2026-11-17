@@ -18,20 +18,16 @@ import WalletSkeleton from "./WalletSkeleton";
 export default async function DonationsContent() {
 	// "여기부터는 요청이 올 때 그린다"는 표시예요. 현재 시각을 쓰는 코드보다 먼저 있어야 해요.
 	await connection();
-
 	const data = await getDonationSummary();
-
 	// 기부할 수 있는 기부처만 보여주고(목표 금액을 채운 곳은 목록에서 빠져요), 모금이 가장 많이 된 곳을 맨 앞에 둡니다.
 	const activeTargets = data.targets
 		.filter((t) => t.isActive && !t.isAchieved)
 		.sort((a, b) => b.totalDonation - a.totalDonation);
 	const latest = data.recentDonations[0];
-
 	const heroTitle =
 		data.donationCount > 0 ?
 			`기부금 ${won(data.totalDonation)}이 ${data.targets.length}곳의 기부처에 모였어요`
 		:	"첫 기부가 이곳에 가장 먼저 기록돼요";
-
 	return (
 		<>
 			{/* 1. 첫 화면: 한 문장 요약 + 가장 최근 기부 티켓 */}
@@ -62,7 +58,6 @@ export default async function DonationsContent() {
 						</Link>
 					</div>
 				</div>
-
 				<figure className={styles.heroFigure}>
 					<figcaption className={styles.figcaption}>
 						가장 최근 기부
@@ -72,7 +67,6 @@ export default async function DonationsContent() {
 					:	<EmptyTicket />}
 				</figure>
 			</section>
-
 			{/* 2. 숫자 요약 */}
 			<dl className={styles.stats}>
 				<Stat
@@ -92,7 +86,6 @@ export default async function DonationsContent() {
 					unit="곳"
 				/>
 			</dl>
-
 			{/* 3. 내 포인트 (로그인한 사용자에게만 값이 보여요) */}
 			<section aria-labelledby="wallet-title">
 				<div className={styles.sectionHead}>
@@ -108,7 +101,6 @@ export default async function DonationsContent() {
 					<MyWallet />
 				</Suspense>
 			</section>
-
 			{/* 4. 기부처 */}
 			<section id="targets" aria-labelledby="targets-title">
 				<div className={styles.sectionHead}>
@@ -119,7 +111,6 @@ export default async function DonationsContent() {
 						기부할 수 있는 기부처
 					</h2>
 				</div>
-
 				{activeTargets.length > 0 ?
 					<TargetCarousel
 						items={activeTargets.map((t) => ({
@@ -133,7 +124,6 @@ export default async function DonationsContent() {
 					</p>
 				}
 			</section>
-
 			{/* 5. 최근 기부 */}
 			<section aria-labelledby="recent-title">
 				<div className={styles.sectionHead}>
@@ -155,7 +145,6 @@ export default async function DonationsContent() {
 						</Link>
 					</div>
 				</div>
-
 				{data.recentDonations.length > 0 ?
 					<ol className={styles.donationList}>
 						{data.recentDonations.map((record) => (

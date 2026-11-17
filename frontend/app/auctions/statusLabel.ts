@@ -1,7 +1,6 @@
 import AuctionStatus from "./AuctionStatus";
 import isPast from "./isPast";
-
-export type StatusTone = "live" | "soon" | "closed";
+import { StatusTone } from "./StatusTone";
 
 // 내 경매 목록에서 보여줄 상태 이름이에요.
 export default function statusLabel(a: {

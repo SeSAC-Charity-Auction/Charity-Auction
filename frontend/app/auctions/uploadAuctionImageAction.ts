@@ -36,7 +36,6 @@ export default async function uploadAuctionImageAction(
 	if (file.size > MAX_BYTES) {
 		return { status: "error", message: MESSAGES.IMAGE_TOO_LARGE };
 	}
-
 	const result = await uploadAuctionImage(auctionId, file);
 	if (!result.ok) {
 		return {

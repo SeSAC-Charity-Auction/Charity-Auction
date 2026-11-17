@@ -27,7 +27,6 @@ export default function BidForm({
 	// 입찰이 들어와 최소 금액이 올라가면 입력값도 따라 올라가요.
 	const [raw, setRaw] = useState<number | null>(null);
 	const price = Math.max(raw ?? 0, min);
-
 	return (
 		<form action={formAction} className={styles.bid}>
 			<input type="hidden" name="auctionId" value={auctionId} />
@@ -63,10 +62,9 @@ export default function BidForm({
 			</div>
 			<p className={styles.hint}>
 				<FlipText text={won(min)} /> 이상,{" "}
-				<FlipText text={`${BID_STEP.toLocaleString("ko-KR")}원`} /> 단위로
-				입찰할 수 있어요.
+				<FlipText text={`${BID_STEP.toLocaleString("ko-KR")}원`} />{" "}
+				단위로 입찰할 수 있어요.
 			</p>
-
 			{state.status === "error" && (
 				<p className={styles.error} role="alert">
 					{state.message}
@@ -74,14 +72,17 @@ export default function BidForm({
 			)}
 			{state.status === "success" && (
 				<p className={styles.success} role="status">
-					{won(state.bidPrice)}에 입찰했어요. 지금 내 입찰이 가장 높아요!
+					{won(state.bidPrice)}에 입찰했어요. 지금 내 입찰이 가장
+					높아요!
 				</p>
 			)}
-
 			<button type="submit" className={styles.submit} disabled={pending}>
-				{pending ? "입찰하는 중이에요" : <>
+				{pending ?
+					"입찰하는 중이에요"
+				:	<>
 						<FlipText text={won(price)} /> 입찰하기
-					</>}
+					</>
+				}
 			</button>
 		</form>
 	);

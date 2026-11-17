@@ -6,7 +6,13 @@ import ThemeToggle from "./ThemeToggle";
 
 export const metadata: Metadata = {
 	title: { default: "가치잇다", template: "%s | 가치잇다" },
-	description: "물건을 경매하고, 낙찰금은 기부로 이어지는 가치잇다"
+	description: "물건을 경매하고, 낙찰금은 기부로 이어지는 가치잇다",
+	applicationName: "가치잇다",
+	openGraph: {
+		siteName: "가치잇다",
+		locale: "ko_KR",
+		type: "website"
+	}
 };
 
 // 첫 화면이 번쩍이지 않도록, 페이지가 그려지기 전에 저장된 테마(없으면 시스템 설정)를 적용해요.

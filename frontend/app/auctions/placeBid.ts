@@ -1,8 +1,5 @@
 import authHeaders from "../donations/authHeaders";
-
-export type PlaceBidResult =
-	| { ok: true; bidPrice: number }
-	| { ok: false; code: string };
+import { PlaceBidResult } from "./constants";
 
 // 입찰해요. 금액·시간·판매자 본인 여부 검사는 모두 백엔드(BidService)가 해요.
 export default async function placeBid(input: {

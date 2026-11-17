@@ -1,8 +1,5 @@
 import authHeaders from "../donations/authHeaders";
-
-export type UploadAuctionImageResult =
-	| { ok: true; image: string }
-	| { ok: false; code: string };
+import UploadAuctionImageResult from "./UploadAuctionImageResult";
 
 // 경매 물품 이미지를 올리거나 바꿔요. 권한(개발 환경)과 파일 검사는 백엔드가 해요.
 export default async function uploadAuctionImage(

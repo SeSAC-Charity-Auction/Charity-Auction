@@ -1,10 +1,17 @@
 // app/mypage/points/page.tsx
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { body } from "../../donations/fonts";
 import styles from "../page.module.css";
 import SearchParams from "./SearchParams";
 import AllPoints from "./AllPoints";
+export const metadata: Metadata = {
+	title: "포인트 내역",
+	description: "내 포인트 적립과 사용 내역을 모두 확인하세요.",
+	robots: { index: false } // 개인 페이지라 검색에 노출하지 않아요
+};
+
 // 몇 번째 쪽인지(?page=)는 요청이 와야 알 수 있어서 <Suspense> 안에서 읽어요.
 export default function AllPointsPage({
 	searchParams

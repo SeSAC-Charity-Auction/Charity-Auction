@@ -3,11 +3,9 @@
 // 경매 이미지를 누르면 파일을 고르고, 고르자마자 올려요. (개발 환경에서만 쓰여요)
 
 import { useActionState, useRef } from "react";
-import AuctionImageState from "../AuctionImageState";
 import uploadAuctionImageAction from "../uploadAuctionImageAction";
+import { idle } from "./constants";
 import styles from "./page.module.css";
-
-const idle: AuctionImageState = { status: "idle" };
 
 export default function AuctionImageUploader({
 	auctionId,
@@ -23,7 +21,6 @@ export default function AuctionImageUploader({
 		uploadAuctionImageAction,
 		idle
 	);
-
 	return (
 		<form ref={formRef} action={formAction}>
 			<input type="hidden" name="auctionId" value={auctionId} />

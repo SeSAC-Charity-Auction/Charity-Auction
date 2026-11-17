@@ -1,7 +1,8 @@
 import Link from "next/link";
-import AuctionFilters, { SORTS } from "./AuctionFilters";
+import AuctionFilters from "./AuctionFilters";
 import buildHref from "./buildHref";
 import styles from "./page.module.css";
+import { SORTS } from "./constants";
 
 export default function SortLinks({ filters }: { filters: AuctionFilters }) {
 	return (

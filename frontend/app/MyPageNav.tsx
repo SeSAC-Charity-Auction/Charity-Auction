@@ -22,7 +22,6 @@ export default function MyPageNav({
 }) {
 	const router = useRouter();
 	const current = currentMenu(usePathname()) === "mypage";
-
 	// 포인트는 서버에서 지급되고 위쪽 메뉴는 페이지를 옮겨도 그대로라서,
 	// 화면이 보이는 동안에는 주기적으로 서버에서 다시 받아와요. (보고 있던 화면의 입력값은 그대로 남아요)
 	useEffect(() => {
@@ -37,13 +36,9 @@ export default function MyPageNav({
 			document.removeEventListener("visibilitychange", refresh);
 		};
 	}, [watch, router]);
-
 	const label = hasNew ? "마이페이지, 새 포인트가 지급됐어요" : "마이페이지";
 	const dot =
-		hasNew ?
-			<span className={styles.dot} aria-hidden="true" />
-		:	null;
-
+		hasNew ? <span className={styles.dot} aria-hidden="true" /> : null;
 	if (!image) {
 		return (
 			<Link
@@ -57,7 +52,6 @@ export default function MyPageNav({
 			</Link>
 		);
 	}
-
 	return (
 		<Link
 			href="/mypage"

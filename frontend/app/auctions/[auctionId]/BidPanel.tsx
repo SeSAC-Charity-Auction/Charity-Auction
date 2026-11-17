@@ -7,7 +7,6 @@ import styles from "./page.module.css";
 // 경매 상태에 따라 입찰 폼 또는 안내 문구를 보여줘요.
 export default function BidPanel({ auction }: { auction: AuctionDetail }) {
 	const ended = isPast(auction.endAt);
-
 	if (auction.status === "IN_PROGRESS" && !ended) {
 		return (
 			<BidForm
@@ -17,7 +16,6 @@ export default function BidPanel({ auction }: { auction: AuctionDetail }) {
 			/>
 		);
 	}
-
 	let title = "입찰할 수 없어요";
 	let text = "이 경매는 지금 입찰을 받지 않아요.";
 	switch (auction.status) {
@@ -49,7 +47,6 @@ export default function BidPanel({ auction }: { auction: AuctionDetail }) {
 			text = "판매자가 이 경매를 취소했어요.";
 			break;
 	}
-
 	return (
 		<div className={styles.quiet}>
 			<h2 className={styles.quietTitle}>{title}</h2>

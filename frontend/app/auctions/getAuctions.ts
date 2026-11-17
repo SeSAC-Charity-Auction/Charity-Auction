@@ -1,7 +1,6 @@
 import AuctionFilters from "./AuctionFilters";
 import AuctionPage from "./AuctionPage";
-
-const PAGE_SIZE = 12;
+import { PAGE_SIZE } from "./constants";
 
 export default async function getAuctions(
 	filters: AuctionFilters
@@ -14,7 +13,6 @@ export default async function getAuctions(
 	if (filters.categoryId) qs.set("categoryId", String(filters.categoryId));
 	if (filters.status) qs.set("status", filters.status);
 	if (filters.keyword) qs.set("keyword", filters.keyword);
-
 	const res = await fetch(
 		`${process.env.API_BASE_URL}/api/v1/auctions?${qs}`,
 		{ cache: "no-store" }

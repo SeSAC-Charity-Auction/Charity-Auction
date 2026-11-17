@@ -8,12 +8,13 @@ export default async function OfferPanel({ auctionId }: { auctionId: number }) {
 	await connection();
 	const offer = await getMyOffer(auctionId);
 	if (!offer) return null;
-
 	return (
 		<OfferForm
 			candidateId={offer.candidateId}
 			bidPrice={offer.bidPrice}
-			secondsLeft={offer.deadlineAtIso ? secondsUntil(offer.deadlineAtIso) : null}
+			secondsLeft={
+				offer.deadlineAtIso ? secondsUntil(offer.deadlineAtIso) : null
+			}
 		/>
 	);
 }

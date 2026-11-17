@@ -26,7 +26,6 @@ export default function BidHistory({
 					/>
 				</p>
 			</div>
-
 			{bids.length > 0 ?
 				<ol className={styles.bidList}>
 					{bids.map((b, i) => (
@@ -38,12 +37,18 @@ export default function BidHistory({
 								<p className={styles.bidder}>
 									{b.nickname}
 									{i === 0 && (
-										<span className={styles.topTag}>최고가</span>
+										<span className={styles.topTag}>
+											최고가
+										</span>
 									)}
 								</p>
-								<p className={styles.bidTime}><FlipText text={relativeTime(b.bidAt)} /></p>
+								<p className={styles.bidTime}>
+									<FlipText text={relativeTime(b.bidAt)} />
+								</p>
 							</div>
-							<p className={styles.bidPrice}><FlipText text={won(b.bidPrice)} /></p>
+							<p className={styles.bidPrice}>
+								<FlipText text={won(b.bidPrice)} />
+							</p>
 						</li>
 					))}
 				</ol>

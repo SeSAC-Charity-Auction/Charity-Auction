@@ -1,8 +1,5 @@
 import authHeaders from "../donations/authHeaders";
-
-export type DecideOfferResult =
-	| { ok: true; pointAmount: number | null }
-	| { ok: false; code: string };
+import DecideOfferResult from "./DecideOfferResult";
 
 // 낙찰 기회를 수락하거나 포기해요. 기한·본인 확인과 포인트 지급은 모두 백엔드가 해요.
 export default async function decideOffer(

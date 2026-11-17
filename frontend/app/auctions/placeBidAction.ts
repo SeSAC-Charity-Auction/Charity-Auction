@@ -29,9 +29,11 @@ export default async function placeBidAction(
 		return { status: "error", message: MESSAGES.AUCTION_NOT_FOUND };
 	}
 	if (!Number.isInteger(bidPrice) || bidPrice <= 0) {
-		return { status: "error", message: "입찰 금액을 숫자로 입력해 주세요." };
+		return {
+			status: "error",
+			message: "입찰 금액을 숫자로 입력해 주세요."
+		};
 	}
-
 	const result = await placeBid({ auctionId, bidPrice });
 	if (!result.ok) {
 		return {

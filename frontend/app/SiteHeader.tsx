@@ -4,22 +4,7 @@ import MyPageLink from "./MyPageLink";
 import MyPageNav from "./MyPageNav";
 import NavMenu from "./NavMenu";
 import styles from "./SiteHeader.module.css";
-
-function PlainMenu() {
-	return (
-		<>
-			<Link href="/" className={styles.link}>
-				경매
-			</Link>
-			<Link href="/donations" className={styles.link}>
-				기부
-			</Link>
-			<Link href="/mypage" className={styles.link}>
-				마이페이지
-			</Link>
-		</>
-	);
-}
+import PlainMenu from "./PlainMenu";
 
 // 모든 페이지 위쪽에 들어가는 메뉴예요. 루트 레이아웃에 한 번만 두어서,
 // 메뉴를 옮겨 다녀도 다시 그려지지 않고(프로필 사진이 깜빡이지 않고) 그대로 남아 있어요.

@@ -14,7 +14,6 @@ export default function SearchForm({ filters }: { filters: AuctionFilters }) {
 	const [active, setActive] = useState(-1);
 	// 사용자가 직접 입력했을 때만 추천을 가져와요. (선택·이동 뒤에는 다시 열지 않아요)
 	const [typed, setTyped] = useState(false);
-
 	useEffect(() => {
 		const q = value.trim();
 		if (!typed || !q) return;
@@ -38,7 +37,6 @@ export default function SearchForm({ filters }: { filters: AuctionFilters }) {
 			ctrl.abort();
 		};
 	}, [value, typed]);
-
 	const choose = (title: string) => {
 		setValue(title);
 		setTyped(false);
@@ -46,7 +44,6 @@ export default function SearchForm({ filters }: { filters: AuctionFilters }) {
 		// 값이 입력칸에 반영된 뒤에 검색해요.
 		window.setTimeout(() => formRef.current?.requestSubmit(), 0);
 	};
-
 	const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Escape") {
 			setOpen(false);
@@ -73,9 +70,7 @@ export default function SearchForm({ filters }: { filters: AuctionFilters }) {
 			choose(items[active]);
 		}
 	};
-
 	const showList = open && value.trim() !== "" && items.length > 0;
-
 	return (
 		<form
 			ref={formRef}

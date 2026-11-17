@@ -7,7 +7,8 @@ import styles from "../page.module.css";
 import AllDonations from "./AllDonations";
 
 export const metadata: Metadata = {
-	title: "전체 기부 목록"
+	title: "전체 기부 목록",
+	description: "가치잇다에서 이루어진 모든 기부 내역을 최신순으로 확인하세요."
 };
 
 // 몇 번째 쪽인지(?page=)는 요청이 와야 알 수 있어서 <Suspense> 안에서 읽어요.

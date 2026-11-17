@@ -1,6 +1,6 @@
-import AuctionFilters, { SORTS, STATUS_TABS } from "./AuctionFilters";
-
-type RawParams = { [key: string]: string | string[] | undefined };
+import AuctionFilters from "./AuctionFilters";
+import { SORTS, STATUS_TABS } from "./constants";
+import RawParams from "./RawParams";
 
 const first = (v: string | string[] | undefined) =>
 	Array.isArray(v) ? v[0] : v;

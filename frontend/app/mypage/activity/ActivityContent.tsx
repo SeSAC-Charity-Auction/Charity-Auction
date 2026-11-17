@@ -9,7 +9,8 @@ import styles from "../page.module.css";
 import pt from "../pt";
 import SearchParams from "./SearchParams";
 
-const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
+const first = (v: string | string[] | undefined) =>
+	Array.isArray(v) ? v[0] : v;
 
 export default async function ActivityContent({
 	searchParams
@@ -21,7 +22,6 @@ export default async function ActivityContent({
 	const tab = first(params.tab) === "wins" ? "wins" : "auctions";
 	const parsed = Number(first(params.page));
 	const pageIndex = Number.isInteger(parsed) && parsed >= 1 ? parsed - 1 : 0;
-
 	const wins = tab === "wins" ? await getMyWins(pageIndex) : null;
 	const auctions = tab === "auctions" ? await getMyAuctions(pageIndex) : null;
 	const data = wins ?? auctions;
@@ -35,11 +35,9 @@ export default async function ActivityContent({
 			</p>
 		);
 	}
-
 	const current = data.page + 1;
 	const hrefOf = (t: string, n = 1) =>
 		`/mypage/activity?tab=${t}${n > 1 ? `&page=${n}` : ""}`;
-
 	return (
 		<section aria-labelledby="activity-title">
 			<div className={styles.sectionHead}>
@@ -50,12 +48,11 @@ export default async function ActivityContent({
 					내 경매 활동
 				</h1>
 				<p className={styles.muted}>
-					모두 {data.totalElements.toLocaleString("ko-KR")}건
-					{" "}· {wins ? "낙찰로" : "판매로"} 받은 포인트{" "}
+					모두 {data.totalElements.toLocaleString("ko-KR")}건 ·{" "}
+					{wins ? "낙찰로" : "판매로"} 받은 포인트{" "}
 					<strong>{pt(data.totalPoints)}</strong>
 				</p>
 			</div>
-
 			<nav aria-label="보기 선택" className={styles.tabs}>
 				<Link
 					href={hrefOf("auctions")}
@@ -72,23 +69,25 @@ export default async function ActivityContent({
 					낙찰 이력
 				</Link>
 			</nav>
-
 			{data.items.length > 0 ?
 				<ul className={styles.rowList}>
 					{wins ?
-						wins.items.map((w) => <MyWinRow key={w.auctionId} win={w} />)
+						wins.items.map((w) => (
+							<MyWinRow key={w.auctionId} win={w} />
+						))
 					:	auctions?.items.map((a) => (
 							<MyAuctionRow key={a.auctionId} auction={a} />
-						))}
+						))
+					}
 				</ul>
 			:	<p className={styles.empty}>
 					{data.totalElements === 0 ?
-						tab === "wins" ? "아직 낙찰받은 경매가 없어요."
+						tab === "wins" ?
+							"아직 낙찰받은 경매가 없어요."
 						:	"아직 올린 경매가 없어요."
 					:	"이 쪽에는 내용이 없어요."}
 				</p>
 			}
-
 			{data.totalPages > 1 && (
 				<nav className={styles.pager} aria-label="쪽 이동">
 					<Link
