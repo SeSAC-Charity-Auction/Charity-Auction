@@ -5,6 +5,8 @@ import com.sesac.charity_auction.auction.domain.AuctionStatus;
 import com.sesac.charity_auction.auction.dto.response.AuctionListResponse;
 import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidateStatus;
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -37,4 +39,25 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
         AND c.status = :status
     """)
     List<AuctionListResponse> findAuctionList(@Param("status")AuctionCandidateStatus status);
+
+    // 경매 물품 목록: 삭제되지 않은 경매를 상태·카테고리·검색어로 걸러요. (null이면 그 조건은 쓰지 않아요)
+    // 카테고리를 fetch join해서 목록을 만들 때 쿼리가 반복되지 않게 해요.
+    @Query(value = """
+            SELECT a FROM Auction a JOIN FETCH a.category c
+            WHERE a.isDeleted = false
+              AND a.status IN :statuses
+              AND (:categoryId IS NULL OR c.id = :categoryId)
+              AND (:keyword IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+            """,
+            countQuery = """
+            SELECT COUNT(a) FROM Auction a
+            WHERE a.isDeleted = false
+              AND a.status IN :statuses
+              AND (:categoryId IS NULL OR a.category.id = :categoryId)
+              AND (:keyword IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+            """)
+    Page<Auction> search(@Param("statuses") List<AuctionStatus> statuses,
+                         @Param("categoryId") Long categoryId,
+                         @Param("keyword") String keyword,
+                         Pageable pageable);
 }
