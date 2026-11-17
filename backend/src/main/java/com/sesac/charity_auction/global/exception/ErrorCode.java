@@ -54,7 +54,6 @@ public enum ErrorCode {
     AUCTION_HAS_BIDS(HttpStatus.BAD_REQUEST, "입찰이 발생한 경매는 취소할 수 없습니다."),
     AUCTION_NOT_AVAILABLE_FOR_ACCEPT(HttpStatus.BAD_REQUEST, "낙찰 수락이 불가능한 경매입니다."),
     AUCTION_NOT_AVAILABLE_FOR_REJECT(HttpStatus.BAD_REQUEST, "낙찰 거절이 불가능한 경매입니다."),
-    INVALID_START_PRICE(HttpStatus.BAD_REQUEST, "시작 가격이 올바르지 않습니다."),
     INVALID_AUCTION_TIME(HttpStatus.BAD_REQUEST, "경매 시작 및 종료 시간이 올바르지 않습니다."),
     AUCTION_ACCESS_DENIED(HttpStatus.FORBIDDEN, "해당 경매에 접근할 권한이 없습니다."),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),
