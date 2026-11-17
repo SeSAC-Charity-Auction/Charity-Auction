@@ -5,7 +5,6 @@ import { body } from "../../donations/fonts";
 import styles from "../page.module.css";
 import SearchParams from "./SearchParams";
 import AllPoints from "./AllPoints";
-import SiteHeader from "../../SiteHeader";
 // 몇 번째 쪽인지(?page=)는 요청이 와야 알 수 있어서 <Suspense> 안에서 읽어요.
 export default function AllPointsPage({
 	searchParams
@@ -14,7 +13,6 @@ export default function AllPointsPage({
 }) {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<SiteHeader current="mypage" />
 			<main className={styles.wrap}>
 				<Link href="/mypage#points" className={styles.back}>
 					마이페이지로 돌아가기

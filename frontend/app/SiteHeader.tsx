@@ -1,17 +1,29 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import MyPageLink from "./MyPageLink";
+import MyPageNav from "./MyPageNav";
+import NavMenu from "./NavMenu";
 import styles from "./SiteHeader.module.css";
 
-type Current = "auctions" | "donations" | "mypage";
+function PlainMenu() {
+	return (
+		<>
+			<Link href="/" className={styles.link}>
+				경매
+			</Link>
+			<Link href="/donations" className={styles.link}>
+				기부
+			</Link>
+			<Link href="/mypage" className={styles.link}>
+				마이페이지
+			</Link>
+		</>
+	);
+}
 
-const MENUS: { key: Current; href: string; label: string }[] = [
-	{ key: "auctions", href: "/", label: "경매" },
-	{ key: "donations", href: "/donations", label: "기부" }
-];
-
-// 모든 페이지 위쪽에 들어가는 메뉴예요. current는 지금 보고 있는 메뉴(강조 표시)예요.
-export default function SiteHeader({ current }: { current: Current }) {
+// 모든 페이지 위쪽에 들어가는 메뉴예요. 루트 레이아웃에 한 번만 두어서,
+// 메뉴를 옮겨 다녀도 다시 그려지지 않고(프로필 사진이 깜빡이지 않고) 그대로 남아 있어요.
+export default function SiteHeader() {
 	return (
 		<header className={styles.header}>
 			<div className={styles.inner}>
@@ -19,25 +31,13 @@ export default function SiteHeader({ current }: { current: Current }) {
 					가치잇다
 				</Link>
 				<nav aria-label="주요 메뉴" className={styles.nav}>
-					{MENUS.map((m) => (
-						<Link
-							key={m.key}
-							href={m.href}
-							className={styles.link}
-							aria-current={m.key === current ? "page" : undefined}
-						>
-							{m.label}
-						</Link>
-					))}
-					{/* 로그인한 사람마다 다른 값(프로필 사진)이라 따로 <Suspense>로 감싸요. 늦어져도 나머지 메뉴는 먼저 보여요. */}
-					<Suspense
-						fallback={
-							<Link href="/mypage" className={styles.link}>
-								마이페이지
-							</Link>
-						}
-					>
-						<MyPageLink current={current === "mypage"} />
+					{/* 지금 주소를 알아야 하는 메뉴라서, 주소를 알기 전에는 강조 없이 먼저 보여줘요. */}
+					<Suspense fallback={<PlainMenu />}>
+						<NavMenu />
+						{/* 로그인한 사람마다 다른 값(프로필 사진)이라 따로 <Suspense>로 감싸요. 늦어져도 나머지 메뉴는 먼저 보여요. */}
+						<Suspense fallback={<MyPageNav image={null} />}>
+							<MyPageLink />
+						</Suspense>
 					</Suspense>
 				</nav>
 			</div>

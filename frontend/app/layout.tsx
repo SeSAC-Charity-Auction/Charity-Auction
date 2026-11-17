@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pretendard } from "./fonts";
 import "./globals.css";
+import SiteHeader from "./SiteHeader";
 import ThemeToggle from "./ThemeToggle";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 				<script dangerouslySetInnerHTML={{ __html: themeScript }} />
 			</head>
 			<body className="min-h-full flex flex-col">
+				<SiteHeader />
 				{children}
 				<ThemeToggle />
 			</body>

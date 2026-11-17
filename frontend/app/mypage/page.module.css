@@ -2,7 +2,7 @@
 /* 기부 현황 페이지와 같은 색과 느낌을 써서 한 서비스처럼 보이게 했어요. */
 
 .page {
-	min-height: 100vh;
+	flex: 1; /* 위쪽 메뉴를 뺀 나머지 높이를 채워요 */
 	background: var(--paper);
 	color: var(--ink);
 	font-size: 1rem;

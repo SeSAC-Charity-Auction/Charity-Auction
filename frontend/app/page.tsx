@@ -5,7 +5,6 @@ import AuctionsContent from "./auctions/AuctionsContent";
 import LoadingState from "./auctions/LoadingState";
 import styles from "./auctions/page.module.css";
 import { body } from "./donations/fonts";
-import SiteHeader from "./SiteHeader";
 
 export const metadata: Metadata = {
 	title: "경매 물품"
@@ -19,7 +18,6 @@ export default function Home({
 }) {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<SiteHeader current="auctions" />
 			<main className={styles.wrap}>
 				<Suspense fallback={<LoadingState />}>
 					<AuctionsContent searchParams={searchParams} />

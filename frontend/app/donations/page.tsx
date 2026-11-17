@@ -4,12 +4,10 @@ import DonationsContent from "./DonationsContent";
 import { body } from "./fonts";
 import LoadingState from "./LoadingState";
 import styles from "./page.module.css";
-import SiteHeader from "../SiteHeader";
 
 export default function DonationsPage() {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<SiteHeader current="donations" />
 			<main className={styles.wrap}>
 				<Suspense fallback={<LoadingState />}>
 					<DonationsContent />

@@ -5,7 +5,6 @@ import { Suspense } from "react";
 import { body } from "../fonts";
 import styles from "../page.module.css";
 import AllDonations from "./AllDonations";
-import SiteHeader from "../../SiteHeader";
 
 export const metadata: Metadata = {
 	title: "전체 기부 목록"
@@ -19,7 +18,6 @@ export default function AllDonationsPage({
 }) {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<SiteHeader current="donations" />
 			<main className={styles.wrap}>
 				<Link href="/donations" className={styles.back}>
 					기부 현황으로 돌아가기

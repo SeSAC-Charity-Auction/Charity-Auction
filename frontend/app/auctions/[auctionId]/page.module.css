@@ -1,7 +1,7 @@
 /* app/auctions/[auctionId]/page.module.css : 경매 물품 상세 */
 
 .page {
-	min-height: 100vh;
+	flex: 1; /* 위쪽 메뉴를 뺀 나머지 높이를 채워요 */
 	background: var(--paper);
 	color: var(--ink);
 	font-size: 1rem;
