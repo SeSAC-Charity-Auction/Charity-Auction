@@ -9,8 +9,8 @@ import { won } from "../format";
 import DonatePanel from "./DonatePanel";
 import styles from "./page.module.css";
 import PanelSkeleton from "./PanelSkeleton";
-import TargetImageUploader from "./TargetImageUploader";
 import Stat from "./Stat";
+import TargetImageUploader from "./TargetImageUploader";
 
 export default async function TargetContent({
 	params
