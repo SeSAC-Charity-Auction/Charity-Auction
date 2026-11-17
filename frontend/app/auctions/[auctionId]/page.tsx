@@ -2,10 +2,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { body } from "../../donations/fonts";
-import SiteHeader from "../SiteHeader";
 import AuctionDetailContent from "./AuctionDetailContent";
 import LoadingState from "./LoadingState";
 import styles from "./page.module.css";
+import SiteHeader from "../../SiteHeader";
 
 export const metadata: Metadata = {
 	title: "경매 상세"
@@ -19,7 +19,7 @@ export default function AuctionPage({
 }) {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<SiteHeader />
+			<SiteHeader current="auctions" />
 			<main className={styles.wrap}>
 				<Suspense fallback={<LoadingState />}>
 					<AuctionDetailContent params={params} />

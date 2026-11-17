@@ -44,8 +44,6 @@
 }
 
 /* 포커스가 보이게 */
-.navLink:focus-visible,
-.brand:focus-visible,
 .chip:focus-visible,
 .tab:focus-visible,
 .sort:focus-visible,
@@ -55,46 +53,6 @@
 .searchBtn:focus-visible {
 	outline: 3px solid var(--bid-fg);
 	outline-offset: 3px;
-}
-
-/* ---------- 위쪽 메뉴 ---------- */
-.header {
-	border-bottom: 1.5px solid var(--mist-strong);
-	background: var(--surface);
-}
-.headerInner {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 16px;
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 14px 20px;
-}
-.brand {
-	color: var(--ink);
-	font-size: 1.25rem;
-	font-weight: 800;
-	text-decoration: none;
-}
-.nav {
-	display: flex;
-	gap: 4px;
-}
-.navLink {
-	padding: 6px 14px;
-	border-radius: 999px;
-	color: var(--ink-soft);
-	font-weight: 500;
-	text-decoration: none;
-}
-.navLink:hover {
-	background: var(--mist);
-	color: var(--ink);
-}
-.navLink[aria-current="page"] {
-	background: var(--ink);
-	color: var(--paper);
 }
 
 /* ---------- 제목과 검색 ---------- */

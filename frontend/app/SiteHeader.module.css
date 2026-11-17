@@ -1,0 +1,58 @@
+/* app/SiteHeader.module.css : 모든 페이지 위쪽 메뉴 */
+
+.header {
+	border-bottom: 1.5px solid var(--mist-strong);
+	background: var(--surface);
+	color: var(--ink);
+	line-height: 1.7;
+	word-break: keep-all;
+}
+.inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 14px 20px;
+}
+.brand {
+	color: var(--ink);
+	font-size: 1.375rem;
+	font-weight: 800;
+	letter-spacing: -0.01em;
+	text-decoration: none;
+}
+.nav {
+	display: flex;
+	gap: 4px;
+}
+.link {
+	padding: 6px 14px;
+	border-radius: 999px;
+	color: var(--ink-soft);
+	font-weight: 500;
+	text-decoration: none;
+}
+.link:hover {
+	background: var(--mist);
+	color: var(--ink);
+}
+.link[aria-current="page"] {
+	background: var(--ink);
+	color: var(--paper);
+}
+.brand:focus-visible,
+.link:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+	.inner {
+		padding: 12px 16px;
+	}
+	.link {
+		padding: 6px 10px;
+	}
+}

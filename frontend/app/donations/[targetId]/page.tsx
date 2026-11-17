@@ -5,6 +5,7 @@ import { body } from "../fonts";
 import styles from "./page.module.css";
 import TargetContent from "./TargetContent";
 import LoadingState from "./LoadingState";
+import SiteHeader from "../../SiteHeader";
 
 export default function TargetPage({
 	params
@@ -13,6 +14,7 @@ export default function TargetPage({
 }) {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
+			<SiteHeader current="donations" />
 			<main className={styles.wrap}>
 				<Link href="/donations" className={styles.back}>
 					기부 현황으로 돌아가기
