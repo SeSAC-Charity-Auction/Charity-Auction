@@ -27,9 +27,14 @@ public record PointEntryResponse(
             return history.getDonation().getTarget().getTargetName() + " 기부"; // 예: 푸른숲 어린이 도서관 기부
         }
         if (history.getAuction() != null) {
-            // 경매 이름을 같이 보여줘요. (예: 미개봉 무선 이어폰 낙찰 포인트)
+            // 경매 이름을 같이 보여줘요. 낙찰자(구매자)와 판매자는 받는 이유가 달라서 문구를 나눠요.
+            // (예: 미개봉 무선 이어폰 낙찰 포인트 / 미개봉 무선 이어폰 판매 포인트)
             final String title = history.getAuction().getTitle();
-            return history.getPointType() == PointType.EARN ? title + " 낙찰 포인트" : title + " 낙찰 대금 사용";
+            if (history.getPointType() == PointType.EARN) {
+                final boolean seller = history.getAuction().getUser().getId().equals(history.getUser().getId());
+                return title + (seller ? " 판매 포인트" : " 낙찰 포인트");
+            }
+            return title + " 낙찰 대금 사용";
         }
         return history.getPointType() == PointType.EARN ? "포인트 적립" : "포인트 사용";
     }

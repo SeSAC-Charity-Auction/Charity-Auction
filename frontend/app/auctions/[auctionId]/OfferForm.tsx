@@ -50,7 +50,7 @@ export default function OfferForm({
 			<p className={styles.offerText}>
 				내 입찰가 {won(bidPrice)}으로 낙찰 기회를 얻었어요. 수락하면 낙찰가의
 				50%인 <span className={styles.offerPoints}>{pt(reward)}</span>를
-				받아요.
+				받고, 판매자도 나머지 50%를 받아요.
 				{secondsLeft !== null &&
 					` 지금부터 약 ${secondsLeft}초 안에 선택해 주세요.`}
 			</p>

@@ -1,11 +1,11 @@
 import authHeaders from "../donations/authHeaders";
-import AuctionPage from "./AuctionPage";
+import MyAuctionPage from "./MyAuctionPage";
 
 // 내가 올린 경매예요. 로그인하지 않았으면 null이에요. (page는 0부터 시작)
 export default async function getMyAuctions(
 	page: number,
 	size = 10
-): Promise<AuctionPage | null> {
+): Promise<MyAuctionPage | null> {
 	const headers = await authHeaders();
 	if (!headers) return null;
 	const res = await fetch(

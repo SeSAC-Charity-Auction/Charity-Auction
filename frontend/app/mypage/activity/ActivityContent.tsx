@@ -22,8 +22,9 @@ export default async function ActivityContent({
 	const parsed = Number(first(params.page));
 	const pageIndex = Number.isInteger(parsed) && parsed >= 1 ? parsed - 1 : 0;
 
-	const data =
-		tab === "wins" ? await getMyWins(pageIndex) : await getMyAuctions(pageIndex);
+	const wins = tab === "wins" ? await getMyWins(pageIndex) : null;
+	const auctions = tab === "auctions" ? await getMyAuctions(pageIndex) : null;
+	const data = wins ?? auctions;
 	if (!data) {
 		return (
 			<p className={styles.empty}>
@@ -50,11 +51,8 @@ export default async function ActivityContent({
 				</h1>
 				<p className={styles.muted}>
 					모두 {data.totalElements.toLocaleString("ko-KR")}건
-					{"totalPoints" in data && (
-						<>
-							{" "}· 낙찰로 받은 포인트 <strong>{pt(data.totalPoints)}</strong>
-						</>
-					)}
+					{" "}· {wins ? "낙찰로" : "판매로"} 받은 포인트{" "}
+					<strong>{pt(data.totalPoints)}</strong>
 				</p>
 			</div>
 
@@ -77,9 +75,11 @@ export default async function ActivityContent({
 
 			{data.items.length > 0 ?
 				<ul className={styles.rowList}>
-					{"totalPoints" in data ?
-						data.items.map((w) => <MyWinRow key={w.auctionId} win={w} />)
-					:	data.items.map((a) => <MyAuctionRow key={a.auctionId} auction={a} />)}
+					{wins ?
+						wins.items.map((w) => <MyWinRow key={w.auctionId} win={w} />)
+					:	auctions?.items.map((a) => (
+							<MyAuctionRow key={a.auctionId} auction={a} />
+						))}
 				</ul>
 			:	<p className={styles.empty}>
 					{data.totalElements === 0 ?

@@ -162,14 +162,28 @@ public class AuctionCandidateService {
         List<AuctionCandidate> waitingCandidates = auctionCandidateRepository.findAllByAuction_IdAndStatus(auctionId, AuctionCandidateStatus.WAITING);
         waitingCandidates.forEach(candidate -> candidate.notSelected(now));
 
-        // 포인트 지급
+        // 포인트 지급: 낙찰가를 반으로 나눠 낙찰자(구매자)와 판매자에게 각각 돌아가요.
+        // 판매자 몫은 "낙찰가 - 구매자 몫"으로 해서, 홀수 금액이어도 한 푼도 사라지지 않게 해요.
         Long pointAmount = currentCandidate.getBidPrice()/2;
+        long sellerPointAmount = currentCandidate.getBidPrice() - pointAmount;
 
         PointHistory pointHistory = PointHistory.earnedForAuction(user, auction, pointAmount);
         pointHistoryRepository.save(pointHistory);
+
+        // 판매자가 탈퇴했으면 지급하지 않아요.
+        User seller = auction.getUser();
+        Long sellerId = seller.getId();
+        boolean payToSeller = !seller.isDeleted() && sellerPointAmount > 0;
+        if (payToSeller) {
+            pointHistoryRepository.save(PointHistory.earnedForAuction(seller, auction, sellerPointAmount));
+        }
+
         // 장부(point_histories)만 쓰면 잔액이 늘지 않아서, 잔액(users.point_balance)도 함께 올려요.
         // (이 쿼리는 앞의 변경을 먼저 DB에 반영한 뒤 영속성 컨텍스트를 비워요. 그래서 맨 마지막에 둬요.)
         userRepository.addBalance(userId, pointAmount);
+        if (payToSeller) {
+            userRepository.addBalance(sellerId, sellerPointAmount);
+        }
 
         return new CandidateAcceptResponseDto(candidateId, currentCandidate.getStatus(), auction.getStatus(), now, pointAmount, "포인트 적립이 완료되었습니다.");
     }

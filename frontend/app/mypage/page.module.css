@@ -620,6 +620,11 @@
 	font-weight: 800;
 	font-variant-numeric: tabular-nums;
 }
+.rowPoint {
+	font-size: 0.8125rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
 .tag {
 	padding: 0 8px;
 	border: 2px solid var(--ink);

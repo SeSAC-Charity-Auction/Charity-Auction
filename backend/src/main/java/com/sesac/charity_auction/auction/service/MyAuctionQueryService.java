@@ -1,8 +1,8 @@
 package com.sesac.charity_auction.auction.service;
 
 import com.sesac.charity_auction.auction.domain.Auction;
-import com.sesac.charity_auction.auction.dto.response.AuctionPageResponse;
-import com.sesac.charity_auction.auction.dto.response.AuctionSummaryResponse;
+import com.sesac.charity_auction.auction.dto.response.MyAuctionPageResponse;
+import com.sesac.charity_auction.auction.dto.response.MyAuctionResponse;
 import com.sesac.charity_auction.auction.dto.response.MyWinPageResponse;
 import com.sesac.charity_auction.auction.dto.response.MyWinResponse;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
@@ -38,14 +38,20 @@ public class MyAuctionQueryService {
         this.pointHistoryRepository = pointHistoryRepository;
     }
 
-    /** 내가 올린 경매 (최신 등록순). */
-    public AuctionPageResponse getMyAuctions(final long userId, final int page, final int size) {
+    /** 내가 올린 경매 (최신 등록순). 각 경매로 받은 판매 포인트와 전체 합계도 같이 내려줘요. */
+    public MyAuctionPageResponse getMyAuctions(final long userId, final int page, final int size) {
         final int safePage = Math.max(0, page);
         final int safeSize = clampSize(size);
         final Page<Auction> result = auctionRepository.findMine(userId, PageRequest.of(safePage, safeSize));
-        return new AuctionPageResponse(
-                result.getContent().stream().map(AuctionSummaryResponse::from).toList(),
-                safePage, safeSize, result.getTotalElements(), result.getTotalPages());
+
+        final Map<Long, Long> earned = earnedByAuction(userId,
+                result.getContent().stream().map(Auction::getId).toList());
+        final List<MyAuctionResponse> items = result.getContent().stream()
+                .map(a -> MyAuctionResponse.of(a, earned.getOrDefault(a.getId(), 0L)))
+                .toList();
+
+        return new MyAuctionPageResponse(items, safePage, safeSize, result.getTotalElements(),
+                result.getTotalPages(), pointHistoryRepository.sumAuctionSold(userId));
     }
 
     /** 내 낙찰 이력 (낙찰 확정이 최근인 순). 각 낙찰로 받은 포인트와 전체 합계도 같이 내려줘요. */
@@ -56,13 +62,8 @@ public class MyAuctionQueryService {
                 userId, AuctionCandidateStatus.COMPLETED, PageRequest.of(safePage, safeSize));
 
         // 이 쪽에 보이는 경매들의 적립 포인트를 한 번에 가져와요.
-        final List<Long> auctionIds = result.getContent().stream().map(c -> c.getAuction().getId()).toList();
-        final Map<Long, Long> earned = new HashMap<>();
-        if (!auctionIds.isEmpty()) {
-            for (final Object[] row : pointHistoryRepository.sumEarnedByAuctions(userId, auctionIds)) {
-                earned.put((Long) row[0], ((Number) row[1]).longValue());
-            }
-        }
+        final Map<Long, Long> earned = earnedByAuction(userId,
+                result.getContent().stream().map(c -> c.getAuction().getId()).toList());
 
         final List<MyWinResponse> items = result.getContent().stream()
                 .map(c -> new MyWinResponse(
@@ -77,6 +78,18 @@ public class MyAuctionQueryService {
 
         return new MyWinPageResponse(items, safePage, safeSize, result.getTotalElements(),
                 result.getTotalPages(), pointHistoryRepository.sumAuctionEarned(userId));
+    }
+
+    // 경매별로 내가 받은 포인트(적립 합계). 보이는 경매들만 한 번에 가져와요.
+    private Map<Long, Long> earnedByAuction(final long userId, final List<Long> auctionIds) {
+        final Map<Long, Long> earned = new HashMap<>();
+        if (auctionIds.isEmpty()) {
+            return earned;
+        }
+        for (final Object[] row : pointHistoryRepository.sumEarnedByAuctions(userId, auctionIds)) {
+            earned.put((Long) row[0], ((Number) row[1]).longValue());
+        }
+        return earned;
     }
 
     private static int clampSize(final int size) {

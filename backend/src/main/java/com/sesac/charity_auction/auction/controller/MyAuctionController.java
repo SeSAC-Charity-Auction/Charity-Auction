@@ -1,6 +1,6 @@
 package com.sesac.charity_auction.auction.controller;
 
-import com.sesac.charity_auction.auction.dto.response.AuctionPageResponse;
+import com.sesac.charity_auction.auction.dto.response.MyAuctionPageResponse;
 import com.sesac.charity_auction.auction.dto.response.MyWinPageResponse;
 import com.sesac.charity_auction.auction.service.MyAuctionQueryService;
 import com.sesac.charity_auction.global.auth.CurrentUserProvider;
@@ -23,7 +23,7 @@ public class MyAuctionController {
 
     // 내가 올린 경매
     @GetMapping("/auctions")
-    public AuctionPageResponse myAuctions(final @RequestParam(defaultValue = "0") int page,
+    public MyAuctionPageResponse myAuctions(final @RequestParam(defaultValue = "0") int page,
                                           final @RequestParam(defaultValue = "10") int size) {
         return queryService.getMyAuctions(currentUser.currentUserId(), page, size);
     }

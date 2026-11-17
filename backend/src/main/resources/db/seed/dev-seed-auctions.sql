@@ -116,9 +116,13 @@ INSERT INTO auction_candidates (auction_id, bid_id, user_id, candidate_rank, bid
 (12, 56, 17, 4, 23100, 'NOT_SELECTED', NULL, NULL, DATE_SUB(NOW(), INTERVAL 24 HOUR)),
 (12, 55, 16, 5, 19900, 'NOT_SELECTED', NULL, NULL, DATE_SUB(NOW(), INTERVAL 24 HOUR));
 
--- 낙찰 포인트: 종료된 12번 경매의 낙찰자(15번 회원)가 낙찰가 33,000원의 50%를 받았어요. (장부와 잔액 모두)
+-- 낙찰 포인트: 종료된 12번 경매의 낙찰가 33,000원을 반으로 나눠, 낙찰자(15번 회원)가 50%를 받았어요. (장부와 잔액 모두)
 INSERT INTO point_histories (auction_id, user_id, point_amount, point_type, created_at)
 VALUES (12, 15, 16500, 'EARN', DATE_SUB(UTC_TIMESTAMP(), INTERVAL 24 HOUR));
 UPDATE users SET point_balance = point_balance + 16500 WHERE user_id = 15;
+-- 판매자(13번 회원)도 나머지 50%를 받았어요.
+INSERT INTO point_histories (auction_id, user_id, point_amount, point_type, created_at)
+VALUES (12, 13, 16500, 'EARN', DATE_SUB(UTC_TIMESTAMP(), INTERVAL 24 HOUR));
+UPDATE users SET point_balance = point_balance + 16500 WHERE user_id = 13;
 
 COMMIT;

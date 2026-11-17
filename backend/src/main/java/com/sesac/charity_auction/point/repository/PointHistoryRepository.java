@@ -15,7 +15,7 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
     // 기부 내역(donation)과 기부처 이름을 한 번에 가져와서(left join fetch) 설명 문구를 만들 때 쿼리가 반복되지 않게 해요.
     // 경매 내역처럼 donation이 없는 행도 있어서 left join이에요.
     @Query("select h from PointHistory h "
-            + "left join fetch h.donation d left join fetch d.target left join fetch h.auction "
+            + "left join fetch h.donation d left join fetch d.target left join fetch h.auction a left join fetch a.user "
             + "where h.user.id = :userId order by h.createdAt desc, h.id desc")
     List<PointHistory> findRecentByUserId(final @Param("userId") long userId, final Pageable pageable);
 
@@ -32,10 +32,17 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
             + "and h.pointType = com.sesac.charity_auction.point.domain.PointType.EARN and h.createdAt > :since")
     boolean existsEarnedAfter(final @Param("userId") long userId, final @Param("since") LocalDateTime since);
 
-    // 경매 낙찰로 받은 포인트의 전체 합계 (마이페이지 낙찰 이력)
+    // 경매 낙찰(구매자)로 받은 포인트의 전체 합계: 내가 판매자가 아닌 경매의 적립이에요. (마이페이지 낙찰 이력)
     @Query("select coalesce(sum(h.pointAmount), 0) from PointHistory h where h.user.id = :userId "
-            + "and h.pointType = com.sesac.charity_auction.point.domain.PointType.EARN and h.auction is not null")
+            + "and h.pointType = com.sesac.charity_auction.point.domain.PointType.EARN "
+            + "and h.auction is not null and h.auction.user.id <> :userId")
     long sumAuctionEarned(final @Param("userId") long userId);
+
+    // 경매 판매(판매자)로 받은 포인트의 전체 합계: 내가 판매자인 경매의 적립이에요. (마이페이지 내가 올린 경매)
+    @Query("select coalesce(sum(h.pointAmount), 0) from PointHistory h where h.user.id = :userId "
+            + "and h.pointType = com.sesac.charity_auction.point.domain.PointType.EARN "
+            + "and h.auction is not null and h.auction.user.id = :userId")
+    long sumAuctionSold(final @Param("userId") long userId);
 
     // 경매별로 받은 포인트: [경매 번호, 합계]
     @Query("select h.auction.id, sum(h.pointAmount) from PointHistory h where h.user.id = :userId "
