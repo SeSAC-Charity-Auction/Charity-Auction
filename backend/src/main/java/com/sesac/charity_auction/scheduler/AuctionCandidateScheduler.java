@@ -7,6 +7,7 @@ import com.sesac.charity_auction.auctioncandidate.repository.AuctionCandidateRep
 import com.sesac.charity_auction.auctioncandidate.service.AuctionCandidateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,10 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@ConditionalOnProperty( // 스케줄러 실행 여부를 설정으로 관리
+        name = "scheduler.auction.enabled",
+        havingValue = "true"
+)
 public class AuctionCandidateScheduler {
 
     private final AuctionRepository auctionRepository;

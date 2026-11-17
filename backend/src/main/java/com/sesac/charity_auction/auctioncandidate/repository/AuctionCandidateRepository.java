@@ -44,5 +44,9 @@ public interface AuctionCandidateRepository extends JpaRepository<AuctionCandida
     @Query("SELECT c.auction.id FROM AuctionCandidate c WHERE c.id = :candidateId")
     Optional<Long> findAuctionIdByCandidateId(@Param("candidateId") Long candidateId);
 
+    // 특정 경매에서 특정 상태의 후보들 조회
     List<AuctionCandidate> findAllByAuction_IdAndStatus(Long auctionId, AuctionCandidateStatus status);
+
+    // 경매별 낙찰 후보 전체 조회 (순위순)
+    List<AuctionCandidate> findAllByAuction_IdOrderByRankAsc(Long auctionId);
 }

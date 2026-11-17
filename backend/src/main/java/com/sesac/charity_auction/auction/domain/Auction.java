@@ -63,12 +63,15 @@ public class Auction extends BaseTimeEntity {
     private User user;
 
     // 경매 생성시 현재 가격을 시작 가격으로 초기화할 것
-    public static Auction create(User user, Long startPrice){
+    public static Auction create(User user, Long startPrice, String title, LocalDateTime startAt, LocalDateTime endAt){
 
         Auction auction = new Auction();
         auction.user = user;
+        auction.title = title;
         auction.startPrice = startPrice;
         auction.currentPrice = startPrice;
+        auction.startAt = startAt;
+        auction.endAt = endAt;
 
         return auction;
     }
@@ -130,6 +133,22 @@ public class Auction extends BaseTimeEntity {
         if(this.endAt == null || now.isBefore(this.endAt)){
             throw new BusinessException(ErrorCode.AUCTION_NOT_ENDED);
         }
+    }
+
+    // 경매 시작 (테스트 데이터 생성용)
+    public void start(LocalDateTime now) {
+        validateStatus(AuctionStatus.SCHEDULED,
+                ErrorCode.AUCTION_NOT_SCHEDULED);
+
+        if (now.isBefore(this.startAt)) {
+            throw new BusinessException(ErrorCode.AUCTION_NOT_STARTED);
+        }
+
+        if (!now.isBefore(this.endAt)) {
+            throw new BusinessException(ErrorCode.AUCTION_ALREADY_ENDED);
+        }
+
+        this.status = AuctionStatus.IN_PROGRESS;
     }
 
 }

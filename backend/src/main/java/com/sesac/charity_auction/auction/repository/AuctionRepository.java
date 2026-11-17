@@ -2,6 +2,8 @@ package com.sesac.charity_auction.auction.repository;
 
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
+import com.sesac.charity_auction.auction.dto.response.AuctionListResponse;
+import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidateStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -26,4 +28,13 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     // 만료된 경매
     @Query("SELECT a.id FROM Auction a WHERE a.status = :status AND a.endAt <= :now AND a.isDeleted = false")
     List<Long> findExpiredAuctionIds(@Param("status")AuctionStatus status, @Param("now") LocalDateTime now);
+
+    @Query("""
+    SELECT new com.sesac.charity_auction.auction.dto.response.AuctionListResponse(a.id, a.title, c.bidPrice)
+    FROM Auction a
+    LEFT JOIN AuctionCandidate c
+        ON c.auction.id = a.id
+        AND c.status = :status
+    """)
+    List<AuctionListResponse> findAuctionList(@Param("status")AuctionCandidateStatus status);
 }
