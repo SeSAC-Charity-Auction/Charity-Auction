@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { won } from "../donations/format";
 import AuctionSummary from "./AuctionSummary";
+import isClosedAuction from "./isClosedAuction";
 import styles from "./page.module.css";
 import timeLabel from "./timeLabel";
 
 export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
 	const time = timeLabel(auction);
 	const scheduled = auction.status === "SCHEDULED";
+	const closed = isClosedAuction(auction);
 	return (
-		<article className={styles.card}>
+		<article className={`${styles.card} ${closed ? styles.cardClosed : ""}`}>
 			<div className={styles.thumb}>
 				{auction.image ?
 					// 외부 주소의 이미지는 next/image 설정(허용 도메인)이 필요해서 일반 img를 썼어요.
@@ -24,9 +26,9 @@ export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
 					</span>
 				}
 				<span
-					className={`${styles.badge} ${scheduled ? styles.badgeSoon : styles.badgeLive}`}
+					className={`${styles.badge} ${closed ? styles.badgeClosed : scheduled ? styles.badgeSoon : styles.badgeLive}`}
 				>
-					{scheduled ? "예정" : "진행 중"}
+					{closed ? "마감" : scheduled ? "예정" : "진행 중"}
 				</span>
 			</div>
 			<div className={styles.cardBody}>
@@ -41,7 +43,9 @@ export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
 				</h3>
 				<div className={styles.priceRow}>
 					<span className={styles.priceLabel}>
-						{auction.bidCount > 0 ? "현재 입찰가" : "시작 가격"}
+						{auction.bidCount > 0 ?
+							closed ? "최종 입찰가" : "현재 입찰가"
+						:	"시작 가격"}
 					</span>
 					<span className={styles.price}>
 						{won(auction.currentPrice)}

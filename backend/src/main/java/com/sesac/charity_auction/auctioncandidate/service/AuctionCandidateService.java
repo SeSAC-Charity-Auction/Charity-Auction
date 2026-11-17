@@ -9,6 +9,7 @@ import com.sesac.charity_auction.auctioncandidate.dto.CandidateAcceptResponseDto
 import com.sesac.charity_auction.auctioncandidate.dto.CandidateRejectResponseDto;
 import com.sesac.charity_auction.auctioncandidate.dto.MyOfferedCandidateResponse;
 import com.sesac.charity_auction.auctioncandidate.repository.AuctionCandidateRepository;
+import com.sesac.charity_auction.global.common.LocalTimes;
 import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.point.domain.PointHistory;
@@ -166,6 +167,9 @@ public class AuctionCandidateService {
 
         PointHistory pointHistory = PointHistory.earnedForAuction(user, auction, pointAmount);
         pointHistoryRepository.save(pointHistory);
+        // 장부(point_histories)만 쓰면 잔액이 늘지 않아서, 잔액(users.point_balance)도 함께 올려요.
+        // (이 쿼리는 앞의 변경을 먼저 DB에 반영한 뒤 영속성 컨텍스트를 비워요. 그래서 맨 마지막에 둬요.)
+        userRepository.addBalance(userId, pointAmount);
 
         return new CandidateAcceptResponseDto(candidateId, currentCandidate.getStatus(), auction.getStatus(), now, pointAmount, "포인트 적립이 완료되었습니다.");
     }
@@ -177,6 +181,7 @@ public class AuctionCandidateService {
 
         return candidates.stream()
                 .map(candidate -> new MyOfferedCandidateResponse(
+                        candidate.getId(),
                         candidate.getAuction().getId(),
                         candidate.getAuction().getTitle(),
                         candidate.getBidPrice(),
@@ -184,7 +189,8 @@ public class AuctionCandidateService {
                         candidate.getStatus(),
                         candidate.getOfferedAt(),
                         candidate.getDeadlineAt(),
-                        candidate.getProcessedAt()
+                        candidate.getProcessedAt(),
+                        candidate.getDeadlineAt() == null ? null : LocalTimes.toIsoInstant(candidate.getDeadlineAt())
                 ))
                 .toList();
     }
@@ -196,6 +202,7 @@ public class AuctionCandidateService {
 
         return candidates.stream()
                 .map(candidate -> new MyOfferedCandidateResponse(
+                        candidate.getId(),
                         candidate.getAuction().getId(),
                         candidate.getAuction().getTitle(),
                         candidate.getBidPrice(),
@@ -203,7 +210,8 @@ public class AuctionCandidateService {
                         candidate.getStatus(),
                         candidate.getOfferedAt(),
                         candidate.getDeadlineAt(),
-                        candidate.getProcessedAt()
+                        candidate.getProcessedAt(),
+                        candidate.getDeadlineAt() == null ? null : LocalTimes.toIsoInstant(candidate.getDeadlineAt())
                 ))
                 .toList();
     }

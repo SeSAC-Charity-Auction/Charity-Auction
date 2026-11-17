@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -47,6 +49,10 @@ public class User extends BaseTimeEntity {
     @ColumnDefault("false")
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    // 내 포인트를 마지막으로 확인한 시각(UTC). 이후에 적립된 포인트가 있으면 "새 포인트"로 알려요. 변경은 조건부 UPDATE 쿼리로만 해요.
+    @Column(name = "points_checked_at")
+    private LocalDateTime pointsCheckedAt;
 
     // 회원가입
     public static User create(String email, String password, String nickname, String name) {

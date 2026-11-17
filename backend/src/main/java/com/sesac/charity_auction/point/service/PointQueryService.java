@@ -8,6 +8,8 @@ import com.sesac.charity_auction.point.dto.PointPageResponse;
 import com.sesac.charity_auction.point.repository.PointHistoryRepository;
 import com.sesac.charity_auction.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,5 +53,26 @@ public class PointQueryService {
                         .map(PointEntryResponse::from)
                         .toList(),
                 safePage, safeSize, total, (int) ((total + safeSize - 1) / safeSize));
+    }
+
+    /**
+     * "내 포인트를 확인했다"고 기록해요. 그동안 쌓인 새 적립이 있었으면 true를 돌려줘요.
+     * 확인한 시각을 먼저 정해 두어서, 이 사이에 새로 적립된 포인트는 계속 "새 포인트"로 남아요.
+     */
+    @Transactional
+    public boolean markPointsSeen(final long userId) {
+        final LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        final var user = userRepository.findById(userId)
+                .filter(found -> !found.isDeleted())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_LOGGED_IN));
+
+        final boolean hadNew = historyRepository.existsEarnedAfter(userId, sinceOf(user.getPointsCheckedAt()));
+        userRepository.markPointsChecked(userId, now);
+        return hadNew;
+    }
+
+    /** 확인한 적이 없으면(null) 처음부터 센다는 뜻으로 아주 옛날 시각을 써요. */
+    public static LocalDateTime sinceOf(final LocalDateTime checkedAt) {
+        return checkedAt == null ? LocalDateTime.of(1970, 1, 1, 0, 0) : checkedAt;
     }
 }

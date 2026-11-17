@@ -4,6 +4,7 @@ import { display } from "../donations/fonts";
 import MyPoints from "../donations/MyPoints";
 import EntryRow from "./EntryRow";
 import styles from "./page.module.css";
+import PointsSeenMarker from "./PointsSeenMarker";
 import pt from "./pt";
 
 export default function PointSection({
@@ -19,6 +20,8 @@ export default function PointSection({
 			className={styles.points}
 			aria-labelledby="points-title"
 		>
+			{/* 포인트 내역을 보여주는 화면이 열리면 "확인했다"고 기록해서 붉은 점을 없애요. */}
+			<PointsSeenMarker />
 			<div className={styles.sectionHead}>
 				<h2
 					id="points-title"

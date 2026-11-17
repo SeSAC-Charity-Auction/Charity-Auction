@@ -54,7 +54,7 @@ export default function BidForm({
 						key={add}
 						type="button"
 						className={styles.quickBtn}
-						onClick={() => setRaw(currentPrice + add)}
+						onClick={() => setRaw(price + add)} // 누를 때마다 지금 입력된 금액에 더해져요
 					>
 						+{add.toLocaleString("ko-KR")}
 					</button>

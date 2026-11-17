@@ -9,6 +9,7 @@ type MyProfile = {
 	donationCount: number; // 내가 기부한 횟수
 	totalDonation: number; // 내가 기부한 총 포인트
 	canEditTargets: boolean; // 기부처 이미지를 고칠 수 있는지 (ADMIN 또는 개발 환경)
+	hasNewPoints: boolean; // 아직 확인하지 않은 새 적립 포인트가 있는지 (상단 메뉴의 붉은 점)
 };
 
 export default MyProfile;

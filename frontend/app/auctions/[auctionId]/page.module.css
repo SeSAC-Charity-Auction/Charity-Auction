@@ -166,6 +166,15 @@
 .badgeOther {
 	background: var(--lilac);
 }
+.badgeClosed {
+	background: var(--ink);
+	color: var(--paper);
+}
+.closedNote {
+	margin-left: 10px;
+	color: var(--ink-soft);
+	font-size: 0.875rem;
+}
 
 .title {
 	margin-top: 10px;
@@ -218,6 +227,10 @@
 
 .time {
 	color: var(--ink);
+	font-weight: 700;
+}
+.timeClosed {
+	color: var(--ink-soft);
 	font-weight: 700;
 }
 .timeUrgent {
@@ -411,4 +424,71 @@
 	.photoFallback {
 		font-size: 4.5rem;
 	}
+}
+
+/* ---------- 낙찰 기회 ---------- */
+.offer {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 20px;
+	background: var(--surface);
+	border: 2px solid var(--ink);
+	border-radius: 14px;
+	box-shadow: 4px 4px 0 var(--hammer);
+}
+.offerTitle {
+	font-size: 1.125rem;
+	font-weight: 800;
+}
+.offerText {
+	color: var(--ink-soft);
+}
+.offerPoints {
+	color: var(--ink);
+	font-weight: 800;
+}
+.offerActions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.offerAccept {
+	flex: 1;
+	min-height: 48px;
+	padding: 0 20px;
+	border: 1.5px solid transparent;
+	border-radius: 8px;
+	background: var(--bid);
+	color: #fff;
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+.offerAccept:hover:not(:disabled) {
+	background: #2f3ea8;
+}
+.offerReject {
+	min-height: 48px;
+	padding: 0 20px;
+	border: 1.5px solid var(--ink);
+	border-radius: 8px;
+	background: transparent;
+	color: var(--ink);
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+.offerReject:hover:not(:disabled) {
+	background: var(--mist);
+}
+.offerAccept:disabled,
+.offerReject:disabled {
+	opacity: 0.6;
+	cursor: wait;
+}
+.offerAccept:focus-visible,
+.offerReject:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
 }

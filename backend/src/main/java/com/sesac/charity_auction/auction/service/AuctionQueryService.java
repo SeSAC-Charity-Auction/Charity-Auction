@@ -1,7 +1,6 @@
 package com.sesac.charity_auction.auction.service;
 
 import com.sesac.charity_auction.auction.domain.Auction;
-import com.sesac.charity_auction.auction.domain.AuctionStatus;
 import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse;
 import com.sesac.charity_auction.auction.dto.response.AuctionPageResponse;
 import com.sesac.charity_auction.auction.dto.response.AuctionWinnerResponse;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /** 경매 물품 목록 조회 전용 서비스예요. 데이터를 바꾸지 않아요. */
@@ -26,9 +26,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class AuctionQueryService {
     private static final int MAX_PAGE_SIZE = 50;
-    // 기본으로는 지금 참여할 수 있거나(진행), 곧 열리는(예정) 경매만 보여줘요.
-    private static final List<AuctionStatus> DEFAULT_STATUSES =
-            List.of(AuctionStatus.IN_PROGRESS, AuctionStatus.SCHEDULED);
+    // 목록 보기 방식. 모르는 값이 오면 전부(ALL)로 봐요.
+    private static final List<String> MODES = List.of("IN_PROGRESS", "SCHEDULED", "ENDED");
 
     private final AuctionRepository auctionRepository;
     private final BidRepository bidRepository;
@@ -62,20 +61,20 @@ public class AuctionQueryService {
     }
 
     /**
-     * @param status   null이면 진행+예정 경매
+     * @param status   IN_PROGRESS(진행 중) / SCHEDULED(예정) / ENDED(마감). 그 밖의 값이나 null이면 전부 (취소·삭제 제외)
      * @param sort     ending(마감 임박, 기본) / latest(최신) / popular(입찰 많은 순) / priceAsc / priceDesc
      * @param keyword  제목 검색어 (비어 있으면 무시)
      */
-    public AuctionPageResponse search(final AuctionStatus status, final Long categoryId,
+    public AuctionPageResponse search(final String status, final Long categoryId,
                                       final String keyword, final String sort,
                                       final int page, final int size) {
         int safePage = Math.max(0, page);
         int safeSize = Math.min(Math.max(1, size), MAX_PAGE_SIZE);
         String q = keyword == null || keyword.isBlank() ? null : keyword.trim();
-        List<AuctionStatus> statuses = status == null ? DEFAULT_STATUSES : List.of(status);
+        String mode = status != null && MODES.contains(status) ? status : "ALL";
 
         Page<Auction> result = auctionRepository.search(
-                statuses, categoryId, q, PageRequest.of(safePage, safeSize, sortOf(sort)));
+                mode, LocalDateTime.now(), categoryId, q, PageRequest.of(safePage, safeSize, sortOf(sort)));
 
         return new AuctionPageResponse(
                 result.getContent().stream().map(AuctionSummaryResponse::from).toList(),

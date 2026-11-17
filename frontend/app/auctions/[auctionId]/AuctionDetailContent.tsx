@@ -1,22 +1,30 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { connection } from "next/server";
 import { won } from "../../donations/format";
 import formatDateTime from "../formatDateTime";
 import getAuction from "../getAuction";
+import isClosedAuction from "../isClosedAuction";
 import timeLabel from "../timeLabel";
 import AuctionImageUploader from "./AuctionImageUploader";
 import BidHistory from "./BidHistory";
 import BidPanel from "./BidPanel";
+import OfferPanel from "./OfferPanel";
 import styles from "./page.module.css";
 
 const STATUS_LABEL = {
 	SCHEDULED: "예정",
 	IN_PROGRESS: "진행 중",
-	CLOSED: "종료",
+	CANCELED: "취소"
+} as const;
+
+// 마감된 경매에 붙일 작은 설명이에요.
+const CLOSED_NOTE = {
+	CLOSED: "낙찰자를 정하는 중이에요",
 	COMPLETED: "낙찰 완료",
 	FAILED: "유찰",
-	CANCELED: "취소"
+	IN_PROGRESS: "마감 처리 중이에요"
 } as const;
 
 export default async function AuctionDetailContent({
@@ -32,7 +40,8 @@ export default async function AuctionDetailContent({
 	const auction = await getAuction(id);
 	if (!auction) notFound();
 
-	const live = auction.status === "IN_PROGRESS";
+	const closed = isClosedAuction(auction);
+	const live = auction.status === "IN_PROGRESS" && !closed;
 	const time = timeLabel(auction);
 
 	const photo =
@@ -87,10 +96,15 @@ export default async function AuctionDetailContent({
 				<aside className={styles.side}>
 					<div className={styles.head}>
 						<span
-							className={`${styles.badge} ${live ? styles.badgeLive : styles.badgeOther}`}
+							className={`${styles.badge} ${closed ? styles.badgeClosed : live ? styles.badgeLive : styles.badgeOther}`}
 						>
-							{STATUS_LABEL[auction.status]}
+							{closed ? "마감" : STATUS_LABEL[auction.status as keyof typeof STATUS_LABEL]}
 						</span>
+						{closed && (
+							<span className={styles.closedNote}>
+								{CLOSED_NOTE[auction.status as keyof typeof CLOSED_NOTE]}
+							</span>
+						)}
 						<h1 className={styles.title}>{auction.title}</h1>
 						<p className={styles.seller}>
 							판매자 {auction.sellerNickname}
@@ -124,6 +138,17 @@ export default async function AuctionDetailContent({
 						<p className={time.urgent ? styles.timeUrgent : styles.time}>
 							{time.text}
 						</p>
+					)}
+					{closed && (
+						<p className={styles.timeClosed}>
+							마감 · {formatDateTime(auction.endAt)}
+						</p>
+					)}
+
+					{auction.status === "CLOSED" && (
+						<Suspense fallback={null}>
+							<OfferPanel auctionId={auction.auctionId} />
+						</Suspense>
 					)}
 
 					<BidPanel auction={auction} />

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,4 +26,9 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
 
     // 포인트 적립 확인용 테스트
     Optional<PointHistory> findFirstByUser_IdAndAuction_IdAndPointType(Long userId, Long auctionId, PointType pointType);
+
+    // since 이후에 적립된 포인트가 있는지 (상단 메뉴의 붉은 점)
+    @Query("select count(h) > 0 from PointHistory h where h.user.id = :userId "
+            + "and h.pointType = com.sesac.charity_auction.point.domain.PointType.EARN and h.createdAt > :since")
+    boolean existsEarnedAfter(final @Param("userId") long userId, final @Param("since") LocalDateTime since);
 }

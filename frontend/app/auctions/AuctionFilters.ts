@@ -10,12 +10,13 @@ export const SORTS = [
 export const STATUS_TABS = [
 	{ value: "", label: "전체" },
 	{ value: "IN_PROGRESS", label: "진행 중" },
-	{ value: "SCHEDULED", label: "예정" }
+	{ value: "SCHEDULED", label: "예정" },
+	{ value: "ENDED", label: "마감" }
 ] as const;
 
 type AuctionFilters = {
 	categoryId: number | null;
-	status: "" | "IN_PROGRESS" | "SCHEDULED"; // ""는 진행+예정 모두
+	status: "" | "IN_PROGRESS" | "SCHEDULED" | "ENDED"; // ""는 전부 (진행 중·예정을 먼저, 마감은 뒤에)
 	sort: (typeof SORTS)[number]["value"];
 	keyword: string;
 	page: number; // 1부터 시작

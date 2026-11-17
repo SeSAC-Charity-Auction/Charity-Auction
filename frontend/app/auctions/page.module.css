@@ -255,6 +255,17 @@
 	background: var(--lilac);
 }
 
+/* 마감된 경매: 이미지는 흐리게, 배지는 어둡게 */
+.cardClosed .thumbImg,
+.cardClosed .thumbFallback {
+	filter: grayscale(1);
+	opacity: 0.55;
+}
+.badgeClosed {
+	background: var(--ink);
+	color: var(--paper);
+}
+
 .cardBody {
 	display: flex;
 	flex: 1;

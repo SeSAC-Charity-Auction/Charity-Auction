@@ -1,6 +1,5 @@
 package com.sesac.charity_auction.auction.controller;
 
-import com.sesac.charity_auction.auction.domain.AuctionStatus;
 import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse;
 import com.sesac.charity_auction.auction.dto.response.AuctionPageResponse;
 import com.sesac.charity_auction.auction.service.AuctionImageService;
@@ -33,7 +32,7 @@ public class AuctionController {
 
     // 경매 물품 목록 (메인 페이지). 로그인 없이 볼 수 있어요.
     @GetMapping
-    public AuctionPageResponse list(final @RequestParam(required = false) AuctionStatus status,
+    public AuctionPageResponse list(final @RequestParam(required = false) String status,
                                     final @RequestParam(required = false) Long categoryId,
                                     final @RequestParam(required = false) String keyword,
                                     final @RequestParam(defaultValue = "ending") String sort,

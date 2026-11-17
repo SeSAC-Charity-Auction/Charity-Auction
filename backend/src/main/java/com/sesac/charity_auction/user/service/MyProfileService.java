@@ -5,6 +5,8 @@ import com.sesac.charity_auction.donation.repository.DonationRepository;
 import com.sesac.charity_auction.donation.service.TargetEditPolicy;
 import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
+import com.sesac.charity_auction.point.repository.PointHistoryRepository;
+import com.sesac.charity_auction.point.service.PointQueryService;
 import com.sesac.charity_auction.user.dto.response.MyProfileResponse;
 import com.sesac.charity_auction.user.entity.User;
 import com.sesac.charity_auction.user.repository.UserRepository;
@@ -21,13 +23,16 @@ public class MyProfileService {
     private final DonationRepository donationRepository;
     private final TargetEditPolicy targetEditPolicy;
     private final RefreshTokenService refreshTokenService;
+    private final PointHistoryRepository pointHistoryRepository;
 
     public MyProfileService(UserRepository userRepository, DonationRepository donationRepository,
-                            TargetEditPolicy targetEditPolicy, RefreshTokenService refreshTokenService) {
+                            TargetEditPolicy targetEditPolicy, RefreshTokenService refreshTokenService,
+                            PointHistoryRepository pointHistoryRepository) {
         this.userRepository = userRepository;
         this.donationRepository = donationRepository;
         this.targetEditPolicy = targetEditPolicy;
         this.refreshTokenService = refreshTokenService;
+        this.pointHistoryRepository = pointHistoryRepository;
     }
 
     public MyProfileResponse getMyProfile(final long userId) {
@@ -46,7 +51,8 @@ public class MyProfileService {
                 user.getCreatedAt().toInstant(ZoneOffset.UTC).toString(),
                 donationRepository.countByUserId(userId),
                 donationRepository.sumAmountByUserId(userId),
-                targetEditPolicy.canEdit(user)
+                targetEditPolicy.canEdit(user),
+                pointHistoryRepository.existsEarnedAfter(userId, PointQueryService.sinceOf(user.getPointsCheckedAt()))
         );
     }
 
