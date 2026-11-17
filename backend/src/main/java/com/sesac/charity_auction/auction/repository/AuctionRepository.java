@@ -99,4 +99,13 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
             WHERE a.id = :auctionId AND a.isDeleted = false
             """)
     Optional<Auction> findDetailById(@Param("auctionId") Long auctionId);
+
+    // 마이페이지: 내가 올린 경매 (최신 등록순). 삭제한 경매는 빼요.
+    @Query(value = """
+            SELECT a FROM Auction a JOIN FETCH a.category
+            WHERE a.user.id = :userId AND a.isDeleted = false
+            ORDER BY a.createdAt DESC, a.id DESC
+            """,
+            countQuery = "SELECT COUNT(a) FROM Auction a WHERE a.user.id = :userId AND a.isDeleted = false")
+    Page<Auction> findMine(@Param("userId") Long userId, Pageable pageable);
 }
