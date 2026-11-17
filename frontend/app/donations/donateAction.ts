@@ -4,13 +4,10 @@
 // 기부 폼이 제출될 때 서버에서 실행되는 함수예요. (브라우저가 아니라 서버에서만 돌아요)
 
 import { revalidatePath } from "next/cache";
-import { donate, type DonateErrorCode } from "./data";
+import DonateErrorCode from "./DonateErrorCode";
+import DonateState from "./DonateState";
 import { DONATION_STEP, MIN_DONATION } from "./rules";
-
-export type DonateState =
-	| { status: "idle" }
-	| { status: "success"; amount: number; balance: number }
-	| { status: "error"; message: string };
+import donate from "./donate";
 
 const MESSAGES: Record<DonateErrorCode, string> = {
 	NOT_LOGGED_IN: "로그인이 필요해요. 로그인한 뒤 다시 시도해 주세요.",
@@ -28,14 +25,12 @@ export async function donateAction(
 	// 화면에서 한 번 검사하지만, 요청은 얼마든지 조작될 수 있어서 서버에서 다시 확인해요.
 	const targetId = Number(formData.get("targetId"));
 	const amount = Number(formData.get("amount"));
-
 	if (!Number.isInteger(targetId) || targetId <= 0) {
 		return { status: "error", message: MESSAGES.TARGET_NOT_FOUND };
 	}
 	if (!Number.isInteger(amount)) {
 		return { status: "error", message: MESSAGES.INVALID_AMOUNT };
 	}
-
 	const result = await donate({ targetId, amount });
 	if (!result.ok) {
 		return {
@@ -43,11 +38,9 @@ export async function donateAction(
 			message: MESSAGES[result.code] ?? MESSAGES.UNKNOWN
 		};
 	}
-
 	// 기부 현황(목록)과 이 기부처 상세가 새 값으로 다시 그려지게 해요.
 	revalidatePath("/donations");
 	revalidatePath(`/donations/${targetId}`);
-
 	return {
 		status: "success",
 		amount: result.amount,

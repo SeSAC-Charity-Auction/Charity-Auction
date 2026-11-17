@@ -5,11 +5,12 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { donateAction, type DonateState } from "../actions";
+import { donateAction } from "../actions";
 import FlipText from "../flip-text";
 import { display } from "../fonts";
 import { DONATION_STEP, MIN_DONATION } from "../rules";
 import styles from "./page.module.css";
+import DonateState from "../DonateState";
 
 type Props = {
 	targetId: number;

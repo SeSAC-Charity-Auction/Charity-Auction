@@ -1,4 +1,4 @@
-import { DonationRecord } from "../data";
+import DonationRecord from "../DonationRecord";
 import FlipText from "../flip-text";
 import { won } from "../format";
 import styles from "./page.module.css";

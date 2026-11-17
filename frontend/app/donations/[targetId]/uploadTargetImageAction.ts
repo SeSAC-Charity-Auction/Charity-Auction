@@ -4,8 +4,8 @@
 // 기부처 이미지를 올릴 때 서버에서 실행되는 함수예요.
 
 import { revalidatePath } from "next/cache";
-import { uploadTargetImage } from "../data";
 import TargetImageState from "./TargetImageState";
+import uploadTargetImage from "../uploadTargetImage";
 
 const MAX_BYTES = 2 * 1024 * 1024;
 

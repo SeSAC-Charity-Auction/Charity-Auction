@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import { getDonationPage } from "../data";
 import DonationRow from "../donation-row";
 import { display } from "../fonts";
 import styles from "../page.module.css";
+import getDonationPage from "../getDonationPage";
 
 export default async function AllDonations({
 	searchParams

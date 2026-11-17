@@ -8,6 +8,7 @@
 // (Math.random, Date.now를 쓰지 않아서 서버 렌더링과 결과가 같아요.)
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Flip from "./Flip";
 import styles from "./flip-text.module.css";
 
 const STEP_MS = 50; // 한 칸 넘어가는 시간 (css의 --flip-ms와 같아야 해요)
@@ -16,8 +17,6 @@ const FULL_ROUND = 10; // 0~9를 한 바퀴
 
 const prefersReducedMotion = () =>
 	window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-type Flip = { prev: number; shown: number; tick: number };
 
 function Tile({
 	digit,
@@ -33,13 +32,11 @@ function Tile({
 		shown: digit,
 		tick: 0
 	});
-
 	// 타이머 안에서 "지금 값"을 읽어야 해서 ref에도 들고 있어요.
 	const shownRef = useRef(digit);
 	const targetRef = useRef(digit);
 	const spinsLeft = useRef(0);
 	const timer = useRef<number | null>(null);
-
 	const run = useCallback((startDelay: number) => {
 		if (timer.current !== null) return; // 이미 돌고 있으면 그대로 이어가요
 		const step = () => {
@@ -56,7 +53,6 @@ function Tile({
 		};
 		timer.current = window.setTimeout(step, startDelay);
 	}, []);
-
 	// 값이 바뀌면 새 숫자까지 넘겨요.
 	useEffect(() => {
 		targetRef.current = digit;
@@ -71,7 +67,6 @@ function Tile({
 		}
 		run(0);
 	}, [digit, run]);
-
 	// 화면에 보이면 한 바퀴 돌아요.
 	useEffect(() => {
 		if (!spin || prefersReducedMotion()) return;
@@ -81,7 +76,6 @@ function Tile({
 			spinsLeft.current = 0;
 		};
 	}, [spin, delay, run]);
-
 	// 화면에서 사라질 때 타이머를 정리해요.
 	useEffect(() => {
 		return () => {
@@ -89,9 +83,7 @@ function Tile({
 			timer.current = null;
 		};
 	}, []);
-
 	const { prev, shown, tick } = flip;
-
 	return (
 		<span className={styles.tile}>
 			{/* 가만히 있는 위/아래 판: 위는 "새 숫자", 아래는 "예전 숫자" */}
@@ -141,7 +133,6 @@ const NUMBER = /(\d+(?:,\d{3})*)/;
 export default function FlipText({ text }: { text: string }) {
 	const rootRef = useRef<HTMLSpanElement>(null);
 	const [spin, setSpin] = useState(false);
-
 	// 화면에 보이기 시작하면 한 번만 돌려요. (스크롤해서 아래쪽 숫자가 보일 때 돌아요)
 	useEffect(() => {
 		const el = rootRef.current;
@@ -162,9 +153,7 @@ export default function FlipText({ text }: { text: string }) {
 		io.observe(el);
 		return () => io.disconnect();
 	}, []);
-
 	let digitIndex = 0; // 글 전체에서 몇 번째 숫자인지 (돌기 시작하는 시간차에 써요)
-
 	return (
 		<span ref={rootRef} className={styles.root}>
 			<span className={styles.sr}>{text}</span>

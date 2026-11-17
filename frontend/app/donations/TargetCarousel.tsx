@@ -5,12 +5,10 @@ import {
 	useEffect,
 	useLayoutEffect,
 	useRef,
-	useState,
-	type ReactNode
+	useState
 } from "react";
+import CarouselItem from "./CarouselItem";
 import styles from "./page.module.css";
-
-export type CarouselItem = { key: string; node: ReactNode };
 
 // 기부처 카드 한 세트를 앞뒤로 여러 번 이어 붙여 두고,
 // 스크롤이 멈추면 한 세트 길이만큼 조용히 되돌려서 끝없이 도는 것처럼 보이게 합니다.
@@ -22,7 +20,6 @@ export default function TargetCarousel({ items }: { items: CarouselItem[] }) {
 	const copiesRef = useRef(3);
 	const period = useRef(0); // 카드 한 세트의 가로 길이(간격 포함)
 	const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-
 	const measure = useCallback(() => {
 		const el = ref.current;
 		if (!el || !loop || el.children.length <= count) return;
@@ -38,7 +35,6 @@ export default function TargetCarousel({ items }: { items: CarouselItem[] }) {
 			setCopies(want);
 		}
 	}, [count, loop]);
-
 	// 세트 수가 정해지면 가운데 세트의 첫 카드에서 시작해요.
 	useLayoutEffect(() => {
 		const el = ref.current;
@@ -46,13 +42,13 @@ export default function TargetCarousel({ items }: { items: CarouselItem[] }) {
 		measure();
 		el.scrollLeft = ((copies - 1) / 2) * period.current;
 	}, [copies, loop, measure]);
-
 	useLayoutEffect(() => {
 		ref.current
-			?.querySelectorAll<HTMLElement>("[data-clone] a, [data-clone] button")
+			?.querySelectorAll<HTMLElement>(
+				"[data-clone] a, [data-clone] button"
+			)
 			.forEach((n) => n.setAttribute("tabindex", "-1"));
 	}, [copies, items]);
-
 	useEffect(() => {
 		const el = ref.current;
 		if (!el || !loop) return;
@@ -60,9 +56,7 @@ export default function TargetCarousel({ items }: { items: CarouselItem[] }) {
 		ro.observe(el);
 		return () => ro.disconnect();
 	}, [loop, measure]);
-
 	useEffect(() => () => clearTimeout(timer.current), []);
-
 	function normalize() {
 		const el = ref.current;
 		const s = period.current;
@@ -72,7 +66,6 @@ export default function TargetCarousel({ items }: { items: CarouselItem[] }) {
 		const wrapped = ((rel % s) + s) % s;
 		if (Math.abs(rel - wrapped) > 0.5) el.scrollLeft = base + wrapped;
 	}
-
 	function onScroll() {
 		const el = ref.current;
 		if (!el || !loop) return;
@@ -84,7 +77,6 @@ export default function TargetCarousel({ items }: { items: CarouselItem[] }) {
 		if (atEdge) normalize();
 		else timer.current = setTimeout(normalize, 120);
 	}
-
 	function move(dir: 1 | -1) {
 		const el = ref.current;
 		if (!el) return;
@@ -104,10 +96,8 @@ export default function TargetCarousel({ items }: { items: CarouselItem[] }) {
 			behavior: reduce ? "auto" : "smooth"
 		});
 	}
-
 	const total = loop ? copies : 1;
 	const mid = loop ? (copies - 1) / 2 : 0;
-
 	return (
 		<div className={styles.carousel}>
 			<div
@@ -142,7 +132,6 @@ export default function TargetCarousel({ items }: { items: CarouselItem[] }) {
 					))
 				)}
 			</div>
-
 			{loop && (
 				<>
 					<button

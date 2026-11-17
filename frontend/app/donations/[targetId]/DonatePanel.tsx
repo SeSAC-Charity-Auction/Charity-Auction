@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import { DonationTarget, getMyPoints } from "../data";
+import DonationTarget from "../DonationTarget";
 import { display } from "../fonts";
 import DonateForm from "./DonateForm";
 import styles from "./page.module.css";
+import getMyPoints from "../getMyPoints";
 
 export default async function DonatePanel({
 	target

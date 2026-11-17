@@ -1,10 +1,10 @@
 // app/mypage/entry-row.tsx
-import type { PointEntry } from "../donations/data";
-import FlipText from "../donations/flip-text";
-import { relativeTime } from "../donations/format";
-import styles from "./page.module.css";
 
-const pt = (n: number) => `${n.toLocaleString("ko-KR")}P`;
+import FlipText from "../donations/FlipText";
+import { relativeTime } from "../donations/format";
+import PointEntry from "../donations/PointEntry";
+import styles from "./page.module.css";
+import pt from "./pt";
 
 export default function EntryRow({ entry }: { entry: PointEntry }) {
 	const earn = entry.pointType === "적립";

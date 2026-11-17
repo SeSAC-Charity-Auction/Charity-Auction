@@ -1,30 +1,20 @@
 // app/mypage/page.tsx
 // 마이페이지: 내 정보, 기부 통계, 포인트 내역을 한 곳에서 보여줘요.
-import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import {
-	getMyPoints,
-	getMyProfile,
-	type MyPoints,
-	type MyProfile,
-} from "../donations/data";
-import EntryRow from "./entry-row";
-import AvatarUploader from "./avatar-uploader";
-import WithdrawSection from "./withdraw-section";
-import NicknameEditor from "./nickname-editor";
-import FlipText from "../donations/flip-text";
+import FlipText from "../donations/FlipText";
 import { body, display } from "../donations/fonts";
+import MyPoints from "../donations/MyPoints";
+import MyProfile from "../donations/MyProfile";
+import AvatarUploader from "./avatar-uploader";
+import EntryRow from "./entry-row";
+import NicknameEditor from "./nickname-editor";
 import styles from "./page.module.css";
-
-export const metadata: Metadata = {
-	title: "마이페이지"
-};
-
-/* ---------- 표시용 도우미 함수 ---------- */
-
-const pt = (n: number) => `${n.toLocaleString("ko-KR")}P`;
+import pt from "./pt";
+import WithdrawSection from "./withdraw-section";
+import getMyPoints from "../donations/getMyPoints";
+import getMyProfile from "../donations/getMyProfile";
 
 // 서버가 UTC로 준 가입일을 한국 날짜로 보여줘요. (예: 2026년 11월 12일)
 function joinedDate(iso: string) {
