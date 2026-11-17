@@ -6,6 +6,7 @@ import com.sesac.charity_auction.auction.domain.AuctionStatusFilter;
 public record AuctionSearchCondition(
         String keyword,
         AuctionStatusFilter status,
-        AuctionSort sort
+        AuctionSort sort,
+        Long categoryId
 ) {
 }
