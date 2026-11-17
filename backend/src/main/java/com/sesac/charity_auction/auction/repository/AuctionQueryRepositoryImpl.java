@@ -38,6 +38,11 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository{
             builder.and(auction.title.containsIgnoreCase(condition.keyword().trim()));
         }
 
+        // 카테고리 필터링
+        if(condition.categoryId() != null){
+            builder.and(auction.category.id.eq(condition.categoryId()));
+        }
+
         // 상태 필터링
         if(condition.status() != null){
             switch (condition.status()){
