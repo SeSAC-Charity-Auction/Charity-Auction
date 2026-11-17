@@ -42,7 +42,31 @@
 	background: var(--ink);
 	color: var(--paper);
 }
+/* 프로필 사진으로 보이는 마이페이지 링크 */
+.avatar {
+	display: inline-flex;
+	margin-left: 6px;
+	border: 2px solid var(--mist-strong);
+	border-radius: 50%;
+}
+.avatar:hover {
+	border-color: var(--ink);
+}
+.avatarOn {
+	border-color: var(--ink);
+	box-shadow: 0 0 0 2px var(--hammer);
+}
+.avatarImg {
+	display: block;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	object-fit: cover;
+	background: var(--mist);
+}
+
 .brand:focus-visible,
+.avatar:focus-visible,
 .link:focus-visible {
 	outline: 3px solid var(--bid-fg);
 	outline-offset: 3px;
@@ -54,5 +78,8 @@
 	}
 	.link {
 		padding: 6px 10px;
+	}
+	.avatar {
+		margin-left: 2px;
 	}
 }
