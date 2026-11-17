@@ -27,6 +27,14 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
     // 포인트 적립 확인용 테스트
     Optional<PointHistory> findFirstByUser_IdAndAuction_IdAndPointType(Long userId, Long auctionId, PointType pointType);
 
+    @Query("select u.id as userId, u.nickname as nickname, u.image as userImage, "
+            + "sum(h.pointAmount) as totalDonation, count(h.id) as donationCount "
+            + "from PointHistory h join h.user u "
+            + "where h.pointType = :pointType and h.donation is not null and u.isDeleted = false "
+            + "group by u.id, u.nickname, u.image "
+            + "order by sum(h.pointAmount) desc, u.id asc")
+    List<DonationRankingProjection> findDonationRanking(final @Param("pointType") PointType pointType);
+
     // since 이후에 적립된 포인트가 있는지 (상단 메뉴의 붉은 점)
     @Query("select count(h) > 0 from PointHistory h where h.user.id = :userId "
             + "and h.pointType = com.sesac.charity_auction.point.domain.PointType.EARN and h.createdAt > :since")
