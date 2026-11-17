@@ -5,6 +5,7 @@ import { won } from "../../donations/format";
 import formatDateTime from "../formatDateTime";
 import getAuction from "../getAuction";
 import timeLabel from "../timeLabel";
+import AuctionImageUploader from "./AuctionImageUploader";
 import BidHistory from "./BidHistory";
 import BidPanel from "./BidPanel";
 import styles from "./page.module.css";
@@ -34,6 +35,19 @@ export default async function AuctionDetailContent({
 	const live = auction.status === "IN_PROGRESS";
 	const time = timeLabel(auction);
 
+	const photo =
+		auction.image ?
+			// 외부 주소의 이미지는 next/image 설정(허용 도메인)이 필요해서 일반 img를 썼어요.
+			// eslint-disable-next-line @next/next/no-img-element
+			<img
+				src={auction.image}
+				alt={`${auction.title} 이미지`}
+				className={styles.photoImg}
+			/>
+		:	<span className={styles.photoFallback} aria-hidden="true">
+				{auction.title.slice(0, 1)}
+			</span>;
+
 	return (
 		<>
 			<nav className={styles.crumbs} aria-label="현재 위치">
@@ -51,20 +65,14 @@ export default async function AuctionDetailContent({
 
 			<div className={styles.layout}>
 				<div className={styles.media}>
-					<div className={styles.photo}>
-						{auction.image ?
-							// 외부 주소의 이미지는 next/image 설정(허용 도메인)이 필요해서 일반 img를 썼어요.
-							// eslint-disable-next-line @next/next/no-img-element
-							<img
-								src={auction.image}
-								alt={`${auction.title} 이미지`}
-								className={styles.photoImg}
-							/>
-						:	<span className={styles.photoFallback} aria-hidden="true">
-								{auction.title.slice(0, 1)}
-							</span>
-						}
-					</div>
+					{process.env.NODE_ENV === "development" ?
+						<AuctionImageUploader
+							auctionId={auction.auctionId}
+							title={auction.title}
+						>
+							{photo}
+						</AuctionImageUploader>
+					:	<div className={styles.photo}>{photo}</div>}
 
 					<section aria-labelledby="desc-title" className={styles.block}>
 						<h2 id="desc-title" className={styles.h2}>

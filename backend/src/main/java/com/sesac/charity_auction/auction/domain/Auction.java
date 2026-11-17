@@ -82,6 +82,11 @@ public class Auction extends BaseTimeEntity {
         return auction;
     }
 
+    // 상품 이미지를 바꿔요. (주소는 ImageStorage가 저장한 /uploads/auction/... 형태예요)
+    public void changeImage(final String image){
+        this.image = image;
+    }
+
     // 입찰시 경매 정보 업데이트
     public void updateAuctionInfo(Long bidPrice){
         this.currentPrice = bidPrice;

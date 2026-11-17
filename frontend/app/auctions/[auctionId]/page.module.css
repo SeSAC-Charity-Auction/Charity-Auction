@@ -82,6 +82,51 @@
 	line-height: 1;
 }
 
+/* 개발 환경에서만 보이는 이미지 바꾸기 */
+.photoEditable {
+	position: relative;
+	cursor: pointer;
+}
+.photoEditable:hover,
+.photoEditable:focus-within {
+	border-color: var(--ink);
+}
+.photoEditable:focus-within {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}
+.photoHint {
+	position: absolute;
+	right: 12px;
+	bottom: 12px;
+	padding: 4px 12px;
+	border: 2px solid var(--ink);
+	border-radius: 6px;
+	background: var(--hammer);
+	box-shadow: 3px 3px 0 var(--ink);
+	color: var(--ink);
+	font-size: 0.8125rem;
+	font-weight: 800;
+	line-height: 1.5;
+}
+/* 파일 선택 창은 라벨 전체가 대신 눌리게 숨기되, 키보드로는 닿을 수 있게 */
+.photoInput {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	border: 0;
+	clip-path: inset(50%);
+}
+.photoError {
+	min-height: 1.7em;
+	margin-top: 8px;
+	color: var(--danger);
+	font-size: 0.875rem;
+}
+
 .block {
 	margin-top: 40px;
 }
