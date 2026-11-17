@@ -8,7 +8,7 @@ import styles from "./page.module.css";
 export default function SearchForm({ filters }: { filters: AuctionFilters }) {
 	const listId = useId();
 	const formRef = useRef<HTMLFormElement>(null);
-	const [value, setValue] = useState(filters.keyword);
+	const [value, setValue] = useState(""); // 검색하면 페이지가 새로 열리므로 입력칸은 비어 있어요
 	const [items, setItems] = useState<string[]>([]);
 	const [open, setOpen] = useState(false);
 	const [active, setActive] = useState(-1);
