@@ -1,0 +1,369 @@
+/* app/auctions/[auctionId]/page.module.css : 경매 물품 상세 */
+
+.page {
+	min-height: 100vh;
+	background: var(--paper);
+	color: var(--ink);
+	font-size: 1rem;
+	line-height: 1.7;
+	word-break: keep-all; /* 한글이 단어 단위로 줄바꿈되게 */
+}
+.page :where(h1, h2, p, dl, dd, ol) {
+	margin: 0;
+}
+
+.wrap {
+	max-width: 1120px;
+	margin: 0 auto;
+	padding: 0 20px 96px;
+}
+
+.loading {
+	padding: 96px 0;
+	color: var(--ink-soft);
+	text-align: center;
+}
+
+.crumb:focus-visible,
+.quickBtn:focus-visible,
+.bidInput:focus-visible,
+.submit:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}
+
+/* ---------- 현재 위치 ---------- */
+.crumbs {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 28px 0 20px;
+	color: var(--ink-soft);
+	font-size: 0.875rem;
+}
+.crumb {
+	color: var(--ink-soft);
+	text-decoration: none;
+}
+.crumb:hover {
+	color: var(--ink);
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+
+/* ---------- 두 칸 배치 ---------- */
+.layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+	gap: 48px;
+	align-items: start;
+}
+
+.photo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 4 / 3;
+	overflow: hidden;
+	background: var(--mist);
+	border: 1.5px solid var(--mist-strong);
+	border-radius: 14px;
+}
+.photoImg {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.photoFallback {
+	color: var(--ink-soft);
+	font-size: 6rem;
+	font-weight: 800;
+	line-height: 1;
+}
+
+.block {
+	margin-top: 40px;
+}
+.h2 {
+	font-size: 1.375rem;
+	font-weight: 800;
+	line-height: 1.4;
+}
+.desc {
+	margin-top: 12px;
+	color: var(--ink);
+	white-space: pre-line; /* 설명의 줄바꿈을 그대로 */
+}
+
+/* ---------- 오른쪽 정보 ---------- */
+.side {
+	position: sticky;
+	top: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.badge {
+	display: inline-block;
+	padding: 2px 10px;
+	border: 2px solid var(--ink);
+	border-radius: 6px;
+	color: var(--ink);
+	font-size: 0.8125rem;
+	font-weight: 800;
+	line-height: 1.5;
+}
+.badgeLive {
+	background: var(--hammer);
+}
+.badgeOther {
+	background: var(--lilac);
+}
+
+.title {
+	margin-top: 10px;
+	font-size: clamp(1.6rem, 3.6vw, 2.25rem);
+	font-weight: 800;
+	line-height: 1.35;
+	letter-spacing: -0.01em;
+}
+.seller {
+	margin-top: 4px;
+	color: var(--ink-soft);
+	font-size: 0.9375rem;
+}
+
+.facts {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0;
+	border-top: 1.5px solid var(--ink);
+	border-bottom: 1.5px solid var(--mist-strong);
+}
+.facts > div {
+	padding: 12px 0;
+	border-bottom: 1px solid var(--mist-strong);
+}
+.facts > div:nth-last-child(-n + 2) {
+	border-bottom: 0;
+}
+.facts > div:nth-child(even) {
+	padding-left: 16px;
+}
+.facts dt {
+	color: var(--ink-soft);
+	font-size: 0.8125rem;
+}
+.facts dd {
+	font-size: 0.9375rem;
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+}
+.factWide {
+	grid-column: 1 / -1;
+	padding-left: 0 !important;
+}
+.price {
+	font-size: 2rem !important;
+	font-weight: 800 !important;
+	line-height: 1.35;
+}
+
+.time {
+	color: var(--ink);
+	font-weight: 700;
+}
+.timeUrgent {
+	color: var(--danger);
+	font-weight: 700;
+}
+
+/* ---------- 입찰 폼 ---------- */
+.bid {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 20px;
+	background: var(--surface);
+	border: 1.5px solid var(--ink);
+	border-radius: 14px;
+}
+.bidLabel {
+	font-weight: 700;
+}
+.bidInputRow {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.bidInput {
+	flex: 1;
+	min-width: 0;
+	min-height: 52px;
+	padding: 0 14px;
+	border: 1.5px solid var(--mist-strong);
+	border-radius: 8px;
+	background: var(--paper);
+	color: var(--ink);
+	font: inherit;
+	font-size: 1.25rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+}
+.bidInput:hover {
+	border-color: var(--ink);
+}
+.bidUnit {
+	font-weight: 700;
+}
+
+.quick {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.quickBtn {
+	min-height: 36px;
+	padding: 0 14px;
+	border: 1.5px solid var(--mist-strong);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--ink);
+	font: inherit;
+	font-size: 0.875rem;
+	cursor: pointer;
+}
+.quickBtn:hover {
+	border-color: var(--ink);
+	background: var(--mist);
+}
+
+.hint {
+	color: var(--ink-soft);
+	font-size: 0.8125rem;
+}
+.error {
+	color: var(--danger);
+	font-size: 0.9375rem;
+	font-weight: 500;
+}
+.success {
+	color: var(--bid-fg);
+	font-size: 0.9375rem;
+	font-weight: 700;
+}
+
+.submit {
+	min-height: 52px;
+	border: 1.5px solid transparent;
+	border-radius: 8px;
+	background: var(--bid);
+	color: #fff;
+	font: inherit;
+	font-size: 1.0625rem;
+	font-weight: 700;
+	cursor: pointer;
+}
+.submit:hover:not(:disabled) {
+	background: #2f3ea8;
+}
+.submit:disabled {
+	opacity: 0.6;
+	cursor: wait;
+}
+
+.quiet {
+	padding: 20px;
+	background: var(--mist);
+	border-radius: 14px;
+}
+.quietTitle {
+	font-size: 1.125rem;
+	font-weight: 800;
+}
+.quietText {
+	margin-top: 4px;
+	color: var(--ink-soft);
+}
+
+/* ---------- 입찰 내역 ---------- */
+.history {
+	margin-top: 64px;
+}
+.historyHead {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px 16px;
+	margin-bottom: 16px;
+}
+.muted {
+	color: var(--ink-soft);
+	font-size: 0.875rem;
+}
+
+.bidList {
+	padding: 0;
+	list-style: none;
+	border-top: 1.5px solid var(--ink);
+}
+.bidItem {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 14px 0;
+	border-bottom: 1px solid var(--mist-strong);
+}
+.bidder {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 700;
+}
+.topTag {
+	padding: 0 8px;
+	border: 2px solid var(--ink);
+	border-radius: 6px;
+	background: var(--hammer);
+	color: var(--ink);
+	font-size: 0.75rem;
+	font-weight: 800;
+	line-height: 1.5;
+}
+.bidTime {
+	color: var(--ink-soft);
+	font-size: 0.8125rem;
+}
+.bidPrice {
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+.bidTop .bidPrice {
+	font-size: 1.125rem;
+}
+
+.empty {
+	padding: 32px;
+	border: 1.5px dashed var(--mist-strong);
+	border-radius: 12px;
+	color: var(--ink-soft);
+	text-align: center;
+}
+
+@media (max-width: 900px) {
+	.layout {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 32px;
+	}
+	.side {
+		position: static;
+	}
+	.photoFallback {
+		font-size: 4.5rem;
+	}
+}

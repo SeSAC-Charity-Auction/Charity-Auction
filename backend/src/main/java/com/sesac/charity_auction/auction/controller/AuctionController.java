@@ -1,9 +1,11 @@
 package com.sesac.charity_auction.auction.controller;
 
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
+import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse;
 import com.sesac.charity_auction.auction.dto.response.AuctionPageResponse;
 import com.sesac.charity_auction.auction.service.AuctionQueryService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +28,11 @@ public class AuctionController {
                                     final @RequestParam(defaultValue = "0") int page,
                                     final @RequestParam(defaultValue = "12") int size) {
         return queryService.search(status, categoryId, keyword, sort, page, size);
+    }
+
+    // 경매 물품 상세. 로그인 없이 볼 수 있어요. 없는 경매는 404예요.
+    @GetMapping("/{auctionId}")
+    public AuctionDetailResponse detail(final @PathVariable long auctionId) {
+        return queryService.getDetail(auctionId);
     }
 }

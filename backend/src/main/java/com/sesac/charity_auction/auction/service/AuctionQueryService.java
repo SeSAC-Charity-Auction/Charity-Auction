@@ -2,9 +2,17 @@ package com.sesac.charity_auction.auction.service;
 
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
+import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse;
 import com.sesac.charity_auction.auction.dto.response.AuctionPageResponse;
+import com.sesac.charity_auction.auction.dto.response.AuctionWinnerResponse;
+import com.sesac.charity_auction.auction.dto.response.BidHistoryItemResponse;
 import com.sesac.charity_auction.auction.dto.response.AuctionSummaryResponse;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
+import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidateStatus;
+import com.sesac.charity_auction.auctioncandidate.repository.AuctionCandidateRepository;
+import com.sesac.charity_auction.bid.repository.BidRepository;
+import com.sesac.charity_auction.global.exception.BusinessException;
+import com.sesac.charity_auction.global.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,9 +31,34 @@ public class AuctionQueryService {
             List.of(AuctionStatus.IN_PROGRESS, AuctionStatus.SCHEDULED);
 
     private final AuctionRepository auctionRepository;
+    private final BidRepository bidRepository;
+    private final AuctionCandidateRepository candidateRepository;
 
-    public AuctionQueryService(final AuctionRepository auctionRepository) {
+    public AuctionQueryService(final AuctionRepository auctionRepository,
+                               final BidRepository bidRepository,
+                               final AuctionCandidateRepository candidateRepository) {
         this.auctionRepository = auctionRepository;
+        this.bidRepository = bidRepository;
+        this.candidateRepository = candidateRepository;
+    }
+
+    /** 경매 한 건의 상세예요. 없거나 삭제된 경매는 404(AUCTION_NOT_FOUND)예요. */
+    public AuctionDetailResponse getDetail(final long auctionId) {
+        Auction auction = auctionRepository.findDetailById(auctionId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
+
+        List<BidHistoryItemResponse> bids = bidRepository
+                .findTop10ByAuction_IdOrderByBidAtDescIdDesc(auctionId).stream()
+                .map(BidHistoryItemResponse::from)
+                .toList();
+
+        // 낙찰이 끝난 경매(낙찰 후보 중 COMPLETED)가 있으면 낙찰자를 같이 내려줘요.
+        AuctionWinnerResponse winner = candidateRepository
+                .findByAuction_IdAndStatus(auctionId, AuctionCandidateStatus.COMPLETED)
+                .map(c -> new AuctionWinnerResponse(c.getUser().getNickname(), c.getBidPrice()))
+                .orElse(null);
+
+        return AuctionDetailResponse.of(auction, winner, bids);
     }
 
     /**

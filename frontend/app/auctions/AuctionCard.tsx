@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { won } from "../donations/format";
 import AuctionSummary from "./AuctionSummary";
 import styles from "./page.module.css";
@@ -30,7 +31,14 @@ export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
 			</div>
 			<div className={styles.cardBody}>
 				<p className={styles.category}>{auction.categoryName}</p>
-				<h3 className={styles.cardTitle}>{auction.title}</h3>
+				<h3 className={styles.cardTitle}>
+					<Link
+						href={`/auctions/${auction.auctionId}`}
+						className={styles.cardLink}
+					>
+						{auction.title}
+					</Link>
+				</h3>
 				<div className={styles.priceRow}>
 					<span className={styles.priceLabel}>
 						{auction.bidCount > 0 ? "현재 입찰가" : "시작 가격"}

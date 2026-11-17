@@ -10,7 +10,9 @@ function span(ms: number) {
 }
 
 // 진행 중이면 남은 시간, 예정이면 시작까지 남은 시간을 문장으로 만들어요.
-export default function timeLabel(a: AuctionSummary) {
+export default function timeLabel(
+	a: Pick<AuctionSummary, "startAt" | "endAt" | "status">
+) {
 	const now = Date.now();
 	const start = new Date(a.startAt).getTime();
 	const end = new Date(a.endAt).getTime();

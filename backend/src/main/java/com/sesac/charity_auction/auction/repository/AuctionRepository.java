@@ -60,4 +60,11 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
                          @Param("categoryId") Long categoryId,
                          @Param("keyword") String keyword,
                          Pageable pageable);
+
+    // 상세 화면용: 카테고리와 판매자를 한 번에 가져와요. 삭제된 경매는 없는 것으로 봐요.
+    @Query("""
+            SELECT a FROM Auction a JOIN FETCH a.category JOIN FETCH a.user
+            WHERE a.id = :auctionId AND a.isDeleted = false
+            """)
+    Optional<Auction> findDetailById(@Param("auctionId") Long auctionId);
 }
