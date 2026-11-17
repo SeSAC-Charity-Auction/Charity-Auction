@@ -95,6 +95,41 @@
 .searchInput:hover {
 	border-color: var(--ink);
 }
+.suggestWrap {
+	position: relative;
+	flex: 1;
+	min-width: 0;
+	display: flex;
+}
+.suggestWrap .searchInput {
+	width: 100%;
+}
+.suggest {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	z-index: 20;
+	margin: 0;
+	padding: 6px;
+	list-style: none;
+	border: 1.5px solid var(--mist-strong);
+	border-radius: 8px;
+	background: var(--surface);
+	box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+.suggestItem {
+	padding: 10px 12px;
+	border-radius: 6px;
+	color: var(--ink);
+	cursor: pointer;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.suggestOn {
+	background: var(--mist);
+}
 .searchBtn {
 	min-height: 48px;
 	padding: 0 22px;
