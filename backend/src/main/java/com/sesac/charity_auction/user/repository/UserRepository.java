@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(final String email);
+
     boolean existsByEmail(final String email);
 
     boolean existsByNicknameAndIsDeletedFalse(final String nickname);
@@ -35,16 +36,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * 포인트를 더해요. (경매 낙찰 적립 등)
-     *
-     * @return 바뀐 행 수. 0이면 없는 회원이거나 탈퇴한 회원
      */
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update User u set u.pointBalance = u.pointBalance + :amount "
             + "where u.id = :userId and u.isDeleted = false")
-    int addBalance(final @Param("userId") long userId, final @Param("amount") long amount);
+    void addBalance(final @Param("userId") long userId, final @Param("amount") long amount);
 
     // "내 포인트를 확인했다"는 시각을 남겨요.
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update User u set u.pointsCheckedAt = :checkedAt where u.id = :userId")
-    int markPointsChecked(final @Param("userId") long userId, final @Param("checkedAt") LocalDateTime checkedAt);
+    void markPointsChecked(final @Param("userId") long userId, final @Param("checkedAt") LocalDateTime checkedAt);
 }

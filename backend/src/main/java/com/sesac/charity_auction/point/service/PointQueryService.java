@@ -8,10 +8,11 @@ import com.sesac.charity_auction.point.dto.PointPageResponse;
 import com.sesac.charity_auction.point.repository.PointHistoryRepository;
 import com.sesac.charity_auction.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,6 +28,13 @@ public class PointQueryService {
         this.historyRepository = historyRepository;
     }
 
+    /**
+     * 확인한 적이 없으면(null) 처음부터 센다는 뜻으로 아주 옛날 시각을 써요.
+     */
+    public static LocalDateTime sinceOf(final LocalDateTime checkedAt) {
+        return checkedAt == null ? LocalDateTime.of(1970, 1, 1, 0, 0) : checkedAt;
+    }
+
     public MyPointsResponse getMyPoints(final long userId) {
         if (!userRepository.existsById(userId)) {
             throw new BusinessException(ErrorCode.NOT_LOGGED_IN); // 없는 회원
@@ -39,15 +47,17 @@ public class PointQueryService {
         );
     }
 
-    /** 내 포인트 내역 전체예요. 최신순이고, page는 0부터 시작해요. */
+    /**
+     * 내 포인트 내역 전체예요. 최신순이고, page는 0부터 시작해요.
+     */
     public PointPageResponse getMyHistory(final long userId, final int page, final int size) {
         if (!userRepository.existsById(userId)) {
             throw new BusinessException(ErrorCode.NOT_LOGGED_IN);
         }
-        int safePage = Math.max(0, page);
-        int safeSize = Math.min(Math.max(1, size), MAX_PAGE_SIZE);
+        final int safePage = Math.max(0, page);
+        final int safeSize = Math.clamp(size, 1, MAX_PAGE_SIZE);
 
-        long total = historyRepository.countByUserId(userId);
+        final long total = historyRepository.countByUserId(userId);
         return new PointPageResponse(
                 historyRepository.findRecentByUserId(userId, PageRequest.of(safePage, safeSize)).stream()
                         .map(PointEntryResponse::from)
@@ -69,10 +79,5 @@ public class PointQueryService {
         final boolean hadNew = historyRepository.existsEarnedAfter(userId, sinceOf(user.getPointsCheckedAt()));
         userRepository.markPointsChecked(userId, now);
         return hadNew;
-    }
-
-    /** 확인한 적이 없으면(null) 처음부터 센다는 뜻으로 아주 옛날 시각을 써요. */
-    public static LocalDateTime sinceOf(final LocalDateTime checkedAt) {
-        return checkedAt == null ? LocalDateTime.of(1970, 1, 1, 0, 0) : checkedAt;
     }
 }

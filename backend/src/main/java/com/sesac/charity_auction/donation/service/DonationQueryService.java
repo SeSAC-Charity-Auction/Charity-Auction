@@ -1,11 +1,7 @@
 package com.sesac.charity_auction.donation.service;
 
 import com.sesac.charity_auction.donation.domain.DonationTarget;
-import com.sesac.charity_auction.donation.dto.DonationPageResponse;
-import com.sesac.charity_auction.donation.dto.DonationRecordResponse;
-import com.sesac.charity_auction.donation.dto.DonationSummaryResponse;
-import com.sesac.charity_auction.donation.dto.DonationTargetDetailResponse;
-import com.sesac.charity_auction.donation.dto.DonationTargetResponse;
+import com.sesac.charity_auction.donation.dto.*;
 import com.sesac.charity_auction.donation.repository.DonationRepository;
 import com.sesac.charity_auction.donation.repository.DonationTargetRepository;
 import com.sesac.charity_auction.global.exception.BusinessException;
@@ -36,10 +32,10 @@ public class DonationQueryService {
     }
 
     public DonationSummaryResponse getSummary() {
-        List<DonationTargetResponse> targets = targetRepository.findAllByOrderByIdAsc().stream()
+        final List<DonationTargetResponse> targets = targetRepository.findAllByOrderByIdAsc().stream()
                 .map(DonationTargetResponse::from)
                 .toList();
-        List<DonationRecordResponse> recent = donationRepository
+        final List<DonationRecordResponse> recent = donationRepository
                 .findRecent(PageRequest.of(0, SUMMARY_RECENT_SIZE)).stream()
                 .map(DonationRecordResponse::from)
                 .toList();
@@ -53,13 +49,15 @@ public class DonationQueryService {
         );
     }
 
-    /** 전체 기부 목록이에요. 최신순이고, page는 0부터 시작해요. */
+    /**
+     * 전체 기부 목록이에요. 최신순이고, page는 0부터 시작해요.
+     */
     public DonationPageResponse getAll(final int page, final int size) {
-        int safePage = Math.max(0, page);
-        int safeSize = Math.min(Math.max(1, size), MAX_PAGE_SIZE);
+        final int safePage = Math.max(0, page);
+        final int safeSize = Math.clamp(size, 1, MAX_PAGE_SIZE);
 
-        long total = donationRepository.count();
-        List<DonationRecordResponse> items = donationRepository
+        final long total = donationRepository.count();
+        final List<DonationRecordResponse> items = donationRepository
                 .findRecent(PageRequest.of(safePage, safeSize)).stream()
                 .map(DonationRecordResponse::from)
                 .toList();
@@ -70,10 +68,10 @@ public class DonationQueryService {
 
     public DonationTargetDetailResponse getTargetDetail(final long targetId) {
         // 비활성(마감) 기부처도 상세는 보여줘요. 없는 기부처만 404예요.
-        DonationTarget target = targetRepository.findById(targetId)
+        final DonationTarget target = targetRepository.findById(targetId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.TARGET_NOT_FOUND));
 
-        List<DonationRecordResponse> recent = donationRepository
+        final List<DonationRecordResponse> recent = donationRepository
                 .findRecentByTargetId(targetId, PageRequest.of(0, DETAIL_RECENT_SIZE)).stream()
                 .map(DonationRecordResponse::from)
                 .toList();

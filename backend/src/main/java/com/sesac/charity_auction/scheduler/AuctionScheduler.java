@@ -20,22 +20,21 @@ import java.util.List;
         havingValue = "true"
 )
 public class AuctionScheduler {
-
     private final AuctionRepository auctionRepository;
     private final AuctionService auctionService;
 
     // 10초 마다 실행
     @Scheduled(fixedDelay = 10000)
-    public void closeExpiredAuctions(){
+    public void closeExpiredAuctions() {
 
         // 경매 마감 시간이 지난 경매 조회
-        List<Long> auctionIds = auctionRepository.findExpiredAuctionIds(AuctionStatus.IN_PROGRESS, LocalDateTime.now());
+        final List<Long> auctionIds = auctionRepository.findExpiredAuctionIds(AuctionStatus.IN_PROGRESS, LocalDateTime.now());
 
-        for(Long auctionId: auctionIds){
+        for (final Long auctionId : auctionIds) {
             try {
                 // 낙찰 후보 생성
                 auctionService.createCandidates(auctionId);
-            }catch (Exception e){
+            } catch (final Exception e) {
                 log.error("경매 마감 처리 실패. auctionId: {}", auctionId, e);
             }
         }

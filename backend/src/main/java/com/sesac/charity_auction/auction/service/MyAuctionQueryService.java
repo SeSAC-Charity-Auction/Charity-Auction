@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** 마이페이지용 조회예요: 내가 올린 경매, 내 낙찰 이력(과 그 낙찰로 받은 포인트). 데이터를 바꾸지 않아요. */
+/**
+ * 마이페이지용 조회예요: 내가 올린 경매, 내 낙찰 이력(과 그 낙찰로 받은 포인트). 데이터를 바꾸지 않아요.
+ */
 @Service
 @Transactional(readOnly = true)
 public class MyAuctionQueryService {
@@ -38,7 +40,13 @@ public class MyAuctionQueryService {
         this.pointHistoryRepository = pointHistoryRepository;
     }
 
-    /** 내가 올린 경매 (최신 등록순). 각 경매로 받은 판매 포인트와 전체 합계도 같이 내려줘요. */
+    private static int clampSize(final int size) {
+        return Math.min(Math.max(1, size), MAX_PAGE_SIZE);
+    }
+
+    /**
+     * 내가 올린 경매 (최신 등록순). 각 경매로 받은 판매 포인트와 전체 합계도 같이 내려줘요.
+     */
     public MyAuctionPageResponse getMyAuctions(final long userId, final int page, final int size) {
         final int safePage = Math.max(0, page);
         final int safeSize = clampSize(size);
@@ -54,7 +62,9 @@ public class MyAuctionQueryService {
                 result.getTotalPages(), pointHistoryRepository.sumAuctionSold(userId));
     }
 
-    /** 내 낙찰 이력 (낙찰 확정이 최근인 순). 각 낙찰로 받은 포인트와 전체 합계도 같이 내려줘요. */
+    /**
+     * 내 낙찰 이력 (낙찰 확정이 최근인 순). 각 낙찰로 받은 포인트와 전체 합계도 같이 내려줘요.
+     */
     public MyWinPageResponse getMyWins(final long userId, final int page, final int size) {
         final int safePage = Math.max(0, page);
         final int safeSize = clampSize(size);
@@ -90,9 +100,5 @@ public class MyAuctionQueryService {
             earned.put((Long) row[0], ((Number) row[1]).longValue());
         }
         return earned;
-    }
-
-    private static int clampSize(final int size) {
-        return Math.min(Math.max(1, size), MAX_PAGE_SIZE);
     }
 }

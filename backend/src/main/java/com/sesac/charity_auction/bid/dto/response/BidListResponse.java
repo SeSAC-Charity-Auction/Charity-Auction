@@ -5,13 +5,12 @@ import com.sesac.charity_auction.bid.entity.Bid;
 import java.time.LocalDateTime;
 
 public record BidListResponse(
-    Long bidId,
-    String nickname,
-    Long bidPrice,
-    LocalDateTime bidAt
+        Long bidId,
+        String nickname,
+        Long bidPrice,
+        LocalDateTime bidAt
 ) {
-    public static BidListResponse from(Bid bid){
-
+    public static BidListResponse from(final Bid bid) {
         return new BidListResponse(
                 bid.getId(),
                 bid.getUser().getNickname(),

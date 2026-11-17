@@ -44,7 +44,6 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(final @Valid @RequestBody SignupRequest request) {
         final SignupResponse response = userService.signup(request);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

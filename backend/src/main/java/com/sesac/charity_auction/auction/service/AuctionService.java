@@ -25,33 +25,33 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class AuctionService {
 
+    private static final int OFFER_MINUTES = 1;  // 임시 설정 1분
     private final AuctionRepository auctionRepository;
     private final AuctionCandidateRepository auctionCandidateRepository;
     private final BidRepository bidRepository;
     private final UserRepository userRepository;
-    private static final int OFFER_MINUTES = 1;  // 임시 설정 1분
 
     // 경매 마감 후 낙찰 전체 후보 생성
     @Transactional
-    public void createCandidates(Long auctionId){
+    public void createCandidates(final Long auctionId) {
 
         // 경매 존재 여부 확인
-        Auction auction = auctionRepository.findByIdWithLock(auctionId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
+        final Auction auction = auctionRepository.findByIdWithLock(auctionId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
 
         // 경매 status 확인
-        if(auction.getStatus() != AuctionStatus.IN_PROGRESS){
+        if (auction.getStatus() != AuctionStatus.IN_PROGRESS) {
             return;
         }
 
         // 마감 시간 확인
-        LocalDateTime now = auctionRepository.findCurrentDatabaseTime();
+        final LocalDateTime now = auctionRepository.findCurrentDatabaseTime();
 
-        if(auction.getEndAt().isAfter(now)){
+        if (auction.getEndAt().isAfter(now)) {
             return;
         }
 
-        List<HighestBidDto> highestBids = bidRepository.findHighestBidsByUser(auctionId);
+        final List<HighestBidDto> highestBids = bidRepository.findHighestBidsByUser(auctionId);
 
         // 경매 마감
         auction.close(now);
@@ -63,25 +63,24 @@ public class AuctionService {
         }
 
         // 낙찰 후보 생성
-        List<AuctionCandidate> candidates = new ArrayList<>();
+        final List<AuctionCandidate> candidates = new ArrayList<>();
 
-        Long rank = 1L;
+        long rank = 1L;
 
-        for(HighestBidDto dto: highestBids){
+        for (final HighestBidDto dto : highestBids) {
 
             // 해당 ID를 가진 프록시 객체 가지고 오기
-            User user = userRepository.getReferenceById(dto.getUserId());
-            Bid bid = bidRepository.getReferenceById(dto.getBidId());
+            final User user = userRepository.getReferenceById(dto.getUserId());
+            final Bid bid = bidRepository.getReferenceById(dto.getBidId());
 
-            AuctionCandidate candidate = AuctionCandidate.create(auction, user, bid, rank++, dto.getBidPrice());
+            final AuctionCandidate candidate = AuctionCandidate.create(auction, user, bid, rank++, dto.getBidPrice());
 
             candidates.add(candidate);
         }
         auctionCandidateRepository.saveAll(candidates);
 
         // 1순위 후보자에게 최초 낙찰 기회 부여
-        AuctionCandidate firstCandidate = candidates.get(0);
+        final AuctionCandidate firstCandidate = candidates.getFirst();
         firstCandidate.offer(now, now.plusMinutes(OFFER_MINUTES));
     }
-
 }

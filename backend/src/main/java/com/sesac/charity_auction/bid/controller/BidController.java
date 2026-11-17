@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,27 +19,23 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class BidController {
-
     private final BidService bidService;
     private final CurrentUserProvider currentUser;
 
     // 입찰 등록
     @PostMapping
     public ResponseEntity<BidCreateResponse> createBid(
-            @PathVariable Long auctionId,
-            @Valid @RequestBody BidCreateRequest request
-            ){
+            final @PathVariable Long auctionId,
+            final @Valid @RequestBody BidCreateRequest request
+    ) {
         // 로그인한 회원으로 입찰해요. 로그인하지 않았으면 NOT_LOGGED_IN(401)이 나가요.
-        BidCreateResponse response = bidService.createBid(auctionId, currentUser.currentUserId(), request);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        final BidCreateResponse response = bidService.createBid(auctionId, currentUser.currentUserId(), request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // 입찰 내역 조회
     @GetMapping
-    public ResponseEntity<List<BidListResponse>> getBidHistory(@PathVariable Long auctionId){
-
+    public ResponseEntity<List<BidListResponse>> getBidHistory(final @PathVariable Long auctionId) {
         return ResponseEntity.ok(bidService.getBidHistory(auctionId));
     }
-
 }

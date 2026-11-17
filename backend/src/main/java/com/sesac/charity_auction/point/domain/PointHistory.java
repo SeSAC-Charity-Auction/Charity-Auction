@@ -60,18 +60,14 @@ public class PointHistory {
     }
 
     // 경매 낙찰 포인트 적립 기록
-    public static PointHistory earnedForAuction(final User user, final Auction auction, final long amount){
-
+    public static PointHistory earnedForAuction(final User user, final Auction auction, final long amount) {
         final PointHistory history = new PointHistory();
-
         history.user = user;
         history.auction = auction;
         history.pointAmount = amount;
         history.pointType = PointType.EARN;
-
         return history;
     }
-
 
     @PrePersist
     void onCreate() {

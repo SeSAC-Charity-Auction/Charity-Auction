@@ -26,22 +26,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuctionCandidate {
 
-    @Id
-    @Column(name = "candidate_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "candidate_rank", nullable = false)
-    private Long rank;
-
-    @Column(nullable = false)
-    private Long bidPrice;
-
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'WAITING'")
     @Column(nullable = false)
     private AuctionCandidateStatus status = AuctionCandidateStatus.WAITING;
-
+    @Id
+    @Column(name = "candidate_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "candidate_rank", nullable = false)
+    private Long rank;
+    @Column(nullable = false)
+    private Long bidPrice;
     private LocalDateTime offeredAt;
 
     private LocalDateTime deadlineAt;
@@ -60,9 +56,8 @@ public class AuctionCandidate {
     @JoinColumn(name = "bid_id", nullable = false)
     private Bid bid;
 
-    public static AuctionCandidate create(Auction auction, User user, Bid bid, Long rank, Long bidPrice) {
-
-        AuctionCandidate auctionCandidate = new AuctionCandidate();
+    public static AuctionCandidate create(final Auction auction, final User user, final Bid bid, final Long rank, final Long bidPrice) {
+        final AuctionCandidate auctionCandidate = new AuctionCandidate();
 
         auctionCandidate.auction = auction;
         auctionCandidate.user = user;
@@ -73,8 +68,7 @@ public class AuctionCandidate {
         return auctionCandidate;
     }
 
-    public void offer(LocalDateTime now, LocalDateTime deadlineAt) {
-
+    public void offer(final LocalDateTime now, final LocalDateTime deadlineAt) {
         validateStatus(AuctionCandidateStatus.WAITING, ErrorCode.CANDIDATE_NOT_WAITING);
 
         if (deadlineAt == null || !deadlineAt.isAfter(now)) {
@@ -86,8 +80,7 @@ public class AuctionCandidate {
     }
 
     // 낙찰 완료
-    public void complete(LocalDateTime now) {
-
+    public void complete(final LocalDateTime now) {
         validateStatus(AuctionCandidateStatus.OFFERED, ErrorCode.CANDIDATE_NOT_OFFERED);
         validateDeadline(now);
 
@@ -96,8 +89,7 @@ public class AuctionCandidate {
     }
 
     // 낙찰 거절
-    public void reject(LocalDateTime now) {
-
+    public void reject(final LocalDateTime now) {
         validateStatus(AuctionCandidateStatus.OFFERED, ErrorCode.CANDIDATE_NOT_OFFERED);
         validateDeadline(now);
 
@@ -105,8 +97,7 @@ public class AuctionCandidate {
         this.processedAt = now;
     }
 
-    public void expire(LocalDateTime now) {
-
+    public void expire(final LocalDateTime now) {
         validateStatus(AuctionCandidateStatus.OFFERED, ErrorCode.CANDIDATE_NOT_OFFERED);
         validateExpired(now);
 
@@ -115,31 +106,28 @@ public class AuctionCandidate {
     }
 
     // 다른 후보자의 낙찰 완료로 기회 종료
-    public void notSelected(LocalDateTime now){
-
+    public void notSelected(final LocalDateTime now) {
         validateStatus(AuctionCandidateStatus.WAITING, ErrorCode.CANDIDATE_NOT_WAITING);
-        this.status= AuctionCandidateStatus.NOT_SELECTED;
+        this.status = AuctionCandidateStatus.NOT_SELECTED;
         this.processedAt = now;
     }
 
     // 후보자 상태 검증
-    private void validateStatus(AuctionCandidateStatus expectedStatus, ErrorCode errorCode) {
-
+    private void validateStatus(final AuctionCandidateStatus expectedStatus, final ErrorCode errorCode) {
         if (this.status != expectedStatus) {
             throw new BusinessException(errorCode);
         }
     }
 
     // 아직 낙찰 기한이 유효한지 검증
-    private void validateDeadline(LocalDateTime now) {
-
+    private void validateDeadline(final LocalDateTime now) {
         if (this.deadlineAt == null || !now.isBefore(this.deadlineAt)) {
             throw new BusinessException(ErrorCode.CANDIDATE_EXPIRED);
         }
     }
 
     // 낙찰 기한이 만료되었는지 검증
-    private void validateExpired(LocalDateTime now) {
+    private void validateExpired(final LocalDateTime now) {
         if (this.deadlineAt == null || now.isBefore(this.deadlineAt)) {
             throw new BusinessException(ErrorCode.CANDIDATE_NOT_EXPIRED);
         }

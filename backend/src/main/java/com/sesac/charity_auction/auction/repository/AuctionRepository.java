@@ -19,7 +19,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
     // 동시성 고려 - 비관적 락 적용(추후 데이터 변경 예정이므로 락 승격시 발생하는 문제를 방지하기 위해 WRITE 락 적용)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Auction a WHERE a.id = :auctionId AND a.isDeleted = false ")
-    Optional<Auction> findByIdWithLock(@Param("auctionId") Long auctionId);
+    Optional<Auction> findByIdWithLock(final @Param("auctionId") Long auctionId);
 
     // DB 시간 기준 통일
     @Query(value = "SELECT CURRENT_TIMESTAMP", nativeQuery = true)
@@ -27,7 +27,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
 
     // 만료된 경매
     @Query("SELECT a.id FROM Auction a WHERE a.status = :status AND a.endAt <= :now AND a.isDeleted = false")
-    List<Long> findExpiredAuctionIds(@Param("status")AuctionStatus status, @Param("now") LocalDateTime now);
+    List<Long> findExpiredAuctionIds(final @Param("status") AuctionStatus status, final @Param("now") LocalDateTime now);
 
 
 //    @Query("""
@@ -72,36 +72,36 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
                                     AND a.endAt > :now)) THEN 0 ELSE 1 END
             """,
             countQuery = """
-            SELECT COUNT(a) FROM Auction a
-            WHERE a.isDeleted = false
-              AND a.status <> com.sesac.charity_auction.auction.domain.AuctionStatus.CANCELED
-              AND (:mode = 'ALL'
-                   OR (:mode = 'IN_PROGRESS'
-                       AND a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.IN_PROGRESS
-                       AND a.endAt > :now)
-                   OR (:mode = 'SCHEDULED'
-                       AND a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.SCHEDULED)
-                   OR (:mode = 'ENDED'
-                       AND (a.status IN (com.sesac.charity_auction.auction.domain.AuctionStatus.CLOSED,
-                                         com.sesac.charity_auction.auction.domain.AuctionStatus.COMPLETED,
-                                         com.sesac.charity_auction.auction.domain.AuctionStatus.FAILED)
-                            OR (a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.IN_PROGRESS
-                                AND a.endAt <= :now))))
-              AND (:categoryId IS NULL OR a.category.id = :categoryId)
-              AND (:keyword IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
-            """)
-    Page<Auction> search(@Param("mode") String mode,
-                         @Param("now") LocalDateTime now,
-                         @Param("categoryId") Long categoryId,
-                         @Param("keyword") String keyword,
-                         Pageable pageable);
+                    SELECT COUNT(a) FROM Auction a
+                    WHERE a.isDeleted = false
+                      AND a.status <> com.sesac.charity_auction.auction.domain.AuctionStatus.CANCELED
+                      AND (:mode = 'ALL'
+                           OR (:mode = 'IN_PROGRESS'
+                               AND a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.IN_PROGRESS
+                               AND a.endAt > :now)
+                           OR (:mode = 'SCHEDULED'
+                               AND a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.SCHEDULED)
+                           OR (:mode = 'ENDED'
+                               AND (a.status IN (com.sesac.charity_auction.auction.domain.AuctionStatus.CLOSED,
+                                                 com.sesac.charity_auction.auction.domain.AuctionStatus.COMPLETED,
+                                                 com.sesac.charity_auction.auction.domain.AuctionStatus.FAILED)
+                                    OR (a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.IN_PROGRESS
+                                        AND a.endAt <= :now))))
+                      AND (:categoryId IS NULL OR a.category.id = :categoryId)
+                      AND (:keyword IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                    """)
+    Page<Auction> search(final @Param("mode") String mode,
+                         final @Param("now") LocalDateTime now,
+                         final @Param("categoryId") Long categoryId,
+                         final @Param("keyword") String keyword,
+                         final Pageable pageable);
 
     // 상세 화면용: 카테고리와 판매자를 한 번에 가져와요. 삭제된 경매는 없는 것으로 봐요.
     @Query("""
             SELECT a FROM Auction a JOIN FETCH a.category JOIN FETCH a.user
             WHERE a.id = :auctionId AND a.isDeleted = false
             """)
-    Optional<Auction> findDetailById(@Param("auctionId") Long auctionId);
+    Optional<Auction> findDetailById(final @Param("auctionId") Long auctionId);
 
     // 마이페이지: 내가 올린 경매 (최신 등록순). 삭제한 경매는 빼요.
     @Query(value = """
@@ -111,5 +111,4 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
             """,
             countQuery = "SELECT COUNT(a) FROM Auction a WHERE a.user.id = :userId AND a.isDeleted = false")
     Page<Auction> findMine(@Param("userId") Long userId, Pageable pageable);
-
 }
