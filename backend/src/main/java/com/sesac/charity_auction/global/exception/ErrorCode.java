@@ -63,6 +63,7 @@ public enum ErrorCode {
     BID_PRICE_TOO_LOW(HttpStatus.BAD_REQUEST, "현재 최고 입찰 금액보다 높은 금액을 입력해주세요."),
     BID_NOT_ALLOWED(HttpStatus.FORBIDDEN, "본인이 등록한 경매에는 입찰할 수 없습니다."),
     INVALID_BID_PRICE(HttpStatus.BAD_REQUEST, "입찰 금액은 0보다 커야 합니다."),
+    INVALID_START_PRICE(HttpStatus.BAD_REQUEST, "경매 시작 가격은 1,000원 이상이어야 합니다."),
     BID_NOT_FOUND(HttpStatus.NOT_FOUND, "입찰 내역을 찾을 수 없습니다."),
 
 

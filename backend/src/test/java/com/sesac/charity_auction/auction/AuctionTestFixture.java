@@ -14,10 +14,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import com.sesac.charity_auction.category.domain.Category;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.BeanUtils;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @Component
 @Transactional
 public class AuctionTestFixture {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    private Category createCategory() {
+        Category category = BeanUtils.instantiateClass(Category.class);
+        ReflectionTestUtils.setField(category, "name", "테스트-" + UUID.randomUUID().toString().substring(0, 8));
+        entityManager.persist(category);
+        return category;
+    }
 
     private final UserRepository userRepository;
     private final AuctionRepository auctionRepository;
@@ -61,6 +76,7 @@ public class AuctionTestFixture {
 
         Auction auction = Auction.create(
                 seller,
+                createCategory(),
                 1000L,
                 "테스트 경매",
                 now.minusHours(1),
@@ -79,6 +95,7 @@ public class AuctionTestFixture {
 
         Auction auction = Auction.create(
                 seller,
+                createCategory(),
                 1000L,
                 "테스트 경매",
                 now.minusDays(2),

@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -29,7 +31,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private String nickname;
 
-    @Column(length = 300)
+    @Column(name = "user_image", length = 500)
     private String image;
 
     @Column(nullable = false, length = 50)
@@ -41,12 +43,16 @@ public class User extends BaseTimeEntity {
 
     // 잔액 변경은 조건부 UPDATE 쿼리로만 해요(6단계). setter는 일부러 만들지 않았어요.
     @ColumnDefault("0")
-    @Column(name = "point_balance", nullable = false)
+    @Column(name = "point", nullable = false)
     private long pointBalance = 0L;
 
     @ColumnDefault("false")
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    // 내 포인트를 마지막으로 확인한 시각(UTC). 이후에 적립된 포인트가 있으면 "새 포인트"로 알려요. 변경은 조건부 UPDATE 쿼리로만 해요.
+    @Column(name = "points_checked_at")
+    private LocalDateTime pointsCheckedAt;
 
     // 회원가입
     public static User create(String email, String password, String nickname, String name) {

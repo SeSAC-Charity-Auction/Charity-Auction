@@ -30,9 +30,8 @@ public class BidController {
             @PathVariable Long auctionId,
             @Valid @RequestBody BidCreateRequest request
             ){
-        // 로그인 구현 전이므로 하드 코딩으로 대체, 구현 후 아래 코드로 변경
-//    BidCreateResponse response = bidService.createBid(auctionId, currentUser.currentUserId(), request);
-    BidCreateResponse response = bidService.createBid(auctionId, 10L, request);
+        // 로그인한 회원으로 입찰해요. 로그인하지 않았으면 NOT_LOGGED_IN(401)이 나가요.
+        BidCreateResponse response = bidService.createBid(auctionId, currentUser.currentUserId(), request);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

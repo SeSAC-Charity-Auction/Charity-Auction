@@ -2,6 +2,7 @@ package com.sesac.charity_auction.bid.repository;
 
 import com.sesac.charity_auction.auctioncandidate.dto.HighestBidDto;
 import com.sesac.charity_auction.bid.entity.Bid;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +13,10 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     void deleteAllByAuction_Id(Long auctionId);
 
     List<Bid> findTop5ByAuction_IdOrderByBidAtDesc(Long auctionId);
+
+    // 경매 상세의 입찰 내역: 입찰자(user)를 한 번에 가져와서 쿼리가 반복되지 않게 해요.
+    @EntityGraph(attributePaths = {"user"})
+    List<Bid> findTop10ByAuction_IdOrderByBidAtDescIdDesc(Long auctionId);
 
     // 유저의 최고 입찰 금액을 낙찰 후보 데이터로 가지고 오기
     @Query(value = """

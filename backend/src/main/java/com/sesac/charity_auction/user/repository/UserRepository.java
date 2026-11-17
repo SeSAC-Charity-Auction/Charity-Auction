@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -31,4 +32,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u.pointBalance from User u where u.id = :userId")
     long findBalanceById(final @Param("userId") long userId);
+
+    /**
+     * 포인트를 더해요. (경매 낙찰 적립 등)
+     *
+     * @return 바뀐 행 수. 0이면 없는 회원이거나 탈퇴한 회원
+     */
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("update User u set u.pointBalance = u.pointBalance + :amount "
+            + "where u.id = :userId and u.isDeleted = false")
+    int addBalance(final @Param("userId") long userId, final @Param("amount") long amount);
+
+    // "내 포인트를 확인했다"는 시각을 남겨요.
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("update User u set u.pointsCheckedAt = :checkedAt where u.id = :userId")
+    int markPointsChecked(final @Param("userId") long userId, final @Param("checkedAt") LocalDateTime checkedAt);
 }
