@@ -126,3 +126,6 @@ cd frontend && npm run build
 - 시작하기 전에 `build.gradle`(또는 `pom.xml`)과 기존 파일을 읽고, 실제 Spring Boot·Java 버전에 맞는 의존성과 import를 써 주세요. 추측하지 말고 빌드나 실행으로 확인해 주세요.
 - 한 단계가 끝나면 실행하거나 테스트한 결과로 확인하고 요약해 주세요. 다음 단계는 제가 확인한 뒤에 진행해 주세요.
 - `main` 브랜치에 직접 커밋하지 않아요. `feature/...` 브랜치와 PR로 합쳐요. Git 작업은 제가 요청할 때만 해 주세요.
+
+## 개발용 더미 데이터
+- `local` 프로필에서 앱을 실행하면 `DevSeedRunner`가 `db/seed/*.sql`을 자동으로 넣어요. 회원·경매·기부처가 모두 비어 있을 때만 돌고, 이미 데이터가 있으면 건드리지 않아요. 끄려면 `APP_DEV_SEED_ENABLED=false`.

@@ -5,13 +5,17 @@
 
 START TRANSACTION;
 
+-- V6 마이그레이션이 '기타'를 1번으로 미리 만들어 두므로, 같은 번호가 있으면 이름을 덮어써서 맞춰요. ('기타'는 7번으로 다시 만들어요.)
 INSERT INTO categories (category_id, category_name) VALUES
 (1, '디지털·가전'),
 (2, '패션·잡화'),
 (3, '도서·음반'),
 (4, '생활·주방'),
 (5, '스포츠·레저'),
-(6, '수집품·기타');
+(6, '수집품·기타')
+ON DUPLICATE KEY UPDATE category_name = VALUES(category_name);
+
+INSERT IGNORE INTO categories (category_id, category_name) VALUES (7, '기타');
 
 INSERT INTO auctions
     (auction_id, user_id, category_id, item_name, item_image, description, start_price, current_price, bid_count,
