@@ -3,8 +3,12 @@ package com.sesac.charity_auction.auction.controller;
 import com.sesac.charity_auction.auction.dto.request.AuctionSearchCondition;
 import com.sesac.charity_auction.auction.dto.request.AuctionUpdateRequest;
 import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse;
+import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse2;
 import com.sesac.charity_auction.auction.dto.response.AuctionListResponse;
+import com.sesac.charity_auction.auction.dto.response.AuctionPageResponse;
+import com.sesac.charity_auction.auction.service.AuctionImageService;
 import com.sesac.charity_auction.auction.service.AuctionManageService;
+import com.sesac.charity_auction.auction.service.AuctionQueryService;
 import com.sesac.charity_auction.global.auth.CurrentUserProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +18,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auctions")
@@ -22,10 +29,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuctionController {
 
     private final AuctionManageService auctionManageService;
+    private final AuctionImageService imageService;
+    private final AuctionQueryService queryService;
     private final CurrentUserProvider currentUser;
 
     // 경매 목록 조회 및 검색, 필터링
-    @GetMapping
+    @GetMapping("/v2")
     public ResponseEntity<Page<AuctionListResponse>> getAuctions(@ModelAttribute AuctionSearchCondition condition, @PageableDefault(size = 10) Pageable pageable){
 
         Page<AuctionListResponse> response = auctionManageService.getAuctions(condition, pageable);
@@ -34,31 +43,32 @@ public class AuctionController {
     }
 
     // 경매 상세 조회
-    @GetMapping("/{auctionId}")
-    public ResponseEntity<AuctionDetailResponse> getAuctionDetail(@PathVariable Long auctionId){
+    @GetMapping("/{auctionId}/v2")
+    public ResponseEntity<AuctionDetailResponse2> getAuctionDetail(@PathVariable Long auctionId){
 
-        AuctionDetailResponse response = auctionManageService.getAuctionDetail(auctionId);
+        AuctionDetailResponse2 response = auctionManageService.getAuctionDetail(auctionId);
 
         return ResponseEntity.ok(response);
     }
 
     // 수정
     @PutMapping("/{auctionId}")
-    public ResponseEntity<AuctionDetailResponse> updateAuction(@PathVariable Long auctionId, @Valid @RequestBody AuctionUpdateRequest request){
+    public ResponseEntity<AuctionDetailResponse2> updateAuction(@PathVariable Long auctionId, @Valid @RequestBody AuctionUpdateRequest request){
 
-        AuctionDetailResponse response = auctionManageService.updateAuction(auctionId, currentUser.currentUserId(), request);
+        AuctionDetailResponse2 response = auctionManageService.updateAuction(auctionId, currentUser.currentUserId(), request);
 
         return ResponseEntity.ok(response);
     }
 
     // 삭제
     @DeleteMapping("/{auctionId}")
-    public ResponseEntity<Void> deleteAuction(@PathVariable Long auctionId){
+    public ResponseEntity<Void> deleteAuction(@PathVariable Long auctionId) {
 
         auctionManageService.deleteAuction(auctionId, currentUser.currentUserId());
 
         return ResponseEntity.noContent().build();
-      
+    }
+
     // 경매 물품 목록 (메인 페이지). 로그인 없이 볼 수 있어요.
     @GetMapping
     public AuctionPageResponse list(final @RequestParam(required = false) String status,

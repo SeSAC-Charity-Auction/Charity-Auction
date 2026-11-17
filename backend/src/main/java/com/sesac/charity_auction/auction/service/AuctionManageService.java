@@ -4,6 +4,7 @@ import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.dto.request.AuctionSearchCondition;
 import com.sesac.charity_auction.auction.dto.request.AuctionUpdateRequest;
 import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse;
+import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse2;
 import com.sesac.charity_auction.auction.dto.response.AuctionListResponse;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
 import com.sesac.charity_auction.category.domain.Category;
@@ -36,17 +37,17 @@ public class AuctionManageService {
     }
 
     // 경매 상세 조회
-    public AuctionDetailResponse getAuctionDetail(Long auctionId){
+    public AuctionDetailResponse2 getAuctionDetail(Long auctionId){
 
         Auction auction = auctionRepository.findByIdAndIsDeletedFalse(auctionId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
 
-        return AuctionDetailResponse.from(auction);
+        return AuctionDetailResponse2.from(auction);
     }
 
     // 수정
     @Transactional
-    public AuctionDetailResponse updateAuction(Long auctionId, Long userId, AuctionUpdateRequest request){
+    public AuctionDetailResponse2 updateAuction(Long auctionId, Long userId, AuctionUpdateRequest request){
 
         // 경매 조회 및 작성자 확인
         Auction auction = getAuctionAndValidateOwner(auctionId, userId);
@@ -68,7 +69,7 @@ public class AuctionManageService {
                 now
         );
 
-        return AuctionDetailResponse.from(auction);
+        return AuctionDetailResponse2.from(auction);
     }
 
     // 삭제
