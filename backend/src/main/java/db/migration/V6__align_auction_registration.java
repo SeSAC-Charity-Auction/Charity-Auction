@@ -18,7 +18,15 @@ public class V6__align_auction_registration extends BaseJavaMigration {
         rename(db, "auctions", "image", "item_image");
         rename(db, "categories", "name", "category_name");
         rename(db, "users", "image", "user_image");
+        // V1이 만든 CHECK 제약이 point_balance 열을 쓰고 있어서, 열 이름을 바꾸기 전에 지우고 새 이름으로 다시 만들어요.
+        boolean renamePoint = column(db, "users", "point_balance") && !column(db, "users", "point");
+        if (renamePoint && checkExists(db, "users", "ck_users_point_balance")) {
+            execute(db, "ALTER TABLE users DROP CHECK ck_users_point_balance");
+        }
         rename(db, "users", "point_balance", "point");
+        if (column(db, "users", "point") && !checkExists(db, "users", "ck_users_point_balance")) {
+            execute(db, "ALTER TABLE users ADD CONSTRAINT ck_users_point_balance CHECK (point >= 0)");
+        }
         add(db, "users", "name", "VARCHAR(50) NULL");
         execute(db, "UPDATE users SET name = LEFT(nickname, 50) WHERE name IS NULL");
         execute(db, "ALTER TABLE users MODIFY name VARCHAR(50) NOT NULL, MODIFY email VARCHAR(254) NOT NULL, MODIFY user_image VARCHAR(500) NULL");
@@ -75,6 +83,17 @@ public class V6__align_auction_registration extends BaseJavaMigration {
     private boolean column(Connection db, String table, String name) throws SQLException {
         try (var rows = db.getMetaData().getColumns(db.getCatalog(), null, table, name)) {
             return rows.next();
+        }
+    }
+
+    private boolean checkExists(Connection db, String table, String name) throws SQLException {
+        try (var statement = db.prepareStatement("SELECT COUNT(*) FROM information_schema.table_constraints WHERE constraint_schema = DATABASE() AND table_name = ? AND constraint_name = ? AND constraint_type = 'CHECK'")) {
+            statement.setString(1, table);
+            statement.setString(2, name);
+            try (var rows = statement.executeQuery()) {
+                rows.next();
+                return rows.getInt(1) > 0;
+            }
         }
     }
 

@@ -5,7 +5,7 @@
 START TRANSACTION;
 
 INSERT INTO auctions
-    (auction_id, user_id, category_id, title, image, description, start_price, current_price, bid_count,
+    (auction_id, user_id, category_id, item_name, item_image, description, start_price, current_price, bid_count,
      start_at, end_at, status, is_deleted, created_at, updated_at) VALUES
 (101, 7, 1, '노이즈캔슬링 헤드폰', NULL, '노이즈캔슬링 헤드폰 판매해요. 낙찰금은 기부돼요.', 90000, 90000, 0,
  DATE_SUB(NOW(), INTERVAL 1917 MINUTE), DATE_ADD(NOW(), INTERVAL 30 MINUTE), 'IN_PROGRESS', 0, DATE_SUB(NOW(), INTERVAL 4235 MINUTE), NOW()),
