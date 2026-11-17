@@ -2,7 +2,7 @@ import { display } from "@/app/donations/fonts";
 import getMyPointPage from "@/app/donations/getMyPointPage";
 import Link from "next/link";
 import { connection } from "next/server";
-import EntryRow from "../entry-row";
+import EntryRow from "../EntryRow";
 import styles from "../page.module.css";
 import SearchParams from "./SearchParams";
 

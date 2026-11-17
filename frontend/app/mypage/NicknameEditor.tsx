@@ -4,7 +4,8 @@
 // 닉네임 옆의 "변경" 버튼을 누르면 그 자리에서 입력칸이 열려요.
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { changeNicknameAction, type NicknameState } from "./actions";
+import changeNicknameAction from "./changeNicknameAction";
+import NicknameState from "./NicknameState";
 import styles from "./page.module.css";
 
 const idle: NicknameState = { status: "idle" };
@@ -23,19 +24,18 @@ export default function NicknameEditor({
 	// 입력칸을 연 시점의 결과를 기억해 두고, 그 뒤에 새 성공 결과가 오면 닫힌 것으로 봐요.
 	const [openedAt, setOpenedAt] = useState<NicknameState | null>(null);
 	const editing =
-		openedAt !== null && !(state.status === "success" && state !== openedAt);
+		openedAt !== null &&
+		!(state.status === "success" && state !== openedAt);
 	const setEditing = (open: boolean) => setOpenedAt(open ? state : null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
 	const wasEditing = useRef(false);
-
 	// 열리면 입력칸으로, 닫히면 "변경" 버튼으로 포커스를 옮겨요.
 	useEffect(() => {
 		if (editing) inputRef.current?.select();
 		else if (wasEditing.current) buttonRef.current?.focus();
 		wasEditing.current = editing;
 	}, [editing]);
-
 	if (!editing) {
 		return (
 			<div className={styles.nicknameRow}>
@@ -53,7 +53,6 @@ export default function NicknameEditor({
 			</div>
 		);
 	}
-
 	return (
 		<form
 			action={formAction}
@@ -74,7 +73,11 @@ export default function NicknameEditor({
 				className={styles.nicknameInput}
 				disabled={pending}
 			/>
-			<button type="submit" className={styles.smallBtn} disabled={pending}>
+			<button
+				type="submit"
+				className={styles.smallBtn}
+				disabled={pending}
+			>
 				{pending ? "저장 중" : "저장"}
 			</button>
 			<button

@@ -4,8 +4,9 @@
 // 동그라미(프로필 사진 자리)를 누르면 파일을 고르고, 고르자마자 올려요.
 
 import { useActionState, useRef } from "react";
-import { uploadImageAction, type UploadState } from "./actions";
 import styles from "./page.module.css";
+import uploadImageAction from "./uploadImageAction";
+import UploadState from "./UploadState";
 
 const idle: UploadState = { status: "idle" };
 
@@ -21,7 +22,6 @@ export default function AvatarUploader({
 		uploadImageAction,
 		idle
 	);
-
 	return (
 		<form ref={formRef} action={formAction} className={styles.avatarForm}>
 			<label

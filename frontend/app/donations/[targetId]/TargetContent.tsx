@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import DonationRow from "../donation-row";
-import FlipText from "../flip-text";
+import FlipText from "../FlipText";
 import { display } from "../fonts";
 import { won } from "../format";
 import getMyProfile from "../getMyProfile";

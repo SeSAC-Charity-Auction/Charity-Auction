@@ -5,8 +5,8 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { donateAction } from "../actions";
-import FlipText from "../flip-text";
+import { donateAction } from "../donateAction";
+import FlipText from "../FlipText";
 import { display } from "../fonts";
 import { DONATION_STEP, MIN_DONATION } from "../rules";
 import styles from "./page.module.css";

@@ -1,4 +1,4 @@
-import FlipText from "../flip-text";
+import FlipText from "../FlipText";
 import { display } from "../fonts";
 import styles from "./page.module.css";
 
