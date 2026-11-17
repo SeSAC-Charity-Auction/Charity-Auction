@@ -58,6 +58,13 @@ cd frontend && npm run build
 | -------------------------------------- | ------ | ----------------------------------------------------------------------------------------- |
 | `GET /api/donations/summary`           | 불필요 | `{ totalDonation, donationCount, donorCount, targets[], recentDonations[] }`              |
 | `GET /api/donations?page=0&size=20`    | 불필요 | 전체 기부 목록(최신순) `{ items[], page, size, totalElements, totalPages }`, size는 최대 50      |
+| `GET /api/v1/categories`               | 불필요 | 카테고리 목록 `[{ categoryId, categoryName }]`                                            |
+| `GET /api/v1/auctions?status=&categoryId=&keyword=&sort=&page=&size=` | 불필요 | 경매 물품 목록 `{ items[], page, size, totalElements, totalPages }`. 기본은 진행+예정, sort는 ending/latest/popular/priceAsc/priceDesc |
+| `GET /api/v1/me/auctions?page=0&size=10` | 필요 | 내가 올린 경매(최신 등록순) `{ items[(경매 목록 항목 + pointAmount: 판매로 받은 포인트)], page, size, totalElements, totalPages, totalPoints }` |
+| `GET /api/v1/me/wins?page=0&size=10`   | 필요   | 내 낙찰 이력 `{ items[{ auctionId, title, image, categoryName, bidPrice, wonAt, pointAmount }], ..., totalPoints }` |
+| `GET /api/v1/auctions/{auctionId}`     | 불필요 | 경매 상세 `{ ..., sellerNickname, winner(null 가능), recentBids[최신 10건] }`, 없거나 삭제됐으면 404 `AUCTION_NOT_FOUND` |
+| `POST /api/v1/auctions/{auctionId}/image` | 필요 (local 프로필) | multipart `file`(PNG/JPG/GIF/WEBP, 2MB 이하) → `{ image }`. 권한 없으면 403 `FORBIDDEN`, 없는 경매면 404 |
+| `POST /api/v1/{auctionId}/bids`        | 필요   | 입찰 `{ bidPrice }` → 201 `{ bidId, auctionId, bidPrice, bidAt, currentPrice, bidCount }`  |
 | `GET /api/donation-targets/{targetId}` | 불필요 | `{ target, donorCount, donationCount, recentDonations[] }`, 없으면 404 `TARGET_NOT_FOUND` |
 | `GET /api/me/points`                   | 필요   | `{ balance, recent[] }`, 로그인하지 않았으면 401                                          |
 | `GET /api/me/points/history?page=0&size=20` | 필요 | 내 포인트 내역 전체(최신순) `{ items[], page, size, totalElements, totalPages }`, size는 최대 50, 로그인하지 않았으면 401 |

@@ -3,6 +3,7 @@ import getMyPointPage from "@/app/donations/getMyPointPage";
 import Link from "next/link";
 import { connection } from "next/server";
 import EntryRow from "../EntryRow";
+import PointsSeenMarker from "../PointsSeenMarker";
 import styles from "../page.module.css";
 import SearchParams from "./SearchParams";
 
@@ -30,6 +31,7 @@ export default async function AllPoints({
 	const hrefOf = (n: number) => `/mypage/points?page=${n}`;
 	return (
 		<section aria-labelledby="all-points-title">
+			<PointsSeenMarker />
 			<div className={styles.sectionHead}>
 				<h1
 					id="all-points-title"

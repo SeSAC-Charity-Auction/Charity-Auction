@@ -1,0 +1,401 @@
+/* app/auctions/page.module.css : 메인 페이지(경매 물품 목록) */
+
+.page {
+	flex: 1; /* 위쪽 메뉴를 뺀 나머지 높이를 채워요 */
+	background: var(--paper);
+	color: var(--ink);
+	font-size: 1rem;
+	line-height: 1.7;
+	word-break: keep-all; /* 한글이 단어 단위로 줄바꿈되게 */
+}
+.page :where(h1, h2, h3, p, ul) {
+	margin: 0;
+}
+
+.wrap {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px 96px;
+}
+
+.loading {
+	padding: 96px 0;
+	color: var(--ink-soft);
+	text-align: center;
+}
+
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	border: 0;
+	clip-path: inset(50%);
+}
+
+.textLink {
+	color: var(--ink);
+	font-weight: 500;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+
+/* 포커스가 보이게 */
+.chip:focus-visible,
+.tab:focus-visible,
+.sort:focus-visible,
+.pageBtn:focus-visible,
+.textLink:focus-visible,
+.searchInput:focus-visible,
+.searchBtn:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}
+
+/* ---------- 제목과 검색 ---------- */
+.intro {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 16px 32px;
+	padding: 48px 0 24px;
+}
+.title {
+	font-size: clamp(1.9rem, 4.4vw, 2.75rem);
+	font-weight: 800;
+	line-height: 1.3;
+	letter-spacing: -0.01em;
+}
+.lead {
+	margin-top: 4px;
+	color: var(--ink-soft);
+}
+
+.search {
+	display: flex;
+	flex: 1 1 320px;
+	max-width: 440px;
+	gap: 8px;
+}
+.searchInput {
+	flex: 1;
+	min-width: 0;
+	min-height: 48px;
+	padding: 0 16px;
+	border: 1.5px solid var(--mist-strong);
+	border-radius: 8px;
+	background: var(--surface);
+	color: var(--ink);
+	font: inherit;
+}
+.searchInput:hover {
+	border-color: var(--ink);
+}
+.searchBtn {
+	min-height: 48px;
+	padding: 0 22px;
+	border: 1.5px solid transparent;
+	border-radius: 8px;
+	background: var(--bid);
+	color: #fff;
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+.searchBtn:hover {
+	background: #2f3ea8;
+}
+
+/* ---------- 카테고리·상태·정렬 ---------- */
+.chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 8px 0 16px;
+}
+.chip {
+	padding: 6px 16px;
+	border: 1.5px solid var(--mist-strong);
+	border-radius: 999px;
+	color: var(--ink);
+	font-size: 0.9375rem;
+	text-decoration: none;
+}
+.chip:hover {
+	border-color: var(--ink);
+}
+.chipOn {
+	border-color: var(--ink);
+	background: var(--ink);
+	color: var(--paper);
+	font-weight: 700;
+}
+
+.toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px 24px;
+	border-top: 1.5px solid var(--ink);
+	border-bottom: 1.5px solid var(--mist-strong);
+}
+.tabs {
+	display: flex;
+}
+.tab {
+	padding: 12px 18px 10px;
+	border-bottom: 3px solid transparent;
+	color: var(--ink-soft);
+	font-weight: 500;
+	text-decoration: none;
+}
+.tab:hover {
+	color: var(--ink);
+}
+.tabOn {
+	border-bottom-color: var(--bid-fg);
+	color: var(--ink);
+	font-weight: 700;
+}
+
+.sorts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 16px;
+}
+.sort {
+	color: var(--ink-soft);
+	font-size: 0.875rem;
+	text-decoration: none;
+}
+.sort:hover {
+	color: var(--ink);
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+.sortOn {
+	color: var(--ink);
+	font-weight: 700;
+}
+
+.count {
+	margin: 20px 0 16px;
+	color: var(--ink-soft);
+	font-size: 0.875rem;
+}
+
+/* ---------- 경매 카드 ---------- */
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 20px;
+	padding: 0;
+	list-style: none;
+}
+.gridItem {
+	display: flex;
+}
+
+.card {
+	position: relative;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	overflow: hidden;
+	background: var(--surface);
+	border: 1.5px solid var(--mist-strong);
+	border-radius: 12px;
+}
+.card:hover {
+	border-color: var(--ink);
+}
+
+.thumb {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 4 / 3;
+	background: var(--mist);
+}
+.thumbImg {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.thumbFallback {
+	color: var(--ink-soft);
+	font-size: 3rem;
+	font-weight: 800;
+	line-height: 1;
+}
+
+.badge {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	padding: 2px 10px;
+	border: 2px solid var(--ink);
+	border-radius: 6px;
+	color: var(--ink);
+	font-size: 0.8125rem;
+	font-weight: 800;
+	line-height: 1.5;
+}
+.badgeLive {
+	background: var(--hammer);
+}
+.badgeSoon {
+	background: var(--lilac);
+}
+
+/* 마감된 경매: 이미지는 흐리게, 배지는 어둡게 */
+.cardClosed .thumbImg,
+.cardClosed .thumbFallback {
+	filter: grayscale(1);
+	opacity: 0.55;
+}
+.badgeClosed {
+	background: var(--ink);
+	color: var(--paper);
+}
+
+.cardBody {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 6px;
+	padding: 16px 18px 18px;
+}
+.category {
+	color: var(--ink-soft);
+	font-size: 0.8125rem;
+}
+.cardTitle {
+	font-size: 1.0625rem;
+	font-weight: 700;
+	line-height: 1.45;
+}
+
+/* 제목 링크가 카드 전체를 누를 수 있게 넓힘 */
+.cardLink {
+	color: inherit;
+	text-decoration: none;
+}
+.cardLink::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+}
+.cardLink:focus-visible {
+	outline: none;
+}
+.card:has(.cardLink:focus-visible) {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}
+
+.priceRow {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px;
+	margin-top: auto;
+	padding-top: 10px;
+}
+.priceLabel {
+	color: var(--ink-soft);
+	font-size: 0.8125rem;
+}
+.price {
+	font-size: 1.25rem;
+	font-weight: 800;
+	font-variant-numeric: tabular-nums;
+}
+
+.meta {
+	display: flex;
+	justify-content: space-between;
+	gap: 8px;
+	padding-top: 10px;
+	border-top: 1px dashed var(--mist-strong);
+	color: var(--ink-soft);
+	font-size: 0.8125rem;
+}
+.urgent {
+	color: var(--danger);
+	font-weight: 700;
+}
+
+.empty {
+	padding: 48px 32px;
+	border: 1.5px dashed var(--mist-strong);
+	border-radius: 12px;
+	color: var(--ink-soft);
+	text-align: center;
+}
+
+/* ---------- 쪽 이동 ---------- */
+.pager {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	margin-top: 40px;
+}
+.pageBtn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 40px;
+	min-height: 40px;
+	padding: 0 12px;
+	border: 1.5px solid var(--mist-strong);
+	border-radius: 8px;
+	color: var(--ink);
+	font-variant-numeric: tabular-nums;
+	text-decoration: none;
+}
+.pageBtn:hover {
+	border-color: var(--ink);
+}
+.pageOn {
+	border-color: var(--ink);
+	background: var(--ink);
+	color: var(--paper);
+	font-weight: 700;
+}
+.pageOff {
+	opacity: 0.4;
+	pointer-events: none;
+}
+
+@media (max-width: 640px) {
+	.intro {
+		padding-top: 32px;
+	}
+	.search {
+		max-width: none;
+	}
+	.grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+	}
+	.cardBody {
+		padding: 12px 12px 14px;
+	}
+	.price {
+		font-size: 1.0625rem;
+	}
+	.meta {
+		flex-direction: column;
+		gap: 0;
+	}
+}

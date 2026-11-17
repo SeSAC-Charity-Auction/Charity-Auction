@@ -2,7 +2,7 @@
 
 /* ---------- 색과 기본 설정 ---------- */
 .page {
-	min-height: 100vh;
+	flex: 1; /* 위쪽 메뉴를 뺀 나머지 높이를 채워요 */
 	background: var(--paper);
 	color: var(--ink);
 	font-size: 1rem;

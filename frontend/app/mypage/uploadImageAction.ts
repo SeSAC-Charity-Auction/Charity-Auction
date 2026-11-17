@@ -23,6 +23,6 @@ export default async function uploadImageAction(
 			message: MESSAGES[result.code] ?? MESSAGES.UNKNOWN
 		};
 	}
-	revalidatePath("/mypage"); // 새 사진으로 다시 그려요
+	revalidatePath("/", "layout"); // 위쪽 메뉴의 프로필 사진까지 새 사진으로 다시 그려요
 	return { status: "success" };
 }

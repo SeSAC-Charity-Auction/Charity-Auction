@@ -49,4 +49,16 @@ public interface AuctionCandidateRepository extends JpaRepository<AuctionCandida
 
     // 경매별 낙찰 후보 전체 조회 (순위순)
     List<AuctionCandidate> findAllByAuction_IdOrderByRankAsc(Long auctionId);
+
+    // 마이페이지: 내가 낙찰받은 경매 (낙찰 확정이 최근인 순)
+    @Query(value = """
+            SELECT c FROM AuctionCandidate c JOIN FETCH c.auction a JOIN FETCH a.category
+            WHERE c.user.id = :userId AND c.status = :status
+            ORDER BY c.processedAt DESC, c.id DESC
+            """,
+            countQuery = "SELECT COUNT(c) FROM AuctionCandidate c WHERE c.user.id = :userId AND c.status = :status")
+    org.springframework.data.domain.Page<AuctionCandidate> findMyResults(
+            @Param("userId") Long userId,
+            @Param("status") AuctionCandidateStatus status,
+            org.springframework.data.domain.Pageable pageable);
 }
