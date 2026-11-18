@@ -6,8 +6,10 @@ import isLoggedIn from "../../auth/isLoggedIn";
 import FlipText from "../../donations/FlipText";
 import { won } from "../../donations/format";
 import formatDateTime from "../formatDateTime";
+import currentTime from "../currentTime";
 import getAuction from "../getAuction";
 import isClosedAuction from "../isClosedAuction";
+import LiveTimeText from "../LiveTimeText";
 import timeLabel from "../timeLabel";
 import AuctionImageUploader from "./AuctionImageUploader";
 import DevCloseButton from "./DevCloseButton";
@@ -31,7 +33,8 @@ export default async function AuctionDetailContent({
 	const loggedIn = await isLoggedIn();
 	const closed = isClosedAuction(auction);
 	const live = auction.status === "IN_PROGRESS" && !closed;
-	const time = timeLabel(auction);
+	const now = currentTime();
+	const time = timeLabel(auction, now);
 	const photo =
 		auction.image ?
 			// 외부 주소의 이미지는 next/image 설정(허용 도메인)이 필요해서 일반 img를 썼어요.
@@ -158,7 +161,7 @@ export default async function AuctionDetailContent({
 								time.urgent ? styles.timeUrgent : styles.time
 							}
 						>
-							<FlipText text={time.text} />
+							<LiveTimeText auction={auction} now={now} />
 						</p>
 					)}
 					{closed && (
