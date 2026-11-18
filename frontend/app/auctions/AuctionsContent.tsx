@@ -7,6 +7,7 @@ import { DEFAULT_STATUS } from "./constants";
 import currentTime from "./currentTime";
 import getAuctions from "./getAuctions";
 import getCategories from "./getCategories";
+import LiveAuctionPricesProvider from "./LiveAuctionPrices";
 import styles from "./page.module.css";
 import Pagination from "./Pagination";
 import parseFilters from "./parseFilters";
@@ -51,6 +52,7 @@ export default async function AuctionsContent({
 				/>
 			</p>
 			{data.content.length > 0 ?
+				<LiveAuctionPricesProvider>
 				<ul className={styles.grid}>
 					{data.content.map((a) => (
 						<li key={a.auctionId} className={styles.gridItem}>
@@ -58,6 +60,7 @@ export default async function AuctionsContent({
 						</li>
 					))}
 				</ul>
+				</LiveAuctionPricesProvider>
 			:	<p className={styles.empty}>
 					{filtered ?
 						<>

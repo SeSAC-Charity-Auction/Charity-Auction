@@ -13,8 +13,14 @@ export default async function decideOffer(
 			`${process.env.API_BASE_URL}/api/v1/auction-candidates/${candidateId}/${decision}`,
 			{ method: "POST", headers, cache: "no-store" }
 		);
-		const data = await res.json();
-		if (!res.ok) return { ok: false, code: data.code ?? "UNKNOWN" };
+		// 실패 응답(ErrorResponse)은 { code, message, ... } 모양이에요. 본문이 비어 있을 수도 있어요.
+		const data = await res.json().catch(() => ({}));
+		if (!res.ok) {
+			if (res.status === 401 && !data.code) {
+				return { ok: false, code: "NOT_LOGGED_IN" };
+			}
+			return { ok: false, code: data.code ?? "UNKNOWN" };
+		}
 		return { ok: true, pointAmount: data.pointAmount ?? null };
 	} catch {
 		return { ok: false, code: "UNKNOWN" };
