@@ -41,7 +41,8 @@ public class Bid {
         bid.user = user;
         bid.auction = auction;
         bid.bidPrice = bidPrice;
-        bid.bidAt = LocalDateTime.now();
+        bid.bidAt = bidAt;
+      
         return bid;
     }
 }

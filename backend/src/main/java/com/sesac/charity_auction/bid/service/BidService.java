@@ -6,13 +6,16 @@ import com.sesac.charity_auction.auction.repository.AuctionRepository;
 import com.sesac.charity_auction.bid.dto.request.BidCreateRequest;
 import com.sesac.charity_auction.bid.dto.response.BidCreateResponse;
 import com.sesac.charity_auction.bid.dto.response.BidListResponse;
+import com.sesac.charity_auction.bid.dto.response.BidRealtimeResponse;
 import com.sesac.charity_auction.bid.entity.Bid;
+import com.sesac.charity_auction.bid.event.BidCreatedEvent;
 import com.sesac.charity_auction.bid.repository.BidRepository;
 import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.user.entity.User;
 import com.sesac.charity_auction.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,7 @@ public class BidService {
     private final BidRepository bidRepository;
     private final UserRepository userRepository;
     private final AuctionRepository auctionRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     // 특정 경매의 입찰 내역 조회
     public List<BidListResponse> getBidHistory(final Long auctionId) {
@@ -58,13 +62,22 @@ public class BidService {
         validateBid(auction, user, request.bidPrice(), now);
 
         // 입찰 엔티티 생성 후 내역 저장
-        final Bid bid = Bid.create(user, auction, request.bidPrice());
+        final Bid bid = Bid.create(user, auction, request.bidPrice(), now);
         bidRepository.save(bid);
 
         // 경매 정보 갱신
         auction.updateAuctionInfo(request.bidPrice());
 
-        return BidCreateResponse.from(bid, auction.getCurrentPrice(), auction.getBidCount());
+        // api 응답
+        BidCreateResponse response = BidCreateResponse.from(bid, auction.getCurrentPrice(), auction.getBidCount());
+
+        // 웹소켓 실시간 전송 데이터 생성
+        BidRealtimeResponse realtimeResponse = BidRealtimeResponse.from(bid, auction);
+
+        // 입찰 성공 이벤트 발생 - 객체 간 이벤트 전달
+        eventPublisher.publishEvent(new BidCreatedEvent(auctionId, realtimeResponse));
+
+        return response;
     }
 
     // 입찰 가능 여부 검증
