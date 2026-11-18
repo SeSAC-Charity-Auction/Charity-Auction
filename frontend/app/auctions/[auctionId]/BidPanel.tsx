@@ -5,7 +5,13 @@ import BidForm from "./BidForm";
 import styles from "./page.module.css";
 
 // 경매 상태에 따라 입찰 폼 또는 안내 문구를 보여줘요.
-export default function BidPanel({ auction }: { auction: AuctionDetail }) {
+export default function BidPanel({
+	auction,
+	loggedIn
+}: {
+	auction: AuctionDetail;
+	loggedIn: boolean;
+}) {
 	const ended = isPast(auction.endAt);
 	if (auction.status === "IN_PROGRESS" && !ended) {
 		return (
@@ -13,6 +19,7 @@ export default function BidPanel({ auction }: { auction: AuctionDetail }) {
 				auctionId={auction.auctionId}
 				currentPrice={auction.currentPrice}
 				hasBids={auction.bidCount > 0}
+				loggedIn={loggedIn}
 			/>
 		);
 	}

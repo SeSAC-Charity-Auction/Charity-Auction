@@ -528,3 +528,24 @@
 	color: var(--ink-soft);
 	font-size: 0.8125rem;
 }
+
+/* ---------- 로그인하지 않았을 때: 입찰 폼 비활성화 ---------- */
+.bidLocked .bidInput,
+.bidLocked .quickBtn {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+.lockNote {
+	color: var(--ink-soft);
+	font-size: 0.875rem;
+}
+.lockLink {
+	color: var(--ink);
+	font-weight: 700;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+.lockLink:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}

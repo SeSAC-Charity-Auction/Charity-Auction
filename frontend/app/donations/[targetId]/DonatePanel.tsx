@@ -5,6 +5,7 @@ import { display } from "../fonts";
 import DonateForm from "./DonateForm";
 import styles from "./page.module.css";
 import getMyPoints from "../getMyPoints";
+import isLoggedIn from "../../auth/isLoggedIn";
 
 export default async function DonatePanel({
 	target
@@ -34,7 +35,8 @@ export default async function DonatePanel({
 		);
 	}
 	await connection();
-	const points = await getMyPoints();
+	// 로그인 쿠키가 없으면(개발용 DEV_USER_ID가 있어도) 입력 폼 대신 로그인 안내를 보여줘요.
+	const points = (await isLoggedIn()) ? await getMyPoints() : null;
 	if (!points) {
 		return (
 			<div className={styles.panelQuiet}>

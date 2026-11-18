@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import isLoggedIn from "../../auth/isLoggedIn";
 import FlipText from "../../donations/FlipText";
 import { won } from "../../donations/format";
 import formatDateTime from "../formatDateTime";
@@ -27,6 +28,7 @@ export default async function AuctionDetailContent({
 	if (!Number.isInteger(id) || id <= 0) notFound();
 	const auction = await getAuction(id);
 	if (!auction) notFound();
+	const loggedIn = await isLoggedIn();
 	const closed = isClosedAuction(auction);
 	const live = auction.status === "IN_PROGRESS" && !closed;
 	const time = timeLabel(auction);
@@ -172,7 +174,7 @@ export default async function AuctionDetailContent({
 						</Suspense>
 					)}
 
-					<BidPanel auction={auction} />
+					<BidPanel auction={auction} loggedIn={loggedIn} />
 
 					{process.env.NODE_ENV === "development" && live && (
 						<DevCloseButton auctionId={auction.auctionId} />
