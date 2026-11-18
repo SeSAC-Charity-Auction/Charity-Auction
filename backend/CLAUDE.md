@@ -131,3 +131,5 @@ cd frontend && npm run build
 - `local` 프로필에서 앱을 실행하면 `DevSeedRunner`가 `db/seed/*.sql`을 자동으로 넣어요. 회원·경매·기부처가 모두 비어 있을 때만 돌고, 이미 데이터가 있으면 건드리지 않아요. 끄려면 `APP_DEV_SEED_ENABLED=false`.
 
 - (개발 전용, `local` 프로필에서만) `POST /api/v1/dev/auctions/{auctionId}/close` — 진행 중인 경매를 지금 바로 마감하고 낙찰 후보를 만들어요. 로그인 필요. 진행 중이 아니면 400, 없으면 404.
+
+- `GET /api/me/donations?page=&size=` — 내 기부 이력(최근순, 기부처 이름·이미지 포함)과 기부 포인트 총합(`totalAmount`). 로그인 필요.

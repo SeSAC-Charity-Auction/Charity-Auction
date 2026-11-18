@@ -1,6 +1,7 @@
 package com.sesac.charity_auction.donation.repository;
 
 import com.sesac.charity_auction.donation.domain.Donation;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,4 +35,10 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
     @Query("select d from Donation d join fetch d.target join fetch d.user "
             + "where d.target.id = :targetId order by d.createdAt desc, d.id desc")
     List<Donation> findRecentByTargetId(final @Param("targetId") Long targetId, final Pageable pageable);
+
+    // 마이페이지: 내 기부 이력 (최근순). 기부처를 같이 가져와서 목록을 만들 때 쿼리가 반복되지 않아요.
+    @Query(value = "select d from Donation d join fetch d.target where d.user.id = :userId "
+            + "order by d.createdAt desc, d.id desc",
+            countQuery = "select count(d) from Donation d where d.user.id = :userId")
+    Page<Donation> findMine(final @Param("userId") long userId, final Pageable pageable);
 }

@@ -8,8 +8,8 @@ import ActivityContent from "./ActivityContent";
 import SearchParams from "./SearchParams";
 
 export const metadata: Metadata = {
-	title: "내 경매 활동",
-	description: "내가 올린 경매와 낙찰 이력, 그로 얻은 포인트를 확인하세요.",
+	title: "내 활동",
+	description: "내가 올린 경매와 낙찰 이력, 기부 이력을 확인하세요.",
 	robots: { index: false } // 개인 페이지라 검색에 노출하지 않아요
 };
 

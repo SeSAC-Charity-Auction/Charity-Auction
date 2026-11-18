@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import getMyAuctions from "../../auctions/getMyAuctions";
+import getMyDonations from "../../donations/getMyDonations";
+import MyDonationRow from "../MyDonationRow";
 import getMyWins from "../../auctions/getMyWins";
 import { display } from "../../donations/fonts";
 import MyAuctionRow from "../MyAuctionRow";
@@ -19,16 +21,20 @@ export default async function ActivityContent({
 }) {
 	await connection();
 	const params = await searchParams;
-	const tab = first(params.tab) === "wins" ? "wins" : "auctions";
+	const rawTab = first(params.tab);
+	const tab =
+		rawTab === "wins" || rawTab === "donations" ? rawTab : "auctions";
 	const parsed = Number(first(params.page));
 	const pageIndex = Number.isInteger(parsed) && parsed >= 1 ? parsed - 1 : 0;
+	const donations =
+		tab === "donations" ? await getMyDonations(pageIndex) : null;
 	const wins = tab === "wins" ? await getMyWins(pageIndex) : null;
 	const auctions = tab === "auctions" ? await getMyAuctions(pageIndex) : null;
-	const data = wins ?? auctions;
+	const data = donations ?? wins ?? auctions;
 	if (!data) {
 		return (
 			<p className={styles.empty}>
-				로그인하면 내 경매 활동을 볼 수 있어요.{" "}
+				로그인하면 내 활동을 볼 수 있어요.{" "}
 				<Link href="/login" className={styles.textLink}>
 					로그인하기
 				</Link>
@@ -45,12 +51,22 @@ export default async function ActivityContent({
 					id="activity-title"
 					className={`${styles.h2} ${display.className}`}
 				>
-					내 경매 활동
+					내 활동
 				</h1>
 				<p className={styles.muted}>
 					모두 {data.totalElements.toLocaleString("ko-KR")}건 ·{" "}
-					{wins ? "낙찰로" : "판매로"} 받은 포인트{" "}
-					<strong>{pt(data.totalPoints)}</strong>
+					{donations ?
+						<>
+							기부한 포인트{" "}
+							<strong>{pt(donations.totalAmount)}</strong>
+						</>
+					:	<>
+							{wins ? "낙찰로" : "판매로"} 받은 포인트{" "}
+							<strong>
+								{pt((wins ?? auctions)?.totalPoints ?? 0)}
+							</strong>
+						</>
+					}
 				</p>
 			</div>
 			<nav aria-label="보기 선택" className={styles.tabs}>
@@ -68,10 +84,21 @@ export default async function ActivityContent({
 				>
 					낙찰 이력
 				</Link>
+				<Link
+					href={hrefOf("donations")}
+					className={`${styles.tab} ${tab === "donations" ? styles.tabOn : ""}`}
+					aria-current={tab === "donations" ? "page" : undefined}
+				>
+					기부 이력
+				</Link>
 			</nav>
 			{data.items.length > 0 ?
 				<ul className={styles.rowList}>
-					{wins ?
+					{donations ?
+						donations.items.map((d) => (
+							<MyDonationRow key={d.donationId} donation={d} />
+						))
+					: wins ?
 						wins.items.map((w) => (
 							<MyWinRow key={w.auctionId} win={w} />
 						))
@@ -82,9 +109,9 @@ export default async function ActivityContent({
 				</ul>
 			:	<p className={styles.empty}>
 					{data.totalElements === 0 ?
-						tab === "wins" ?
-							"아직 낙찰받은 경매가 없어요."
-						:	"아직 올린 경매가 없어요."
+						tab === "wins" ? "아직 낙찰받은 경매가 없어요."
+						: tab === "donations" ? "아직 기부한 내역이 없어요."
+						: "아직 올린 경매가 없어요."
 					:	"이 쪽에는 내용이 없어요."}
 				</p>
 			}
