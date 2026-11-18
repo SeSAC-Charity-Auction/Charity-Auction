@@ -3,6 +3,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import AuctionCard from "./AuctionCard";
 import CategoryFilter from "./CategoryFilter";
+import { DEFAULT_STATUS } from "./constants";
 import getAuctions from "./getAuctions";
 import getCategories from "./getCategories";
 import styles from "./page.module.css";
@@ -25,7 +26,7 @@ export default async function AuctionsContent({
 		getAuctions(filters)
 	]);
 	const filtered =
-		filters.categoryId !== null || filters.status !== "" || filters.keyword;
+		filters.categoryId !== null || filters.status !== DEFAULT_STATUS || filters.keyword;
 	return (
 		<>
 			<section className={styles.intro} aria-labelledby="auction-title">

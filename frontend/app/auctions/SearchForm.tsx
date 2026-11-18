@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import AuctionFilters from "./AuctionFilters";
+import { DEFAULT_SORT, DEFAULT_STATUS } from "./constants";
 import styles from "./page.module.css";
 
 // 글자를 입력하면 잠시 뒤 추천 물품명을 보여줘요. 자바스크립트가 없어도 일반 GET 폼으로 검색돼요.
@@ -86,10 +87,10 @@ export default function SearchForm({ filters }: { filters: AuctionFilters }) {
 					value={filters.categoryId}
 				/>
 			)}
-			{filters.status && (
+			{filters.status !== DEFAULT_STATUS && (
 				<input type="hidden" name="status" value={filters.status} />
 			)}
-			{filters.sort !== "ending" && (
+			{filters.sort !== DEFAULT_SORT && (
 				<input type="hidden" name="sort" value={filters.sort} />
 			)}
 			<label className={styles.srOnly} htmlFor="auction-q">

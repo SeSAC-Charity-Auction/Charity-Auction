@@ -1,7 +1,12 @@
 package com.sesac.charity_auction.auction.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.domain.AuctionSort;
@@ -14,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -41,24 +47,38 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
             builder.and(auction.category.id.eq(condition.categoryId()));
         }
 
-        // 상태 필터링
+        // 취소된 경매는 목록에 나오지 않아요.
+        builder.and(auction.status.ne(AuctionStatus.CANCELED));
+
+        // 상태 필터링. 마감 시각이 지났지만 스케줄러가 아직 처리하지 못한 진행 중 경매는 마감으로 봐요.
+        final LocalDateTime now = LocalDateTime.now();
+        final BooleanExpression inProgress = auction.status.eq(AuctionStatus.IN_PROGRESS).and(auction.endAt.gt(now));
+        final BooleanExpression scheduled = auction.status.eq(AuctionStatus.SCHEDULED);
+        final BooleanExpression ended = auction.status.in(AuctionStatus.CLOSED, AuctionStatus.COMPLETED, AuctionStatus.FAILED)
+                .or(auction.status.eq(AuctionStatus.IN_PROGRESS).and(auction.endAt.loe(now)));
+
+        // status가 없으면 전체예요.
         if (condition.status() != null) {
             switch (condition.status()) {
-                case SCHEDULED -> builder.and(auction.status.eq(AuctionStatus.SCHEDULED));
+                case SCHEDULED -> builder.and(scheduled);
 
-                case IN_PROGRESS -> builder.and(auction.status.eq(AuctionStatus.IN_PROGRESS));
+                case IN_PROGRESS -> builder.and(inProgress);
 
-                case CLOSED -> builder.and(auction.status.eq(AuctionStatus.CLOSED));
-
-                case COMPLETED -> builder.and(auction.status.eq(AuctionStatus.COMPLETED));
+                case CLOSED, COMPLETED -> builder.and(ended);
             }
         }
+
+        // 전체에서는 진행 중·예정 경매를 먼저, 마감된 경매를 뒤에 두고 그 안에서 정렬 조건을 따라요.
+        final OrderSpecifier<Integer> group = new CaseBuilder()
+                .when(inProgress.or(scheduled)).then(0)
+                .otherwise(1)
+                .asc();
 
         // 경매 목록 조회 - 현재 페이지에만 해당하는 데이터
         final List<Auction> content = queryFactory
                 .selectFrom(auction)
                 .where(builder) // 동적 검색 조건 적용
-                .orderBy(getOrderSpecifier(condition.sort()), auction.id.desc()) // 조건이 같을 때 id가 높은 순으로
+                .orderBy(getOrderSpecifiers(condition.sort(), group, inProgress.or(scheduled))) // 조건이 같을 때 id가 높은 순으로
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch(); // QueryDSL 쿼리를 실제 데이터베이스에 실행
@@ -71,6 +91,19 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total != null ? total : 0L);
+    }
+
+    // 정렬 조건. 마감 임박순은 진행 중·예정을 마감이 가까운 순으로, 마감된 경매는 최근에 마감된 순으로 이어 붙여요.
+    private OrderSpecifier<?>[] getOrderSpecifiers(final AuctionSort sort, final OrderSpecifier<Integer> group, final BooleanExpression open) {
+        if (sort == AuctionSort.ENDING_SOON) {
+            final Expression<LocalDateTime> none = Expressions.nullExpression(LocalDateTime.class);
+            final OrderSpecifier<?> openFirst = new OrderSpecifier<>(Order.ASC,
+                    new CaseBuilder().when(open).then(auction.endAt).otherwise(none));
+            final OrderSpecifier<?> endedFirst = new OrderSpecifier<>(Order.DESC,
+                    new CaseBuilder().when(open).then(none).otherwise(auction.endAt));
+            return new OrderSpecifier<?>[]{group, openFirst, endedFirst, auction.id.desc()};
+        }
+        return new OrderSpecifier<?>[]{group, getOrderSpecifier(sort), auction.id.desc()};
     }
 
     // 정렬 조건

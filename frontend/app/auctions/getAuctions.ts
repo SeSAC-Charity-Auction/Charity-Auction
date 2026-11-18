@@ -11,7 +11,7 @@ export default async function getAuctions(
 		size: String(PAGE_SIZE)
 	});
 	if (filters.categoryId) qs.set("categoryId", String(filters.categoryId));
-	if (filters.status) qs.set("status", filters.status);
+	if (filters.status !== "ALL") qs.set("status", filters.status);
 	if (filters.keyword) qs.set("keyword", filters.keyword);
 	const res = await fetch(
 		`${process.env.API_BASE_URL}/api/v1/auctions/v2?${qs}`,

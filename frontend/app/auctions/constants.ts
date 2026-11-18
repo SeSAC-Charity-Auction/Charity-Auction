@@ -11,8 +11,12 @@ export const STATUS_TABS = [
 	{ value: "IN_PROGRESS", label: "진행 중" },
 	{ value: "SCHEDULED", label: "예정" },
 	{ value: "CLOSED", label: "마감" },
-	{ value: "", label: "전체" }
+	{ value: "ALL", label: "전체" }
 ] as const;
+
+// 주소에 상태가 없을 때 보여주는 기본 탭, 그리고 주소에서 생략하는 기본 정렬이에요.
+export const DEFAULT_STATUS = "IN_PROGRESS" as const;
+export const DEFAULT_SORT = "ENDING_SOON" as const;
 
 export const MESSAGES: Record<string, string> = {
 	NOT_LOGGED_IN: "로그인이 필요해요. 로그인한 뒤 다시 시도해 주세요.",
