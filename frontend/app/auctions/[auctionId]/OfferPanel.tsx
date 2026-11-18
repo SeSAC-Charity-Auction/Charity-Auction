@@ -15,6 +15,7 @@ export default async function OfferPanel({ auctionId }: { auctionId: number }) {
 			secondsLeft={
 				offer.deadlineAtIso ? secondsUntil(offer.deadlineAtIso) : null
 			}
+			deadlineAtIso={offer.deadlineAtIso}
 		/>
 	);
 }

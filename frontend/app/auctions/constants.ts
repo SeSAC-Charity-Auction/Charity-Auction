@@ -24,6 +24,8 @@ export const MESSAGES: Record<string, string> = {
 	CANDIDATE_NOT_FOUND: "낙찰 기회를 찾을 수 없어요.",
 	CANDIDATE_NOT_OFFERED: "지금은 선택할 수 없는 낙찰 기회예요.",
 	CANDIDATE_EXPIRED: "선택할 수 있는 시간이 지났어요.",
+	INVALID_TOKEN: "로그인이 만료됐어요. 다시 로그인해 주세요.",
+	UNAUTHORIZED: "로그인이 필요해요. 로그인한 뒤 다시 시도해 주세요.",
 	AUCTION_NOT_AVAILABLE_FOR_ACCEPT: "지금은 낙찰을 수락할 수 없는 경매예요.",
 	AUCTION_NOT_AVAILABLE_FOR_REJECT: "지금은 낙찰을 포기할 수 없는 경매예요.",
 	UNKNOWN: "처리하지 못했어요. 잠시 뒤에 다시 시도해 주세요."

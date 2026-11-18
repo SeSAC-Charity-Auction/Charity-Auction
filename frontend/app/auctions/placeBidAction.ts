@@ -15,6 +15,12 @@ const MESSAGES: Record<string, string> = {
 	AUCTION_ALREADY_ENDED: "이미 종료된 경매예요.",
 	AUCTION_NOT_IN_PROGRESS: "지금은 입찰할 수 없는 경매예요.",
 	AUCTION_NOT_FOUND: "경매를 찾을 수 없어요.",
+	AUCTION_DELETED: "삭제된 경매예요.",
+	AUCTION_CANCELLED: "취소된 경매예요.",
+	INVALID_INPUT_VALUE: "입찰 금액을 다시 확인해 주세요.",
+	INVALID_TOKEN: "로그인이 만료됐어요. 다시 로그인해 주세요.",
+	UNAUTHORIZED: "로그인이 필요해요. 로그인한 뒤 다시 시도해 주세요.",
+	USER_NOT_FOUND: "회원 정보를 찾을 수 없어요. 다시 로그인해 주세요.",
 	UNKNOWN: "입찰을 처리하지 못했어요. 잠시 뒤에 다시 시도해 주세요."
 };
 

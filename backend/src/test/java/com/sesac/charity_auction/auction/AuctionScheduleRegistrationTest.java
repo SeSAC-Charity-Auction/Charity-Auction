@@ -3,7 +3,6 @@ package com.sesac.charity_auction.auction;
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
-import com.sesac.charity_auction.auction.service.AuctionStartService;
 import com.sesac.charity_auction.category.domain.Category;
 import com.sesac.charity_auction.user.entity.User;
 import com.sesac.charity_auction.user.repository.UserRepository;
@@ -50,7 +49,6 @@ class AuctionScheduleRegistrationTest {
     @Autowired EntityManager em;
     @Autowired UserRepository users;
     @Autowired AuctionRepository auctions;
-    @Autowired AuctionStartService startService;
     User seller;
     Category category;
     LocalDateTime now;
@@ -147,19 +145,10 @@ class AuctionScheduleRegistrationTest {
                 .andExpect(status().isCreated());
         Auction auction = auctions.findAll().getFirst();
 
-        startService.start(auction.getId());
-        em.flush();
-        em.clear();
+        assertEquals(0, auctions.startDueAuctions(now));
         assertEquals(AuctionStatus.SCHEDULED, auctions.findById(auction.getId()).orElseThrow().getStatus());
-        assertEquals(0, auctions.findStartableAuctionIds(now).size());
 
-        Auction loaded = auctions.findById(auction.getId()).orElseThrow();
-        ReflectionTestUtils.setField(loaded, "startAt", now.minusMinutes(1));
-        em.flush();
-        assertEquals(1, auctions.findStartableAuctionIds(auctions.findCurrentDatabaseTime()).size());
-        startService.start(auction.getId());
-        em.flush();
-        em.clear();
+        assertEquals(1, auctions.startDueAuctions(now.plusHours(2)));
         assertEquals(AuctionStatus.IN_PROGRESS, auctions.findById(auction.getId()).orElseThrow().getStatus());
     }
 }

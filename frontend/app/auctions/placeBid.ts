@@ -18,8 +18,14 @@ export default async function placeBid(input: {
 				cache: "no-store"
 			}
 		);
-		const data = await res.json();
-		if (!res.ok) return { ok: false, code: data.code ?? "UNKNOWN" };
+		// 실패 응답(ErrorResponse)은 { code, message, ... } 모양이에요. 본문이 비어 있을 수도 있어요.
+		const data = await res.json().catch(() => ({}));
+		if (!res.ok) {
+			if (res.status === 401 && !data.code) {
+				return { ok: false, code: "NOT_LOGGED_IN" };
+			}
+			return { ok: false, code: data.code ?? "UNKNOWN" };
+		}
 		return { ok: true, bidPrice: data.bidPrice };
 	} catch {
 		// 서버에 연결하지 못했거나 응답이 JSON이 아닌 경우

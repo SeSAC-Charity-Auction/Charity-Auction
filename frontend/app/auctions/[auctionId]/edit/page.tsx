@@ -21,7 +21,9 @@ export const metadata: Metadata = {
 
 type Params = Promise<{ auctionId: string }>;
 
-const toInputValue = (dateTime: string) => dateTime.slice(0, 16);
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+const toInputValue = (isoInstant: string) =>
+	new Date(Date.parse(isoInstant) + KST_OFFSET_MS).toISOString().slice(0, 16);
 
 async function EditAuctionContent({ params }: { params: Params }) {
 	await connection();
