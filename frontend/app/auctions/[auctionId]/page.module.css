@@ -492,3 +492,39 @@
 	outline: 3px solid var(--bid-fg);
 	outline-offset: 3px;
 }
+
+/* ---------- 개발 모드 전용: 경매 바로 마감 ---------- */
+.devClose {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 14px 16px;
+	border: 1.5px dashed var(--mist-strong);
+	border-radius: 12px;
+}
+.devCloseBtn {
+	min-height: 44px;
+	border: 1.5px solid var(--danger);
+	border-radius: 8px;
+	background: transparent;
+	color: var(--danger);
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+.devCloseBtn:hover:not(:disabled) {
+	background: var(--danger);
+	color: var(--surface);
+}
+.devCloseBtn:disabled {
+	cursor: progress;
+	opacity: 0.6;
+}
+.devCloseBtn:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}
+.devCloseNote {
+	color: var(--ink-soft);
+	font-size: 0.8125rem;
+}

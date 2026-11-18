@@ -9,6 +9,7 @@ import getAuction from "../getAuction";
 import isClosedAuction from "../isClosedAuction";
 import timeLabel from "../timeLabel";
 import AuctionImageUploader from "./AuctionImageUploader";
+import DevCloseButton from "./DevCloseButton";
 import BidHistory from "./BidHistory";
 import BidPanel from "./BidPanel";
 import { CLOSED_NOTE, STATUS_LABEL } from "./constants";
@@ -172,6 +173,10 @@ export default async function AuctionDetailContent({
 					)}
 
 					<BidPanel auction={auction} />
+
+					{process.env.NODE_ENV === "development" && live && (
+						<DevCloseButton auctionId={auction.auctionId} />
+					)}
 				</aside>
 			</div>
 			<BidHistory bids={auction.recentBids} total={auction.bidCount} />

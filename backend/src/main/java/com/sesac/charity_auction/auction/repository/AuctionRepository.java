@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -24,6 +25,11 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
     // DB 시간 기준 통일
     @Query(value = "SELECT CURRENT_TIMESTAMP", nativeQuery = true)
     LocalDateTime findCurrentDatabaseTime();
+
+    // 개발용: 진행 중인 경매의 마감 시각을 지금으로 당겨요. 바뀐 행이 없으면 0을 돌려줘요.
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("UPDATE Auction a SET a.endAt = :endAt WHERE a.id = :auctionId AND a.isDeleted = false AND a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.IN_PROGRESS")
+    int expireNow(final @Param("auctionId") Long auctionId, final @Param("endAt") LocalDateTime endAt);
 
     // 만료된 경매
     @Query("SELECT a.id FROM Auction a WHERE a.status = :status AND a.endAt <= :now AND a.isDeleted = false")
