@@ -147,12 +147,15 @@
 
 /* ---------- 카테고리·상태·정렬 ---------- */
 .chips {
+	position: relative;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
 	padding: 8px 0 16px;
 }
 .chip {
+	position: relative;
+	z-index: 1; /* 움직이는 바탕(.chipBar) 위에 글자가 보이게 해요 */
 	padding: 6px 16px;
 	border: 1.5px solid var(--mist-strong);
 	border-radius: 999px;
@@ -170,6 +173,34 @@
 	font-weight: 700;
 }
 
+/* 자바스크립트가 준비되면 까만 바탕은 움직이는 .chipBar가 대신 그려요. */
+.chips[data-slide] .chipOn {
+	background: transparent;
+}
+/* 바탕이 도착할 즈음에 글자색도 바뀌어서, 바탕이 오기 전에 글자가 안 보이는 일이 없게 해요. */
+.chips[data-slide] .chip {
+	transition: color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.chipBar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	border-radius: 999px;
+	background: var(--ink);
+	pointer-events: none;
+	transition:
+		transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+		width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+		height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+	.chipBar {
+		transition: none;
+	}
+}
+
 .toolbar {
 	display: flex;
 	flex-wrap: wrap;
@@ -180,6 +211,7 @@
 	border-bottom: 1.5px solid var(--mist-strong);
 }
 .tabs {
+	position: relative;
 	display: flex;
 }
 .tab {
@@ -196,6 +228,29 @@
 	border-bottom-color: var(--bid-fg);
 	color: var(--ink);
 	font-weight: 700;
+}
+
+/* 자바스크립트가 준비되면 밑줄은 아래의 움직이는 줄(.tabBar)이 대신 그려요. */
+.tabs[data-slide] .tabOn {
+	border-bottom-color: transparent;
+}
+.tabBar {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 0;
+	height: 3px;
+	background: var(--bid-fg);
+	pointer-events: none;
+	/* 처음엔 빠르게, 도착할 때 부드럽게 느려져요(ease-out). */
+	transition:
+		transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+		width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+	.tabBar {
+		transition: none;
+	}
 }
 
 .sorts {
