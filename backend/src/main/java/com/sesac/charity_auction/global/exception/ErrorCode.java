@@ -72,7 +72,7 @@ public enum ErrorCode {
     CANDIDATE_NOT_FOUND(HttpStatus.NOT_FOUND, "낙찰 후보를 찾을 수 없습니다."),
     CANDIDATE_EXPIRED(HttpStatus.BAD_REQUEST, "낙찰 기한이 만료되었습니다."),
     INVALID_CANDIDATE_STATUS(HttpStatus.BAD_REQUEST, "낙찰 후보 상태가 유효하지 않습니다."),
-    CANDIDATE_NOT_EXPIRED(HttpStatus.BAD_REQUEST,"낙찰 기한이 만료되지 않았습니다." ),
+    CANDIDATE_NOT_EXPIRED(HttpStatus.BAD_REQUEST, "낙찰 기한이 만료되지 않았습니다."),
     INVALID_CANDIDATE_DEADLINE(HttpStatus.BAD_REQUEST, "유효하지 않은 낙찰 기한입니다."),
 
     // 기본 비즈니스 예외
@@ -81,7 +81,7 @@ public enum ErrorCode {
     private final HttpStatus status;
     private final String message;
 
-    ErrorCode(HttpStatus status, String message) {
+    ErrorCode(final HttpStatus status, final String message) {
         this.status = status;
         this.message = message;
     }

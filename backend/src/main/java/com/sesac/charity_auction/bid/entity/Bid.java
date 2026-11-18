@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Bid {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bid_id")
@@ -37,15 +36,13 @@ public class Bid {
     private Auction auction;
 
     // 입찰 생성
-    public static Bid create(User user, Auction auction, Long bidPrice, LocalDateTime bidAt){
-
+    public static Bid create(final User user, final Auction auction, final Long bidPrice) {
         final Bid bid = new Bid();
         bid.user = user;
         bid.auction = auction;
         bid.bidPrice = bidPrice;
         bid.bidAt = bidAt;
-
+      
         return bid;
     }
-
 }

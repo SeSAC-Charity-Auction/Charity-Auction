@@ -22,29 +22,25 @@ public class AuctionCandidateController {
 
     // 낙찰 기회 내역 조건별 조회
     @GetMapping("/my/status")
-    public ResponseEntity<List<MyOfferedCandidateResponse>> getMyOfferedCandidate(@RequestParam AuctionCandidateStatus status){
-
+    public ResponseEntity<List<MyOfferedCandidateResponse>> getMyOfferedCandidate(final @RequestParam AuctionCandidateStatus status) {
         return ResponseEntity.ok(auctionCandidateService.getMyOfferedCandidate(currentUser.currentUserId(), status));
     }
 
     // 낙찰 기회 내역 전체 조회
     @GetMapping("/my/all")
-    public ResponseEntity<List<MyOfferedCandidateResponse>> getAllMyOfferedCandidate(){
-
+    public ResponseEntity<List<MyOfferedCandidateResponse>> getAllMyOfferedCandidate() {
         return ResponseEntity.ok(auctionCandidateService.getAllMyOfferedCandidate(currentUser.currentUserId()));
     }
 
     // 낙찰 수락
     @PostMapping("/{candidateId}/accept")
-    public ResponseEntity<CandidateAcceptResponseDto> accept(@PathVariable Long candidateId){
-
+    public ResponseEntity<CandidateAcceptResponseDto> accept(final @PathVariable Long candidateId) {
         return ResponseEntity.ok(auctionCandidateService.acceptCandidate(currentUser.currentUserId(), candidateId));
     }
 
     // 낙찰 거절
     @PostMapping("/{candidateId}/reject")
-    public ResponseEntity<CandidateRejectResponseDto> reject(@PathVariable Long candidateId){
-
+    public ResponseEntity<CandidateRejectResponseDto> reject(final @PathVariable Long candidateId) {
         return ResponseEntity.ok(auctionCandidateService.rejectCandidate(currentUser.currentUserId(), candidateId));
     }
 }

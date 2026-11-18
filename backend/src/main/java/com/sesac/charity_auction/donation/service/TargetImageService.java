@@ -45,7 +45,6 @@ public class TargetImageService {
         }
         final DonationTarget target = targetRepository.findById(targetId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.TARGET_NOT_FOUND));
-
         final String oldImage = target.getTargetImage();
         final String newImage = imageStorage.store(FOLDER, file);
         target.changeImage(newImage);

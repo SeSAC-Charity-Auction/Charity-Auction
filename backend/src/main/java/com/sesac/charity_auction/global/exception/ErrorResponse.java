@@ -21,8 +21,8 @@ public record ErrorResponse(
 //        return new ErrorResponse(errorCode.name(), errorCode.getMessage());
 //    }
     public static ErrorResponse of(
-            ErrorCode errorCode,
-            String path
+            final ErrorCode errorCode,
+            final String path
     ) {
         return new ErrorResponse(
                 LocalDateTime.now(),
@@ -35,9 +35,9 @@ public record ErrorResponse(
     }
 
     public static ErrorResponse of(
-            ErrorCode errorCode,
-            String message,
-            String path
+            final ErrorCode errorCode,
+            final String message,
+            final String path
     ) {
         return new ErrorResponse(
                 LocalDateTime.now(),
@@ -50,11 +50,11 @@ public record ErrorResponse(
     }
 
     public static ErrorResponse of(
-            int status,
-            String error,
-            String code,
-            String message,
-            String path
+            final int status,
+            final String error,
+            final String code,
+            final String message,
+            final String path
     ) {
         return new ErrorResponse(
                 LocalDateTime.now(),

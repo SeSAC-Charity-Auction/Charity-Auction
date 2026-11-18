@@ -1,6 +1,7 @@
 package com.sesac.charity_auction.auth.service;
 
 import com.sesac.charity_auction.user.domain.Role;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +21,7 @@ public class JwtService {
     private static final String ISSUER = "charity-auction";
 
     private final JwtEncoder jwtEncoder;
+    @Getter
     private final long expirationSeconds;
 
     public JwtService(final JwtEncoder jwtEncoder,
@@ -54,9 +56,5 @@ public class JwtService {
 
         final JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
-    }
-
-    public long getExpirationSeconds() {
-        return expirationSeconds;
     }
 }

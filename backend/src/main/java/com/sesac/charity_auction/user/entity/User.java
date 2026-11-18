@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
-
     // 탈퇴 회원의 이메일 및 닉네임 재사용을 위해 일반 UNIQUE 제약조건 대신 Generated Column 기반 UNIQUE 인덱스 사용
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +54,7 @@ public class User extends BaseTimeEntity {
     private LocalDateTime pointsCheckedAt;
 
     // 회원가입
-    public static User create(String email, String password, String nickname, String name) {
+    public static User create(final String email, final String password, final String nickname, final String name) {
         final User user = new User();
         user.email = email;
         user.password = password;
