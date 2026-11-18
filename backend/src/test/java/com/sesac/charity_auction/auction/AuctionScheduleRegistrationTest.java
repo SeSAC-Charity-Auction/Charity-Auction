@@ -28,7 +28,9 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -150,5 +152,36 @@ class AuctionScheduleRegistrationTest {
 
         assertEquals(1, auctions.startDueAuctions(now.plusHours(2)));
         assertEquals(AuctionStatus.IN_PROGRESS, auctions.findById(auction.getId()).orElseThrow().getStatus());
+    }
+
+    private Long scheduledAuctionPastStart() throws Exception {
+        mvc.perform(multipart("/api/v1/auctions").file(data(now.plusHours(2), now.plusHours(26))).file(image()).with(asSeller()))
+                .andExpect(status().isCreated());
+        Auction auction = auctions.findAll().getFirst();
+        ReflectionTestUtils.setField(auction, "startAt", now.minusMinutes(1));
+        em.flush();
+        em.clear();
+        return auction.getId();
+    }
+
+    @Test
+    void 시작_시각이_지난_예정_경매는_상세를_조회하면_바로_진행_중이_된다() throws Exception {
+        Long auctionId = scheduledAuctionPastStart();
+        mvc.perform(get("/api/v1/auctions/" + auctionId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("IN_PROGRESS"));
+    }
+
+    @Test
+    void 시작_시각이_지난_예정_경매는_스케줄러를_기다리지_않고_입찰을_받는다() throws Exception {
+        Long auctionId = scheduledAuctionPastStart();
+        String key = UUID.randomUUID().toString().substring(0, 8);
+        User bidder = users.save(User.create(key + "@test.com", "hash", key, "입찰자"));
+        mvc.perform(post("/api/v1/" + auctionId + "/bids").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"bidPrice\":2000}")
+                        .with(jwt().jwt(token -> token.subject(bidder.getId().toString()))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.currentPrice").value(2000));
+        assertEquals(AuctionStatus.IN_PROGRESS, auctions.findById(auctionId).orElseThrow().getStatus());
     }
 }

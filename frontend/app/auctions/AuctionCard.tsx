@@ -24,7 +24,6 @@ export default function AuctionCard({
 	const now = useNow(serverNow);
 	const time = timeLabel(auction, now);
 	const scheduled = auction.status === "SCHEDULED";
-	const scheduled = auction.status === "SCHEDULED";
 	const closed = isClosedAuction(auction, now);
 	const inProgress = auction.status === "IN_PROGRESS" && !closed;
   
