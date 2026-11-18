@@ -10,10 +10,7 @@ export default function SortLinks({ filters }: { filters: AuctionFilters }) {
 			{SORTS.map((s) => (
 				<Link
 					key={s.value}
-					href={buildHref(filters, {
-						sort: s.value,
-						status: "IN_PROGRESS"
-					})}
+					href={buildHref(filters, { sort: s.value })}
 					className={`${styles.sort} ${filters.sort === s.value ? styles.sortOn : ""}`}
 					aria-current={filters.sort === s.value ? "true" : undefined}
 				>

@@ -18,10 +18,10 @@ export default function parseFilters(params: RawParams): AuctionFilters {
 		categoryId:
 			Number.isInteger(category) && category > 0 ? category : null,
 		status:
-			selectedStatus ||
-        	(selectedSort === "ENDING_SOON" ? "IN_PROGRESS" :
-         	selectedSort === "STARTING_SOON" ? "SCHEDULED" : ""),
-		sort: selectedSort,
+			STATUS_TABS.some((t) => t.value === status && t.value !== "") ?
+				(status as AuctionFilters["status"])
+			:	"",
+		sort: SORTS.find((s) => s.value === sort)?.value ?? "ENDING_SOON",
 		keyword: (first(params.q) ?? "").trim().slice(0, 50),
 		page: Number.isInteger(page) && page >= 1 ? page : 1
 	};
