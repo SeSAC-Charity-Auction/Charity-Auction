@@ -9,7 +9,8 @@ import styles from "./SiteHeader.module.css";
 
 const MENUS: { key: Menu; href: string; label: string }[] = [
 	{ key: "auctions", href: "/", label: "경매" },
-	{ key: "donations", href: "/donations", label: "기부" }
+	{ key: "donations", href: "/donations", label: "기부" },
+	{ key: "rank", href: "/rank", label: "랭킹" }
 ];
 
 export default function NavMenu() {
