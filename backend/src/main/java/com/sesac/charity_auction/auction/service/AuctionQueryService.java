@@ -30,13 +30,16 @@ public class AuctionQueryService {
     private final AuctionRepository auctionRepository;
     private final BidRepository bidRepository;
     private final AuctionCandidateRepository candidateRepository;
+    private final AuctionService auctionService;
 
     public AuctionQueryService(final AuctionRepository auctionRepository,
                                final BidRepository bidRepository,
-                               final AuctionCandidateRepository candidateRepository) {
+                               final AuctionCandidateRepository candidateRepository,
+                               final AuctionService auctionService) {
         this.auctionRepository = auctionRepository;
         this.bidRepository = bidRepository;
         this.candidateRepository = candidateRepository;
+        this.auctionService = auctionService;
     }
 
     private static Sort sortOf(final String sort) {
@@ -56,7 +59,8 @@ public class AuctionQueryService {
      */
     @Transactional
     public AuctionDetailResponse getDetail(final long auctionId) {
-        auctionRepository.startDueAuctions(LocalDateTime.now());
+        // 시작 시각이 된 예정 경매가 있으면 먼저 진행 중으로 바꿔요. (스케줄러를 기다리지 않아요, 웹소켓 알림도 보내요)
+        auctionService.startDueAuctions(LocalDateTime.now());
         final Auction auction = auctionRepository.findDetailById(auctionId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
 
