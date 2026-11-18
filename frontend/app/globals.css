@@ -64,3 +64,11 @@ main:focus {
 		transition-duration: 0.01ms !important;
 	}
 }
+
+/* 세로 스크롤바를 숨겨요. 스크롤은 그대로 되고, 스크롤바가 생기고 사라지며 페이지 너비가 바뀌는 일이 없어져요. */
+html {
+	scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+	display: none;
+}
