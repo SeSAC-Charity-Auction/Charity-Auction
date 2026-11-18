@@ -1,19 +1,29 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import loginAction from "./loginAction";
-import LoginState from "./LoginState";
+import { useState } from "react";
 import styles from "./page.module.css";
 
-const idle: LoginState = { status: "idle", email: "" };
+// error는 로그인에 실패해 돌아왔을 때 주소에 붙는 코드예요. (EMPTY, LOGIN_FAILED, UNKNOWN)
+const MESSAGES: Record<string, string> = {
+	EMPTY: "이메일과 비밀번호를 모두 입력해 주세요.",
+	LOGIN_FAILED: "이메일 또는 비밀번호가 올바르지 않아요.",
+	UNKNOWN: "로그인하지 못했어요. 잠시 뒤에 다시 시도해 주세요."
+};
 
-export default function LoginForm({ next }: { next: string }) {
-	const [state, formAction, pending] = useActionState(loginAction, idle);
+// 서버 액션이 아니라 일반 폼 전송(POST /api/login)이에요. 그래야 브라우저가 로그인으로 알아보고
+// 비밀번호를 저장하고 자동으로 채워 줘요.
+export default function LoginForm({
+	next,
+	error: code
+}: {
+	next: string;
+	error?: string;
+}) {
 	const [showPassword, setShowPassword] = useState(false);
-	const error = state.status === "error" ? state.message : "";
+	const error = code ? (MESSAGES[code] ?? MESSAGES.UNKNOWN) : "";
 
 	return (
-		<form action={formAction} className={styles.form}>
+		<form action="/api/login" method="post" className={styles.form}>
 			<input type="hidden" name="next" value={next} />
 
 			<div className={styles.field}>
@@ -24,12 +34,11 @@ export default function LoginForm({ next }: { next: string }) {
 					id="login-email"
 					name="email"
 					type="email"
-					autoComplete="email"
+					// 비밀번호 관리자는 아이디 칸을 "username"으로 알아봐요. (이메일로 로그인해도 마찬가지예요.)
+					autoComplete="username"
 					inputMode="email"
-					defaultValue={state.email}
 					placeholder="example@email.com"
 					required
-					disabled={pending}
 					aria-invalid={error ? true : undefined}
 					aria-describedby={error ? "login-error" : undefined}
 					className={styles.input}
@@ -47,7 +56,6 @@ export default function LoginForm({ next }: { next: string }) {
 						type={showPassword ? "text" : "password"}
 						autoComplete="current-password"
 						required
-						disabled={pending}
 						aria-invalid={error ? true : undefined}
 						aria-describedby={error ? "login-error" : undefined}
 						className={`${styles.input} ${styles.passwordInput}`}
@@ -75,9 +83,8 @@ export default function LoginForm({ next }: { next: string }) {
 			<button
 				type="submit"
 				className={`${styles.btn} ${styles.btnPrimary} ${styles.submit}`}
-				disabled={pending}
-			>
-				{pending ? "로그인하는 중" : "로그인"}
+							>
+				로그인
 			</button>
 		</form>
 	);

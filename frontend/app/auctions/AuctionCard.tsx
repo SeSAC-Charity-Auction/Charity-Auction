@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import FlipText from "../donations/FlipText";
 import AuctionSummary from "./AuctionSummary";
@@ -9,18 +11,30 @@ import {
 } from "./LiveAuctionPrices";
 import styles from "./page.module.css";
 import timeLabel from "./timeLabel";
+import useNow from "./useNow";
 
-export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
-	const time = timeLabel(auction);
+// now는 서버가 목록을 그린 시각이에요. 그 뒤로는 1초마다 남은 시간과 마감 여부를 다시 계산해요.
+export default function AuctionCard({
+	auction,
+	now: serverNow
+}: {
+	auction: AuctionSummary;
+	now: number;
+}) {
+	const now = useNow(serverNow);
+	const time = timeLabel(auction, now);
 	const scheduled = auction.status === "SCHEDULED";
-	const closed = isClosedAuction(auction);
-	const inProgress = auction.status === "IN_PROGRESS";
+	const scheduled = auction.status === "SCHEDULED";
+	const closed = isClosedAuction(auction, now);
+	const inProgress = auction.status === "IN_PROGRESS" && !closed;
+  
 	// 실시간 값과 비교할 서버 값이에요.
 	const live = {
 		auctionId: auction.auctionId,
 		currentPrice: auction.currentPrice,
 		bidCount: auction.bidCount
 	};
+  
 	return (
 		<article className={`${styles.card} ${closed ? styles.cardClosed : ""}
 		${inProgress ? styles.cardLive : ""} `}>
