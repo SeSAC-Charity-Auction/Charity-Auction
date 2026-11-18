@@ -14,7 +14,7 @@ public class BidEventListener {
     private final AuctionWebSocketService auctionWebSocketService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT) // DB 트랜잭션이 성공적으로 커밋된 이후에만 메시지를 전송
-    public void handleBidCreated(BidCreatedEvent event){
+    public void handleBidCreated(final BidCreatedEvent event) {
 
         auctionWebSocketService.sendBidUpdate(event.auctionId(), event.response());
     }

@@ -17,7 +17,7 @@ export default function TargetCard({ target }: { target: DonationTarget }) {
 						// eslint-disable-next-line @next/next/no-img-element
 						<img
 							src={target.targetImage}
-							alt={`${target.targetName} 대표 이미지`}
+							alt=""
 							loading="lazy"
 							className={styles.thumbImg}
 						/>

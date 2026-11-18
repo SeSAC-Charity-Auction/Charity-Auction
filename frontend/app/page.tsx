@@ -20,7 +20,7 @@ export default function Home({
 }) {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<main className={styles.wrap}>
+			<main id="main-content" tabIndex={-1} className={styles.wrap}>
 				<Suspense fallback={<LoadingState />}>
 					<AuctionsContent searchParams={searchParams} />
 				</Suspense>

@@ -19,7 +19,7 @@ export default function AllDonationsPage({
 }) {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<main className={styles.wrap}>
+			<main id="main-content" tabIndex={-1} className={styles.wrap}>
 				<Link href="/donations" className={styles.back}>
 					기부 현황으로 돌아가기
 				</Link>

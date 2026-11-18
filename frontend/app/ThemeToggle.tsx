@@ -29,7 +29,7 @@ export default function ThemeToggle() {
 			aria-label={isDark ? "라이트 모드로 전환" : "다크 모드로 전환"}
 			title={isDark ? "라이트 모드로 전환" : "다크 모드로 전환"}
 			suppressHydrationWarning
-			className="fixed right-4 bottom-4 z-50 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-[1.5px] border-(--mist-strong) bg-(--surface) text-(--ink) shadow-md transition-transform hover:scale-105 focus-visible:outline-3 focus-visible:outline-(--bid-fg)"
+			className="fixed right-4 bottom-4 z-50 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-[1.5px] border-(--mist-strong) bg-(--surface) text-(--ink) shadow-md transition-transform hover:scale-105 motion-reduce:transition-none focus-visible:outline-3 focus-visible:outline-(--bid-fg)"
 		>
 			<svg
 				width="20"

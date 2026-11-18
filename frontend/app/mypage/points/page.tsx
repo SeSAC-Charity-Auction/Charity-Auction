@@ -20,7 +20,7 @@ export default function AllPointsPage({
 }) {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<main className={styles.wrap}>
+			<main id="main-content" tabIndex={-1} className={styles.wrap}>
 				<Link href="/mypage#points" className={styles.back}>
 					마이페이지로 돌아가기
 				</Link>

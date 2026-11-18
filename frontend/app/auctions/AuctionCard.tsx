@@ -18,7 +18,7 @@ export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
 					// eslint-disable-next-line @next/next/no-img-element
 					<img
 						src={auction.image}
-						alt={`${auction.title} 이미지`}
+						alt=""
 						loading="lazy"
 						className={styles.thumbImg}
 					/>

@@ -49,3 +49,18 @@ body {
 		system-ui,
 		sans-serif;
 }
+
+/* 본문 바로가기로 옮겨 간 <main>에는 포커스 테두리를 그리지 않아요. (키보드로 직접 닿는 곳이 아니에요) */
+main:focus {
+	outline: none;
+}
+
+/* 움직임을 줄여 달라는 설정이면 전환 효과를 없애요. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+	}
+}

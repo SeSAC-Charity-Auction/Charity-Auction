@@ -113,7 +113,7 @@ export default function SearchForm({ filters }: { filters: AuctionFilters }) {
 					autoComplete="off"
 					role="combobox"
 					aria-expanded={showList}
-					aria-controls={listId}
+					aria-controls={showList ? listId : undefined}
 					aria-autocomplete="list"
 					aria-activedescendant={
 						showList && active >= 0 ?
@@ -144,6 +144,11 @@ export default function SearchForm({ filters }: { filters: AuctionFilters }) {
 					</ul>
 				)}
 			</div>
+			<p className={styles.srOnly} role="status">
+				{showList ?
+					`추천 검색어 ${items.length}개. 위아래 화살표로 이동하고 Enter로 선택해요.`
+				:	""}
+			</p>
 			<button type="submit" className={styles.searchBtn}>
 				검색
 			</button>
