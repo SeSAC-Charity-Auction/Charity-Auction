@@ -2,7 +2,7 @@ package com.sesac.charity_auction.auction.dto.response;
 
 import com.sesac.charity_auction.auction.event.AuctionStatusChangedEvent;
 
-/** 웹소켓으로 보내는 경매 상태 변경 알림이에요. 화면은 이걸 받으면 최신 정보를 다시 불러와요. */
+// 웹소켓용 상태 변경 알림
 public record AuctionStatusMessage(
         Long auctionId,
         String status, // AuctionStatus 이름 (예: IN_PROGRESS, CLOSED)

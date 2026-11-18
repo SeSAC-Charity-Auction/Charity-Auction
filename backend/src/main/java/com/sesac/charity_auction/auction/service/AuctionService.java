@@ -2,6 +2,8 @@ package com.sesac.charity_auction.auction.service;
 
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
+import com.sesac.charity_auction.auction.event.AuctionStatusChangedEvent;
+import com.sesac.charity_auction.auction.event.AuctionStatusChangedEvent.Reason;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
 import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidate;
 import com.sesac.charity_auction.auctioncandidate.dto.HighestBidDto;
@@ -13,6 +15,7 @@ import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.user.entity.User;
 import com.sesac.charity_auction.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,20 @@ public class AuctionService {
     private final AuctionCandidateRepository auctionCandidateRepository;
     private final BidRepository bidRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
+
+    // 시작 시각이 된 예정 경매를 진행 중으로 바꾸고, 바뀐 경매마다 알림을 보내요. 바뀐 개수를 돌려줘요.
+    @Transactional
+    public int startDueAuctions(final LocalDateTime now) {
+        final List<Long> auctionIds = auctionRepository.findDueAuctionIds(now);
+        if (auctionIds.isEmpty()) {
+            return 0;
+        }
+        final int started = auctionRepository.startAuctions(auctionIds);
+        auctionIds.forEach(id -> eventPublisher.publishEvent(
+                new AuctionStatusChangedEvent(id, AuctionStatus.IN_PROGRESS, Reason.STARTED)));
+        return started;
+    }
 
     // 경매 마감 후 낙찰 전체 후보 생성
     @Transactional
@@ -57,6 +74,7 @@ public class AuctionService {
         // 입찰자가 없는 경우 유찰
         if (highestBids.isEmpty()) {
             auction.fail();
+            eventPublisher.publishEvent(new AuctionStatusChangedEvent(auctionId, AuctionStatus.FAILED, Reason.FAILED));
             return;
         }
 
@@ -79,5 +97,7 @@ public class AuctionService {
         // 1순위 후보자에게 최초 낙찰 기회 부여
         final AuctionCandidate firstCandidate = candidates.getFirst();
         firstCandidate.offer(now, now.plusMinutes(OFFER_MINUTES));
+
+        eventPublisher.publishEvent(new AuctionStatusChangedEvent(auctionId, AuctionStatus.CLOSED, Reason.CLOSED));
     }
 }

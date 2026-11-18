@@ -2,6 +2,8 @@ package com.sesac.charity_auction.auctioncandidate.service;
 
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
+import com.sesac.charity_auction.auction.event.AuctionStatusChangedEvent;
+import com.sesac.charity_auction.auction.event.AuctionStatusChangedEvent.Reason;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
 import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidate;
 import com.sesac.charity_auction.auctioncandidate.domain.AuctionCandidateStatus;
@@ -17,6 +19,7 @@ import com.sesac.charity_auction.point.repository.PointHistoryRepository;
 import com.sesac.charity_auction.user.entity.User;
 import com.sesac.charity_auction.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,7 @@ public class AuctionCandidateService {
     private final AuctionCandidateRepository auctionCandidateRepository;
     private final UserRepository userRepository;
     private final PointHistoryRepository pointHistoryRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     // 낙찰 기한 만료 처리
     @Transactional
@@ -70,6 +74,7 @@ public class AuctionCandidateService {
         // 후보자가 없을 경우 유찰 처리
         if (nextCandidate.isEmpty()) {
             auction.fail();
+            eventPublisher.publishEvent(new AuctionStatusChangedEvent(auction.getId(), AuctionStatus.FAILED, Reason.FAILED));
             return;
         }
 
@@ -77,6 +82,8 @@ public class AuctionCandidateService {
         final AuctionCandidate candidate = nextCandidate.get();
 
         candidate.offer(now, now.plusMinutes(OFFER_MINUTES));
+
+        eventPublisher.publishEvent(new AuctionStatusChangedEvent(auction.getId(), AuctionStatus.CLOSED, Reason.OFFER_MOVED));
     }
 
     // 낙찰 거절
@@ -152,6 +159,7 @@ public class AuctionCandidateService {
 
         currentCandidate.complete(now);
         auction.complete();
+        eventPublisher.publishEvent(new AuctionStatusChangedEvent(auctionId, AuctionStatus.COMPLETED, Reason.COMPLETED));
 
         // 나머지 대기 후보자 기회 종료
         final List<AuctionCandidate> waitingCandidates = auctionCandidateRepository.findAllByAuction_IdAndStatus(auctionId, AuctionCandidateStatus.WAITING);
