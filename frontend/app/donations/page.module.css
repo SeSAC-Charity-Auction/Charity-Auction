@@ -713,6 +713,11 @@
 	height: auto;
 }
 .sparkLine {
+	/* 바닥을 기준으로 세로로 펴져요. 선 굵기는 늘어나지 않게 해요. */
+	transform-box: view-box;
+	transform-origin: 0 var(--floor);
+	vector-effect: non-scaling-stroke;
+	animation: sparkRise 1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
 	fill: none;
 	stroke: var(--bid-fg);
 	stroke-width: 2.5;
@@ -720,9 +725,29 @@
 	stroke-linejoin: round;
 }
 .sparkDot {
+	animation: sparkDotRise 1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
 	fill: var(--hammer);
 	stroke: var(--ink);
 	stroke-width: 2;
+}
+
+/* 꺾은선은 바닥에서 시작해 제자리로 올라가고(ease-out), 끝 점도 같이 올라가요. */
+@keyframes sparkRise {
+	from {
+		transform: scaleY(0);
+	}
+}
+@keyframes sparkDotRise {
+	from {
+		transform: translateY(var(--drop));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sparkLine,
+	.sparkDot {
+		animation: none;
+	}
 }
 
 .sparkCaption {

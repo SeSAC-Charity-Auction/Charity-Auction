@@ -33,8 +33,19 @@ export default function Sparkline({
 			aria-label={label}
 			className={styles.spark}
 		>
-			<path d={path} className={styles.sparkLine} />
-			<circle cx={lastX} cy={lastY} r={5} className={styles.sparkDot} />
+			{/* 처음에는 그래프의 바닥(가장 낮은 값의 높이)에 납작하게 붙어 있다가 제자리로 올라와요. */}
+			<path
+				d={path}
+				className={styles.sparkLine}
+				style={{ "--floor": `${H - PAD}px` } as React.CSSProperties}
+			/>
+			<circle
+				cx={lastX}
+				cy={lastY}
+				r={5}
+				className={styles.sparkDot}
+				style={{ "--drop": `${H - PAD - lastY}px` } as React.CSSProperties}
+			/>
 		</svg>
 	);
 }
