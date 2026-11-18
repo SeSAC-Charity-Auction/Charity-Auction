@@ -2,7 +2,9 @@
 
 // 낙찰 기회를 수락하거나 포기하는 폼이에요.
 
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useState } from "react";
+import secondsUntil from "../secondsUntil";
 import decideOfferAction from "../decideOfferAction";
 import OfferState from "../OfferState";
 import styles from "./page.module.css";
@@ -14,12 +16,30 @@ const pt = (n: number) => `${n.toLocaleString("ko-KR")}P`;
 export default function OfferForm({
 	candidateId,
 	bidPrice,
-	secondsLeft
+	secondsLeft: initialSeconds,
+	deadlineAtIso
 }: {
 	candidateId: number;
 	bidPrice: number;
-	secondsLeft: number | null; // 처음 그릴 때 남은 초
+	secondsLeft: number | null; // 처음 그릴 때 남은 초 (서버가 계산)
+	deadlineAtIso: string | null; // 낙찰 기한 (ISO 8601)
 }) {
+	const router = useRouter();
+	// 남은 시간을 1초마다 줄여 보여줘요. 기한이 지나면 화면을 새로 그려서 다음 상태를 보여줘요.
+	const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
+	useEffect(() => {
+		if (!deadlineAtIso) return;
+		const id = window.setInterval(() => {
+			const left = secondsUntil(deadlineAtIso);
+			setSecondsLeft(left);
+			if (left <= 0) {
+				window.clearInterval(id);
+				// 만료 처리 스케줄러가 돌 시간을 조금 주고 새로 그려요.
+				window.setTimeout(() => router.refresh(), 3_000);
+			}
+		}, 1_000);
+		return () => window.clearInterval(id);
+	}, [deadlineAtIso, router]);
 	const [state, formAction, pending] = useActionState(
 		decideOfferAction,
 		idle
@@ -58,7 +78,9 @@ export default function OfferForm({
 				<span className={styles.offerPoints}>{pt(reward)}</span>를 받고,
 				판매자도 나머지 50%를 받아요.
 				{secondsLeft !== null &&
-					` 지금부터 약 ${secondsLeft}초 안에 선택해 주세요.`}
+					(secondsLeft > 0 ?
+						` 남은 시간 ${Math.floor(secondsLeft / 60)}분 ${secondsLeft % 60}초 안에 선택해 주세요.`
+					:	" 선택할 수 있는 시간이 지났어요.")}
 			</p>
 			{state.status === "error" && (
 				<p className={styles.error} role="alert">
@@ -71,7 +93,7 @@ export default function OfferForm({
 					name="decision"
 					value="accept"
 					className={styles.offerAccept}
-					disabled={pending}
+					disabled={pending || secondsLeft === 0}
 				>
 					{pending ?
 						"처리 중이에요"
@@ -82,7 +104,7 @@ export default function OfferForm({
 					name="decision"
 					value="reject"
 					className={styles.offerReject}
-					disabled={pending}
+					disabled={pending || secondsLeft === 0}
 				>
 					포기하기
 				</button>

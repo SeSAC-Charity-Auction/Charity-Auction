@@ -11,11 +11,20 @@ import isClosedAuction from "../isClosedAuction";
 import timeLabel from "../timeLabel";
 import AuctionImageUploader from "./AuctionImageUploader";
 import DevCloseButton from "./DevCloseButton";
-import BidHistory from "./BidHistory";
 import BidPanel from "./BidPanel";
+import LiveAuctionProvider from "./LiveAuction";
+import {
+	LiveBidCount,
+	LiveBidHistory,
+	LivePrice,
+	LivePriceLabel
+} from "./LiveParts";
 import { CLOSED_NOTE, STATUS_LABEL } from "./constants";
 import OfferPanel from "./OfferPanel";
 import styles from "./page.module.css";
+import StatusWatcher from "./StatusWatcher";
+
+const HISTORY_SIZE = 10; // 백엔드가 최근 입찰을 10건까지 내려줘요
 
 export default async function AuctionDetailContent({
 	params
@@ -45,7 +54,16 @@ export default async function AuctionDetailContent({
 				{auction.title.slice(0, 1)}
 			</span>;
 	return (
-		<>
+		<LiveAuctionProvider
+			auctionId={auction.auctionId}
+			initial={{
+				currentPrice: auction.currentPrice,
+				bidCount: auction.bidCount,
+				recentBids: auction.recentBids
+			}}
+			historySize={HISTORY_SIZE}
+		>
+			<StatusWatcher status={auction.status} endAt={auction.endAt} />
 			<nav className={styles.crumbs} aria-label="현재 위치">
 				<Link href="/" className={styles.crumb}>
 					경매
@@ -113,12 +131,12 @@ export default async function AuctionDetailContent({
 					<dl className={styles.facts}>
 						<div className={styles.factWide}>
 							<dt>
-								{auction.bidCount > 0 ?
-									"현재 입찰가"
-								:	"시작 가격"}
+								<LivePriceLabel
+									fallbackBidCount={auction.bidCount}
+								/>
 							</dt>
 							<dd className={styles.price}>
-								<FlipText text={won(auction.currentPrice)} />
+								<LivePrice fallback={auction.currentPrice} />
 							</dd>
 						</div>
 						<div>
@@ -130,9 +148,7 @@ export default async function AuctionDetailContent({
 						<div>
 							<dt>입찰</dt>
 							<dd>
-								<FlipText
-									text={`${auction.bidCount.toLocaleString("ko-KR")}회`}
-								/>
+								<LiveBidCount fallback={auction.bidCount} />
 							</dd>
 						</div>
 						<div>
@@ -181,7 +197,7 @@ export default async function AuctionDetailContent({
 					)}
 				</aside>
 			</div>
-			<BidHistory bids={auction.recentBids} total={auction.bidCount} />
-		</>
+			<LiveBidHistory live={live} />
+		</LiveAuctionProvider>
 	);
 }

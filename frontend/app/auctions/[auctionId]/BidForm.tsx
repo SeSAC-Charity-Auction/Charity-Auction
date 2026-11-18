@@ -7,6 +7,7 @@ import { useActionState, useState } from "react";
 import FlipText from "../../donations/FlipText";
 import BidState from "../BidState";
 import placeBidAction from "../placeBidAction";
+import { useLiveAuction } from "./LiveAuction";
 import styles from "./page.module.css";
 
 const BID_STEP = 100; // 입찰 단위 (서버는 "현재가보다 높기만" 하면 받아요)
@@ -16,8 +17,8 @@ const won = (n: number) => `${n.toLocaleString("ko-KR")}원`;
 
 export default function BidForm({
 	auctionId,
-	currentPrice,
-	hasBids,
+	currentPrice: initialPrice,
+	hasBids: initialHasBids,
 	loggedIn
 }: {
 	auctionId: number;
@@ -26,6 +27,12 @@ export default function BidForm({
 	loggedIn: boolean; // false면 입력과 버튼을 막고 로그인 안내를 보여줘요
 }) {
 	const [state, formAction, pending] = useActionState(placeBidAction, idle);
+	// 다른 사람이 입찰하면 웹소켓으로 받은 새 값이 들어와요.
+	const live = useLiveAuction();
+	const currentPrice = live?.currentPrice ?? initialPrice;
+	const hasBids = live ? live.bidCount > 0 : initialHasBids;
+	// 내가 입찰한 뒤에 더 높은 입찰이 들어왔는지
+	const outbid = state.status === "success" && currentPrice > state.bidPrice;
 	const min = currentPrice + BID_STEP; // 지금보다 한 단위 높은 금액부터
 	// 직접 입력한 숫자(자릿수만)예요. 아직 건드리지 않았으면 null이고, 이때는 최소 금액을 보여줘요.
 	// (입찰이 들어와 최소 금액이 올라가면 건드리지 않은 입력값도 따라 올라가요.)
@@ -99,10 +106,16 @@ export default function BidForm({
 					{state.message}
 				</p>
 			)}
-			{state.status === "success" && (
+			{state.status === "success" && !outbid && (
 				<p className={styles.success} role="status">
 					{won(state.bidPrice)}에 입찰했어요. 지금 내 입찰이 가장
 					높아요!
+				</p>
+			)}
+			{outbid && (
+				<p className={styles.error} role="alert">
+					다른 분이 {won(currentPrice)}으로 더 높게 입찰했어요. 다시
+					입찰해 보세요.
 				</p>
 			)}
 			{locked && (

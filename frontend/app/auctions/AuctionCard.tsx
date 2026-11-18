@@ -1,8 +1,12 @@
 import Link from "next/link";
-import { won } from "../donations/format";
 import FlipText from "../donations/FlipText";
 import AuctionSummary from "./AuctionSummary";
 import isClosedAuction from "./isClosedAuction";
+import {
+	LiveCardBidCount,
+	LiveCardPrice,
+	LiveCardPriceLabel
+} from "./LiveAuctionPrices";
 import styles from "./page.module.css";
 import timeLabel from "./timeLabel";
 
@@ -11,6 +15,12 @@ export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
 	const scheduled = auction.status === "SCHEDULED";
 	const closed = isClosedAuction(auction);
 	const inProgress = auction.status === "IN_PROGRESS";
+	// 실시간 값과 비교할 서버 값이에요.
+	const live = {
+		auctionId: auction.auctionId,
+		currentPrice: auction.currentPrice,
+		bidCount: auction.bidCount
+	};
 	return (
 		<article className={`${styles.card} ${closed ? styles.cardClosed : ""}
 		${inProgress ? styles.cardLive : ""} `}>
@@ -46,20 +56,16 @@ export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
 				</h3>
 				<div className={styles.priceRow}>
 					<span className={styles.priceLabel}>
-						{auction.bidCount > 0 ?
-							closed ? "최종 입찰가" : "현재 입찰가"
-						:	"시작 가격"}
+						<LiveCardPriceLabel {...live} closed={closed} />
 					</span>
 					<span className={styles.price}>
-						<FlipText text={won(auction.currentPrice)} />
+						<LiveCardPrice {...live} />
 					</span>
 				</div>
 				<p className={styles.meta}>
 					<span>
 						입찰{" "}
-						<FlipText
-							text={`${auction.bidCount.toLocaleString("ko-KR")}회`}
-						/>
+						<LiveCardBidCount {...live} />
 					</span>
 					<span className={time.urgent ? styles.urgent : undefined}>
 						<FlipText text={time.text} />
