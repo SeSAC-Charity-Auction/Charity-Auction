@@ -161,6 +161,24 @@ class DonationApiTest {
     }
 
     @Test
+    void 남은_금액을_넘게_기부하면_DONATION_EXCEEDS_TARGET_이고_잔액은_그대로() throws Exception {
+        // 목표 500, 현재 300 → 남은 200. 300원은 안 되고 200원은 돼요.
+        jdbc.update("UPDATE donation_targets SET target_amount = 500, total_donation = 300 WHERE target_id = ?", openTargetId);
+
+        donate(userId, openTargetId, 300)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("DONATION_EXCEEDS_TARGET"));
+        assertThat(balance()).isEqualTo(50000);
+        assertThat(targetTotal(openTargetId)).isEqualTo(300);
+        assertThat(count("donations")).isZero();
+
+        donate(userId, openTargetId, 200).andExpect(status().isOk());
+        assertThat(targetTotal(openTargetId)).isEqualTo(500);
+        assertThat(jdbc.queryForObject("SELECT is_achieved FROM donation_targets WHERE target_id = ?",
+                Boolean.class, openTargetId)).isTrue();
+    }
+
+    @Test
     void 없는_기부처면_TARGET_NOT_FOUND_이고_잔액은_그대로() throws Exception {
         donate(userId, 999_999_999L, 5000)
                 .andExpect(status().isNotFound())

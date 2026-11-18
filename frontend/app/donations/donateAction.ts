@@ -14,6 +14,8 @@ const MESSAGES: Record<DonateErrorCode, string> = {
 	TARGET_NOT_FOUND: "기부처를 찾을 수 없어요.",
 	TARGET_CLOSED: "이 기부처는 기부가 마감됐어요.",
 	INVALID_AMOUNT: `기부 포인트는 ${MIN_DONATION.toLocaleString("ko-KR")}P 이상, ${DONATION_STEP.toLocaleString("ko-KR")}P 단위로 정해 주세요.`,
+	DONATION_EXCEEDS_TARGET:
+		"목표 금액까지 남은 금액보다 많이 기부할 수 없어요. 슬라이더에서 금액을 줄여 보세요.",
 	INSUFFICIENT_POINT: "포인트가 부족해요. 슬라이더에서 금액을 줄여 보세요.",
 	UNKNOWN: "기부를 처리하지 못했어요. 잠시 뒤에 다시 시도해 주세요."
 };

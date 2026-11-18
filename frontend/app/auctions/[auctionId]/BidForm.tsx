@@ -27,9 +27,19 @@ export default function BidForm({
 }) {
 	const [state, formAction, pending] = useActionState(placeBidAction, idle);
 	const min = currentPrice + BID_STEP; // 지금보다 한 단위 높은 금액부터
-	// 입찰이 들어와 최소 금액이 올라가면 입력값도 따라 올라가요.
-	const [raw, setRaw] = useState<number | null>(null);
-	const price = Math.max(raw ?? 0, min);
+	// 직접 입력한 숫자(자릿수만)예요. 아직 건드리지 않았으면 null이고, 이때는 최소 금액을 보여줘요.
+	// (입찰이 들어와 최소 금액이 올라가면 건드리지 않은 입력값도 따라 올라가요.)
+	const [typed, setTyped] = useState<string | null>(null);
+	const digits = typed ?? String(min);
+	const price = digits === "" ? 0 : Number(digits);
+	// 현재 입찰가보다 낮거나 같은 금액, 100원 단위가 아닌 금액은 입찰할 수 없어요.
+	const problem =
+		digits === "" ? "입찰 금액을 입력해 주세요."
+		: price < min ?
+			`현재 입찰가(${won(currentPrice)})보다 높은 금액을 입력해 주세요. 최소 ${won(min)}부터 입찰할 수 있어요.`
+		: price % BID_STEP !== 0 ?
+			`${won(BID_STEP)} 단위로 입력해 주세요.`
+		:	"";
 	const locked = !loggedIn;
 	return (
 		<form
@@ -40,18 +50,21 @@ export default function BidForm({
 			<label htmlFor="bid-price" className={styles.bidLabel}>
 				{hasBids ? "내 입찰 금액" : "첫 입찰 금액"}
 			</label>
+			{/* 서버로 보내는 값은 쉼표 없는 숫자예요. 보이는 칸은 쉼표를 붙여 보여줘요. */}
+			<input type="hidden" name="bidPrice" value={price} />
 			<div className={styles.bidInputRow}>
 				<input
 					id="bid-price"
-					name="bidPrice"
-					type="number"
+					type="text"
 					inputMode="numeric"
-					min={min}
-					step={BID_STEP}
-					value={price}
-					onChange={(e) => setRaw(Number(e.target.value))}
-					aria-describedby={`bid-hint${state.status === "error" ? " bid-error" : ""}`}
-					aria-invalid={state.status === "error" ? true : undefined}
+					autoComplete="off"
+					value={digits === "" ? "" : Number(digits).toLocaleString("ko-KR")}
+					onChange={(e) =>
+						// 숫자만 받고, 앞의 0은 지워요. 너무 큰 수는 12자리까지만 받아요.
+						setTyped(e.target.value.replace(/\D/g, "").replace(/^0+/, "").slice(0, 12))
+					}
+					aria-describedby={`bid-hint${problem && !locked ? " bid-problem" : ""}${state.status === "error" ? " bid-error" : ""}`}
+					aria-invalid={problem && !locked ? true : undefined}
 					className={styles.bidInput}
 					disabled={locked}
 					required
@@ -65,7 +78,7 @@ export default function BidForm({
 						type="button"
 						className={styles.quickBtn}
 						disabled={locked}
-						onClick={() => setRaw(price + add)} // 누를 때마다 지금 입력된 금액에 더해져요
+						onClick={() => setTyped(String(price + add))} // 누를 때마다 지금 입력된 금액에 더해져요
 					>
 						+<FlipText text={add.toLocaleString("ko-KR")} />
 					</button>
@@ -76,6 +89,11 @@ export default function BidForm({
 				<FlipText text={`${BID_STEP.toLocaleString("ko-KR")}원`} />{" "}
 				단위로 입찰할 수 있어요.
 			</p>
+			{problem && !locked && (
+				<p id="bid-problem" className={styles.error} role="status">
+					{problem}
+				</p>
+			)}
 			{state.status === "error" && (
 				<p id="bid-error" className={styles.error} role="alert">
 					{state.message}
@@ -101,10 +119,12 @@ export default function BidForm({
 			<button
 				type="submit"
 				className={styles.submit}
-				disabled={pending || locked}
+				disabled={pending || locked || problem !== ""}
 			>
 				{locked ?
 					"로그인 후 입찰할 수 있어요"
+				: problem ?
+					"입찰 금액을 확인해 주세요"
 				: pending ?
 					"입찰하는 중이에요"
 				:	<>

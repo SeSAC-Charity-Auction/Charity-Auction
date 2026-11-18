@@ -53,12 +53,16 @@ public class DonationService {
             throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
         }
 
-        // 3. 기부처 누적액 증가 (열려 있는 기부처만): 영향 행이 0이면 마감 또는 없음
+        // 3. 기부처 누적액 증가 (열려 있고, 더해도 목표를 넘지 않을 때만): 영향 행이 0이면 없음·마감·목표 초과
         if (targetRepository.addDonation(targetId, amount) == 0) {
-            if (!targetRepository.existsById(targetId)) {
-                throw new BusinessException(ErrorCode.TARGET_NOT_FOUND);
+            final DonationTarget found = targetRepository.findById(targetId)
+                    .orElseThrow(() -> new BusinessException(ErrorCode.TARGET_NOT_FOUND));
+            if (!found.isActive() || found.isAchieved()) {
+                throw new BusinessException(ErrorCode.TARGET_CLOSED);
             }
-            throw new BusinessException(ErrorCode.TARGET_CLOSED);
+            final long remaining = found.getTargetAmount() - found.getTotalDonation();
+            throw new BusinessException(ErrorCode.DONATION_EXCEEDS_TARGET,
+                    "목표 금액을 넘는 금액은 기부할 수 없어요. 남은 금액은 " + String.format("%,d", remaining) + "원이에요.");
         }
 
         // 4. 기부 기록. 참조만 가져와서(getReference) 불필요한 조회 쿼리를 줄여요.

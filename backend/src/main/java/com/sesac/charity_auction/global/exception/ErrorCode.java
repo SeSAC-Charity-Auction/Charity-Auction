@@ -37,6 +37,7 @@ public enum ErrorCode {
     TARGET_NOT_FOUND(HttpStatus.NOT_FOUND, "기부처를 찾을 수 없어요."),
     TARGET_CLOSED(HttpStatus.CONFLICT, "기부가 마감된 기부처예요."),
     INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "기부 금액이 올바르지 않아요."),
+    DONATION_EXCEEDS_TARGET(HttpStatus.CONFLICT, "목표 금액을 넘는 금액은 기부할 수 없어요."),
     INSUFFICIENT_POINT(HttpStatus.CONFLICT, "포인트가 부족해요."),
 
     // 경매 관련 비즈니스 예외

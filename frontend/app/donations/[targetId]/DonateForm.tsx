@@ -39,7 +39,11 @@ export default function DonateForm({
 		donateAction,
 		initialState
 	);
-	const max = toStep(balance); // 슬라이더 맨 오른쪽 (잔액을 단위에 맞춰 내림)
+	// 목표 금액까지 남은 금액이에요. 이보다 많이 기부할 수는 없어요. (백엔드도 같은 규칙으로 막아요)
+	const remaining = Math.max(0, targetAmount - currentTotal);
+	// 슬라이더 맨 오른쪽 (잔액과 남은 금액 중 작은 쪽을 단위에 맞춰 내림)
+	const max = toStep(Math.min(balance, remaining));
+	const limitedByTarget = remaining < balance;
 	const canDonate = max >= MIN_DONATION;
 	// 처음에는 내 포인트의 4분의 1 정도로 시작해요.
 	const [rawAmount, setRawAmount] = useState(() =>
@@ -57,13 +61,20 @@ export default function DonateForm({
 					기부하기
 				</h2>
 				<p className={styles.panelQuietText}>
-					<FlipText
-						text={`기부하려면 포인트가 ${pt(MIN_DONATION)} 이상 있어야 해요. 지금은 ${pt(balance)}을(를) 갖고 있어요.`}
-					/>
+					{limitedByTarget ?
+						<FlipText
+							text={`목표 금액까지 남은 ${pt(remaining)}이(가) 최소 기부 금액 ${pt(MIN_DONATION)}보다 적어서 더 기부할 수 없어요.`}
+						/>
+					:	<FlipText
+							text={`기부하려면 포인트가 ${pt(MIN_DONATION)} 이상 있어야 해요. 지금은 ${pt(balance)}을(를) 갖고 있어요.`}
+						/>
+					}
 				</p>
-				<Link href="/mypage#points" className={styles.textLink}>
-					내 포인트 확인하기
-				</Link>
+				{!limitedByTarget && (
+					<Link href="/mypage#points" className={styles.textLink}>
+						내 포인트 확인하기
+					</Link>
+				)}
 			</div>
 		);
 	}
@@ -156,6 +167,13 @@ export default function DonateForm({
 						text={`지금 ${formatPct(nowPct)}이(가) 모였고, 이 기부로 ${formatPct(addPct)}이(가) 더 채워져요.`}
 					/>
 				</p>
+				{limitedByTarget && (
+					<p className={styles.previewText}>
+						<FlipText
+							text={`목표까지 ${pt(remaining)}이(가) 남아서, 최대 ${pt(max)}까지 기부할 수 있어요.`}
+						/>
+					</p>
+				)}
 				<p className={styles.previewText}>
 					<FlipText
 						text={`기부하면 내 포인트는 ${pt(balance - amount)}이(가) 돼요.`}
