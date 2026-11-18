@@ -54,13 +54,6 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
             }
         }
 
-        // 마감 임박순은 진행 중인 경매만 조회
-        if (condition.sort() == AuctionSort.ENDING_SOON) {
-            builder.and(
-                    auction.status.eq(AuctionStatus.IN_PROGRESS)
-            );
-        }
-
         // 경매 목록 조회 - 현재 페이지에만 해당하는 데이터
         final List<Auction> content = queryFactory
                 .selectFrom(auction)

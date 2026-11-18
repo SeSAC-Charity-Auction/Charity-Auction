@@ -11,7 +11,6 @@ export const STATUS_TABS = [
 	{ value: "IN_PROGRESS", label: "진행 중" },
 	{ value: "SCHEDULED", label: "예정" },
 	{ value: "CLOSED", label: "마감" },
-	{ value: "COMPLETED", label: "완료" },
 	{ value: "", label: "전체" }
 ] as const;
 
