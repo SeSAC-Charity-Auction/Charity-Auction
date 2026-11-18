@@ -67,7 +67,8 @@ export default async function AuctionDetailContent({
 			}}
 			historySize={HISTORY_SIZE}
 		>
-			<StatusWatcher status={auction.status} startAt={auction.startAt} endAt={auction.endAt} />
+
+			<StatusWatcher auctionId={auction.auctionId} status={auction.status} startAt={auction.startAt} endAt={auction.endAt} />
 			<nav className={styles.crumbs} aria-label="현재 위치">
 				<Link href="/" className={styles.crumb}>
 					경매
