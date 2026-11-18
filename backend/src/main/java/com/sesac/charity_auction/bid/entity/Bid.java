@@ -36,12 +36,13 @@ public class Bid {
     private Auction auction;
 
     // 입찰 생성
-    public static Bid create(final User user, final Auction auction, final Long bidPrice) {
+    public static Bid create(final User user, final Auction auction, final Long bidPrice, final LocalDateTime bidAt) {
         final Bid bid = new Bid();
         bid.user = user;
         bid.auction = auction;
         bid.bidPrice = bidPrice;
-        bid.bidAt = LocalDateTime.now();
+        bid.bidAt = bidAt;
+      
         return bid;
     }
 }
