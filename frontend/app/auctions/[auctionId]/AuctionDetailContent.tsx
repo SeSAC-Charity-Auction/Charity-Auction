@@ -24,6 +24,7 @@ import {
 import { CLOSED_NOTE, STATUS_LABEL } from "./constants";
 import OfferPanel from "./OfferPanel";
 import styles from "./page.module.css";
+import SellerActions from "./SellerActions";
 import StatusWatcher from "./StatusWatcher";
 
 const HISTORY_SIZE = 10; // 백엔드가 최근 입찰을 10건까지 내려줘요
@@ -66,7 +67,7 @@ export default async function AuctionDetailContent({
 			}}
 			historySize={HISTORY_SIZE}
 		>
-			<StatusWatcher status={auction.status} endAt={auction.endAt} />
+			<StatusWatcher status={auction.status} startAt={auction.startAt} endAt={auction.endAt} />
 			<nav className={styles.crumbs} aria-label="현재 위치">
 				<Link href="/" className={styles.crumb}>
 					경매
@@ -193,6 +194,7 @@ export default async function AuctionDetailContent({
 						</Suspense>
 					)}
 
+					<SellerActions auctionId={auction.auctionId} />
 					<BidPanel auction={auction} loggedIn={loggedIn} />
 
 					{process.env.NODE_ENV === "development" && live && (

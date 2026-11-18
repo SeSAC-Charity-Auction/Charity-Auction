@@ -11,12 +11,15 @@ import AuctionStatus from "../AuctionStatus";
 
 const AFTER_END_MS = 5_000;
 const WHILE_CLOSED_MS = 10_000;
+const AFTER_START_MS = 2_000;
 
 export default function StatusWatcher({
 	status,
+	startAt,
 	endAt
 }: {
 	status: AuctionStatus;
+	startAt: string;
 	endAt: string;
 }) {
 	const router = useRouter();
@@ -48,6 +51,22 @@ export default function StatusWatcher({
 			repeat(WHILE_CLOSED_MS);
 			return () => window.clearInterval(timer);
 		}
-	}, [status, endAt, router]);
+		
+		if (status === "SCHEDULED") {
+			const untilStart = new Date(startAt).getTime() - Date.now();
+			if (untilStart > 2_000_000_000) return;
+			const start = window.setTimeout(
+				() => {
+					router.refresh();
+					repeat(AFTER_START_MS);
+				},
+				Math.max(0, untilStart) + 500
+			);
+			return () => {
+				window.clearTimeout(start);
+				window.clearInterval(timer);
+			};
+		}
+	}, [status, startAt, endAt, router]);
 	return null;
 }

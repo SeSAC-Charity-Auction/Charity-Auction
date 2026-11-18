@@ -48,6 +48,7 @@ public class BidService {
     // 입찰 등록
     @Transactional
     public BidCreateResponse createBid(final Long auctionId, final Long userId, final BidCreateRequest request) {
+        auctionRepository.startDueAuctions(LocalDateTime.now());
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
