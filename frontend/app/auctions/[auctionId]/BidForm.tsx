@@ -43,6 +43,8 @@ export default function BidForm({
 					step={BID_STEP}
 					value={price}
 					onChange={(e) => setRaw(Number(e.target.value))}
+					aria-describedby={`bid-hint${state.status === "error" ? " bid-error" : ""}`}
+					aria-invalid={state.status === "error" ? true : undefined}
 					className={styles.bidInput}
 					required
 				/>
@@ -60,13 +62,13 @@ export default function BidForm({
 					</button>
 				))}
 			</div>
-			<p className={styles.hint}>
+			<p id="bid-hint" className={styles.hint}>
 				<FlipText text={won(min)} /> 이상,{" "}
 				<FlipText text={`${BID_STEP.toLocaleString("ko-KR")}원`} />{" "}
 				단위로 입찰할 수 있어요.
 			</p>
 			{state.status === "error" && (
-				<p className={styles.error} role="alert">
+				<p id="bid-error" className={styles.error} role="alert">
 					{state.message}
 				</p>
 			)}

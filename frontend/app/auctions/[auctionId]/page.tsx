@@ -39,7 +39,7 @@ export default function AuctionPage({
 }) {
 	return (
 		<div className={`${styles.page} ${body.className}`}>
-			<main className={styles.wrap}>
+			<main id="main-content" tabIndex={-1} className={styles.wrap}>
 				<Suspense fallback={<LoadingState />}>
 					<AuctionDetailContent params={params} />
 				</Suspense>
