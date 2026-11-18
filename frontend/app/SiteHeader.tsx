@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import AuthMenu from "./auth/AuthMenu";
 import MyPageLink from "./MyPageLink";
 import MyPageNav from "./MyPageNav";
 import NavMenu from "./NavMenu";
@@ -39,6 +40,7 @@ export default function SiteHeader() {
 							<MyPageLink />
 						</Suspense>
 					</Suspense>
+					<AuthMenu />
 				</nav>
 			</div>
 		</header>
