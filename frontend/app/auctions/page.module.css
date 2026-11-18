@@ -302,7 +302,12 @@
 	border-radius: 12px;
 }
 .card:hover {
-	border-color: var(--ink);
+	/* border-color: var(--ink); */
+	border-color: color-mix(in srgb, var(--hammer) 65%, transparent);
+}
+
+.cardLive {
+	border: 2px solid color-mix(in srgb, var(--hammer) 45%, transparent);
 }
 
 .thumb {

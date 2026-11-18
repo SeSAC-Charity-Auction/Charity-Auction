@@ -47,9 +47,9 @@ export default async function AuctionsContent({
 					text={`${data.totalElements.toLocaleString("ko-KR")}개의 경매`}
 				/>
 			</p>
-			{data.items.length > 0 ?
+			{data.content.length > 0 ?
 				<ul className={styles.grid}>
-					{data.items.map((a) => (
+					{data.content.map((a) => (
 						<li key={a.auctionId} className={styles.gridItem}>
 							<AuctionCard auction={a} />
 						</li>

@@ -10,8 +10,10 @@ export default function AuctionCard({ auction }: { auction: AuctionSummary }) {
 	const time = timeLabel(auction);
 	const scheduled = auction.status === "SCHEDULED";
 	const closed = isClosedAuction(auction);
+	const inProgress = auction.status === "IN_PROGRESS";
 	return (
-		<article className={`${styles.card} ${closed ? styles.cardClosed : ""}`}>
+		<article className={`${styles.card} ${closed ? styles.cardClosed : ""}
+		${inProgress ? styles.cardLive : ""} `}>
 			<div className={styles.thumb}>
 				{auction.image ?
 					// 외부 주소의 이미지는 next/image 설정(허용 도메인)이 필요해서 일반 img를 썼어요.
