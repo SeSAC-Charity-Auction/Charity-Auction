@@ -37,7 +37,20 @@ async function LoginContent({ searchParams }: { searchParams: SearchParams }) {
 			</div>
 		);
 	}
-	return <LoginForm next={next} />;
+	return (
+		<>
+			<LoginForm next={next} />
+			<p className={styles.switch}>
+				아직 계정이 없나요?{" "}
+				<Link
+					href={next === "/" ? "/signup" : `/signup?next=${encodeURIComponent(next)}`}
+					className={styles.switchLink}
+				>
+					회원가입
+				</Link>
+			</p>
+		</>
+	);
 }
 
 export default function LoginPage({

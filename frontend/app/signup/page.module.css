@@ -1,0 +1,33 @@
+/* 로그인 화면(../login/page.module.css)의 스타일을 같이 쓰고, 회원가입에만 필요한 것만 여기에 둬요. */
+.help {
+	margin: 0;
+	color: var(--ink-soft);
+	font-size: 0.8125rem;
+}
+
+.ok {
+	margin: 0;
+	color: var(--ok, #1b7a46);
+	font-size: 0.875rem;
+	font-weight: 500;
+}
+:global(:root[data-theme="dark"]) .ok {
+	color: #7fdca4;
+}
+
+.switch {
+	margin: 0;
+	color: var(--ink-soft);
+	font-size: 0.9rem;
+	text-align: center;
+}
+.switchLink {
+	color: var(--ink);
+	font-weight: 700;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+.switchLink:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}

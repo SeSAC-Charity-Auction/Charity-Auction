@@ -23,16 +23,25 @@ export default function AuthMenuView({ loggedIn }: { loggedIn: boolean }) {
 	}
 
 	const next =
-		pathname === "/" || pathname === "/login" ?
+		pathname === "/" || pathname === "/login" || pathname === "/signup" ?
 			""
 		:	`?next=${encodeURIComponent(pathname)}`;
 	return (
-		<Link
-			href={`/login${next}`}
-			className={headerStyles.link}
-			aria-current={pathname === "/login" ? "page" : undefined}
-		>
-			로그인
-		</Link>
+		<>
+			<Link
+				href={`/login${next}`}
+				className={headerStyles.link}
+				aria-current={pathname === "/login" ? "page" : undefined}
+			>
+				로그인
+			</Link>
+			<Link
+				href="/signup"
+				className={headerStyles.link}
+				aria-current={pathname === "/signup" ? "page" : undefined}
+			>
+				회원가입
+			</Link>
+		</>
 	);
 }

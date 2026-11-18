@@ -3,6 +3,8 @@ export default function safeNext(value: unknown): string {
 	if (!value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) {
 		return "/";
 	}
-	if (value === "/login" || value.startsWith("/login?")) return "/";
+	for (const page of ["/login", "/signup"]) {
+		if (value === page || value.startsWith(`${page}?`)) return "/";
+	}
 	return value;
 }
