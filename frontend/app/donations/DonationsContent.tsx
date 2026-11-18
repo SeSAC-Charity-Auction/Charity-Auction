@@ -1,3 +1,4 @@
+import SmoothScrollLink from "./SmoothScrollLink";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -44,12 +45,12 @@ export default async function DonationsContent() {
 						마음이 가는 곳에 기부해 보세요.
 					</p>
 					<div className={styles.actions}>
-						<a
+						<SmoothScrollLink
 							href="#targets"
 							className={`${styles.btn} ${styles.btnPrimary}`}
 						>
 							기부처 둘러보기
-						</a>
+						</SmoothScrollLink>
 						<Link
 							href="/mypage"
 							className={`${styles.btn} ${styles.btnGhost}`}
@@ -102,7 +103,12 @@ export default async function DonationsContent() {
 				</Suspense>
 			</section>
 			{/* 4. 기부처 */}
-			<section id="targets" aria-labelledby="targets-title">
+			<section
+				id="targets"
+				tabIndex={-1}
+				aria-labelledby="targets-title"
+				className={styles.targets}
+			>
 				<div className={styles.sectionHead}>
 					<h2
 						id="targets-title"
@@ -156,9 +162,9 @@ export default async function DonationsContent() {
 					</ol>
 				:	<p className={styles.empty}>
 						아직 기부 기록이 없어요.{" "}
-						<a href="#targets" className={styles.textLink}>
+						<SmoothScrollLink href="#targets" className={styles.textLink}>
 							첫 기부에 참여해 보세요
-						</a>
+						</SmoothScrollLink>
 					</p>
 				}
 			</section>

@@ -834,3 +834,11 @@
 		font-size: 1.25rem;
 	}
 }
+
+/* 기부처 목록으로 스크롤해 온 뒤 포커스를 받아도 테두리는 그리지 않아요. 위쪽에 약간 여유를 둬요. */
+.targets {
+	scroll-margin-top: 16px;
+}
+.targets:focus {
+	outline: none;
+}
