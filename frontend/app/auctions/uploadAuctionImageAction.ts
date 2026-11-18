@@ -10,7 +10,7 @@ const MAX_BYTES = 2 * 1024 * 1024;
 
 const MESSAGES: Record<string, string> = {
 	NOT_LOGGED_IN: "로그인이 필요해요. 로그인한 뒤 다시 시도해 주세요.",
-	FORBIDDEN: "개발 환경에서만 이미지를 바꿀 수 있어요.",
+	FORBIDDEN: "이 경매의 판매자만 이미지를 바꿀 수 있어요.",
 	AUCTION_NOT_FOUND: "경매를 찾을 수 없어요.",
 	INVALID_IMAGE: "PNG, JPG, WEBP, GIF 이미지만 올릴 수 있어요.",
 	IMAGE_TOO_LARGE: "이미지는 2MB 이하만 올릴 수 있어요.",
@@ -23,7 +23,10 @@ export default async function uploadAuctionImageAction(
 ): Promise<AuctionImageState> {
 	// 개발 환경이 아니면 화면에 올리기 버튼이 없지만, 요청은 조작될 수 있어서 여기서도 막아요.
 	if (process.env.NODE_ENV !== "development") {
-		return { status: "error", message: MESSAGES.FORBIDDEN };
+		return {
+			status: "error",
+			message: "개발 환경에서만 이미지를 바꿀 수 있어요."
+		};
 	}
 	const auctionId = Number(formData.get("auctionId"));
 	const file = formData.get("file");
