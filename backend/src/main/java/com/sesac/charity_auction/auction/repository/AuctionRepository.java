@@ -35,6 +35,9 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
     @Query("SELECT a.id FROM Auction a WHERE a.status = :status AND a.endAt <= :now AND a.isDeleted = false")
     List<Long> findExpiredAuctionIds(final @Param("status") AuctionStatus status, final @Param("now") LocalDateTime now);
 
+    @Query("SELECT a.id FROM Auction a WHERE a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.SCHEDULED AND a.startAt <= :now AND a.isDeleted = false")
+    List<Long> findStartableAuctionIds(final @Param("now") LocalDateTime now);
+
 
 //    @Query("""
 //    SELECT new com.sesac.charity_auction.auction.dto.response.AuctionListResponse(a.id, a.title, c.bidPrice)

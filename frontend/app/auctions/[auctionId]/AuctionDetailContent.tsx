@@ -16,6 +16,7 @@ import BidPanel from "./BidPanel";
 import { CLOSED_NOTE, STATUS_LABEL } from "./constants";
 import OfferPanel from "./OfferPanel";
 import styles from "./page.module.css";
+import SellerActions from "./SellerActions";
 
 export default async function AuctionDetailContent({
 	params
@@ -174,6 +175,7 @@ export default async function AuctionDetailContent({
 						</Suspense>
 					)}
 
+					<SellerActions auctionId={auction.auctionId} />
 					<BidPanel auction={auction} loggedIn={loggedIn} />
 
 					{process.env.NODE_ENV === "development" && live && (

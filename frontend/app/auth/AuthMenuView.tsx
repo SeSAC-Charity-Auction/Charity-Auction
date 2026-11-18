@@ -11,14 +11,19 @@ export default function AuthMenuView({ loggedIn }: { loggedIn: boolean }) {
 
 	if (loggedIn) {
 		return (
-			<form action={logoutAction} className={styles.form}>
-				<button
-					type="submit"
-					className={`${headerStyles.link} ${styles.button}`}
-				>
-					로그아웃
-				</button>
-			</form>
+			<>
+				<Link href="/auctions/new" className={headerStyles.link}>
+					등록
+				</Link>
+				<form action={logoutAction} className={styles.form}>
+					<button
+						type="submit"
+						className={`${headerStyles.link} ${styles.button}`}
+					>
+						로그아웃
+					</button>
+				</form>
+			</>
 		);
 	}
 
