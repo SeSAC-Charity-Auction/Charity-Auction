@@ -3,6 +3,7 @@ package com.sesac.charity_auction.bid.service;
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
+import com.sesac.charity_auction.auction.service.AuctionService;
 import com.sesac.charity_auction.bid.dto.request.BidCreateRequest;
 import com.sesac.charity_auction.bid.dto.response.BidCreateResponse;
 import com.sesac.charity_auction.bid.dto.response.BidListResponse;
@@ -29,6 +30,7 @@ public class BidService {
     private final BidRepository bidRepository;
     private final UserRepository userRepository;
     private final AuctionRepository auctionRepository;
+    private final AuctionService auctionService;
     private final ApplicationEventPublisher eventPublisher;
 
     // 특정 경매의 입찰 내역 조회
@@ -48,7 +50,9 @@ public class BidService {
     // 입찰 등록
     @Transactional
     public BidCreateResponse createBid(final Long auctionId, final Long userId, final BidCreateRequest request) {
-        auctionRepository.startDueAuctions(LocalDateTime.now());
+        // 시작 시각이 된 예정 경매가 있으면 먼저 진행 중으로 바꿔요. (스케줄러를 기다리지 않아요, 웹소켓 알림도 보내요)
+        auctionService.startDueAuctions(LocalDateTime.now());
+
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
