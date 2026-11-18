@@ -34,7 +34,7 @@ public class Donation {
     protected Donation() {
     }
 
-    public Donation(DonationTarget target, User user, long donationAmount) {
+    public Donation(final DonationTarget target, final User user, final long donationAmount) {
         this.target = target;
         this.user = user;
         this.donationAmount = donationAmount;

@@ -16,9 +16,9 @@ public class DonationController {
     private final DonationService donationService;
     private final CurrentUserProvider currentUser;
 
-    public DonationController(DonationQueryService queryService,
-                              DonationService donationService,
-                              CurrentUserProvider currentUser) {
+    public DonationController(final DonationQueryService queryService,
+                              final DonationService donationService,
+                              final CurrentUserProvider currentUser) {
         this.queryService = queryService;
         this.donationService = donationService;
         this.currentUser = currentUser;

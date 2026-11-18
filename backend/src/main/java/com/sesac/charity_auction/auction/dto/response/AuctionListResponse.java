@@ -19,8 +19,7 @@ public record AuctionListResponse(
         String categoryName
 ) {
 
-    public static AuctionListResponse from(Auction auction){
-
+    public static AuctionListResponse from(final Auction auction) {
         return new AuctionListResponse(
                 auction.getId(),
                 auction.getTitle(),

@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuctionCandidate {
-
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'WAITING'")
     @Column(nullable = false)
@@ -58,13 +57,11 @@ public class AuctionCandidate {
 
     public static AuctionCandidate create(final Auction auction, final User user, final Bid bid, final Long rank, final Long bidPrice) {
         final AuctionCandidate auctionCandidate = new AuctionCandidate();
-
         auctionCandidate.auction = auction;
         auctionCandidate.user = user;
         auctionCandidate.bid = bid;
         auctionCandidate.rank = rank;
         auctionCandidate.bidPrice = bidPrice;
-
         return auctionCandidate;
     }
 

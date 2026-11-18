@@ -22,10 +22,10 @@ public class DonationService {
     private final DonationRepository donationRepository;
     private final PointHistoryRepository pointHistoryRepository;
 
-    public DonationService(UserRepository userRepository,
-                           DonationTargetRepository targetRepository,
-                           DonationRepository donationRepository,
-                           PointHistoryRepository pointHistoryRepository) {
+    public DonationService(final UserRepository userRepository,
+                           final DonationTargetRepository targetRepository,
+                           final DonationRepository donationRepository,
+                           final PointHistoryRepository pointHistoryRepository) {
         this.userRepository = userRepository;
         this.targetRepository = targetRepository;
         this.donationRepository = donationRepository;

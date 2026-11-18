@@ -23,7 +23,7 @@ public class PointQueryService {
     private final UserRepository userRepository;
     private final PointHistoryRepository historyRepository;
 
-    public PointQueryService(UserRepository userRepository, PointHistoryRepository historyRepository) {
+    public PointQueryService(final UserRepository userRepository, final PointHistoryRepository historyRepository) {
         this.userRepository = userRepository;
         this.historyRepository = historyRepository;
     }

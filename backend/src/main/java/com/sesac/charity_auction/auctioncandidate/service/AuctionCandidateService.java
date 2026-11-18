@@ -63,7 +63,6 @@ public class AuctionCandidateService {
 
     // 다음 후보자 선정 (만료/거절시 호출)
     private void offerNextCandidate(final Auction auction, final LocalDateTime now) {
-
         // 다음 후보자 조회
         final Optional<AuctionCandidate> nextCandidate = auctionCandidateRepository
                 .findFirstByAuctionIdAndStatusOrderByRankAsc(auction.getId(), AuctionCandidateStatus.WAITING);
@@ -83,7 +82,6 @@ public class AuctionCandidateService {
     // 낙찰 거절
     @Transactional
     public CandidateRejectResponseDto rejectCandidate(final Long userId, final Long candidateId) {
-
         // 후보자가 속한 경매 ID 조회 (락X)
         final Long auctionId = auctionCandidateRepository
                 .findAuctionIdByCandidateId(candidateId)
@@ -121,7 +119,6 @@ public class AuctionCandidateService {
     // 낙찰 수락
     @Transactional
     public CandidateAcceptResponseDto acceptCandidate(final Long userId, final Long candidateId) {
-
         // 후보자가 속한 경매 ID 조회 (락X)
         final Long auctionId = auctionCandidateRepository
                 .findAuctionIdByCandidateId(candidateId)
@@ -188,7 +185,6 @@ public class AuctionCandidateService {
 
     // 유저 낙찰 기회 내역 상태별 조건 조회
     public List<MyOfferedCandidateResponse> getMyOfferedCandidate(final Long userId, final AuctionCandidateStatus status) {
-
         final List<AuctionCandidate> candidates = auctionCandidateRepository.findAllByUser_IdAndStatusOrderByIdDesc(userId, status);
 
         return candidates.stream()
@@ -209,7 +205,6 @@ public class AuctionCandidateService {
 
     // 유저 낙찰 기회 내역 전체 조회
     public List<MyOfferedCandidateResponse> getAllMyOfferedCandidate(final Long userId) {
-
         final List<AuctionCandidate> candidates = auctionCandidateRepository.findAllByUser_IdOrderByIdDesc(userId);
 
         return candidates.stream()

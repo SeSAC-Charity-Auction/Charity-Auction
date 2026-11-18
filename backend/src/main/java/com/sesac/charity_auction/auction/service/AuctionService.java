@@ -24,7 +24,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuctionService {
-
     private static final int OFFER_MINUTES = 1;  // 임시 설정 1분
     private final AuctionRepository auctionRepository;
     private final AuctionCandidateRepository auctionCandidateRepository;
@@ -34,7 +33,6 @@ public class AuctionService {
     // 경매 마감 후 낙찰 전체 후보 생성
     @Transactional
     public void createCandidates(final Long auctionId) {
-
         // 경매 존재 여부 확인
         final Auction auction = auctionRepository.findByIdWithLock(auctionId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
@@ -68,7 +66,6 @@ public class AuctionService {
         long rank = 1L;
 
         for (final HighestBidDto dto : highestBids) {
-
             // 해당 ID를 가진 프록시 객체 가지고 오기
             final User user = userRepository.getReferenceById(dto.getUserId());
             final Bid bid = bidRepository.getReferenceById(dto.getBidId());

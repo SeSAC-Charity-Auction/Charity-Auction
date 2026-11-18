@@ -35,35 +35,31 @@ public class AuctionController {
 
     // 경매 목록 조회 및 검색, 필터링
     @GetMapping("/v2")
-    public ResponseEntity<Page<AuctionListResponse>> getAuctions(@ModelAttribute AuctionSearchCondition condition, @PageableDefault(size = 10) Pageable pageable){
-
-        Page<AuctionListResponse> response = auctionManageService.getAuctions(condition, pageable);
+    public ResponseEntity<Page<AuctionListResponse>> getAuctions(final @ModelAttribute AuctionSearchCondition condition, final @PageableDefault(size = 10) Pageable pageable) {
+        final Page<AuctionListResponse> response = auctionManageService.getAuctions(condition, pageable);
 
         return ResponseEntity.ok(response);
     }
 
     // 경매 상세 조회
     @GetMapping("/{auctionId}/v2")
-    public ResponseEntity<AuctionDetailResponse2> getAuctionDetail(@PathVariable Long auctionId){
-
-        AuctionDetailResponse2 response = auctionManageService.getAuctionDetail(auctionId);
+    public ResponseEntity<AuctionDetailResponse2> getAuctionDetail(final @PathVariable Long auctionId) {
+        final AuctionDetailResponse2 response = auctionManageService.getAuctionDetail(auctionId);
 
         return ResponseEntity.ok(response);
     }
 
     // 수정
     @PutMapping("/{auctionId}")
-    public ResponseEntity<AuctionDetailResponse2> updateAuction(@PathVariable Long auctionId, @Valid @RequestBody AuctionUpdateRequest request){
-
-        AuctionDetailResponse2 response = auctionManageService.updateAuction(auctionId, currentUser.currentUserId(), request);
+    public ResponseEntity<AuctionDetailResponse2> updateAuction(final @PathVariable Long auctionId, final @Valid @RequestBody AuctionUpdateRequest request) {
+        final AuctionDetailResponse2 response = auctionManageService.updateAuction(auctionId, currentUser.currentUserId(), request);
 
         return ResponseEntity.ok(response);
     }
 
     // 삭제
     @DeleteMapping("/{auctionId}")
-    public ResponseEntity<Void> deleteAuction(@PathVariable Long auctionId) {
-
+    public ResponseEntity<Void> deleteAuction(final @PathVariable Long auctionId) {
         auctionManageService.deleteAuction(auctionId, currentUser.currentUserId());
 
         return ResponseEntity.noContent().build();
@@ -90,6 +86,6 @@ public class AuctionController {
     @PostMapping("/{auctionId}/image")
     public Map<String, String> uploadImage(final @PathVariable long auctionId,
                                            final @RequestParam("file") MultipartFile file) {
-        return Map.of("image", imageService.upload(currentUser.currentUserId(), auctionId, file));  
+        return Map.of("image", imageService.upload(currentUser.currentUserId(), auctionId, file));
     }
 }

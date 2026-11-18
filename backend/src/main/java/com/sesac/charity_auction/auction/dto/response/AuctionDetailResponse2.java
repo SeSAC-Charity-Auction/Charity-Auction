@@ -20,7 +20,7 @@ public record AuctionDetailResponse2(
         String categoryName,
         Long userId
 ) {
-    public static AuctionDetailResponse2 from(Auction auction) {
+    public static AuctionDetailResponse2 from(final Auction auction) {
         return new AuctionDetailResponse2(
                 auction.getId(),
                 auction.getTitle(),

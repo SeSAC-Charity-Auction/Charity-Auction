@@ -69,15 +69,14 @@ public class Auction extends BaseTimeEntity {
     private User user;
 
     // 경매 생성시 현재 가격을 시작 가격으로 초기화할 것
-    public static Auction create(User user, Category category, Long startPrice, String title, LocalDateTime startAt, LocalDateTime endAt) {
-
+    public static Auction create(final User user, final Category category, final Long startPrice, final String title, final LocalDateTime startAt, final LocalDateTime endAt) {
         // 시작 가격을 정하지 않았으면 기본값(1,000원)을 쓰고, 최소 금액보다 낮으면 막아요.
         final long price = startPrice == null ? AuctionPolicy.DEFAULT_START_PRICE : startPrice;
         if (price < AuctionPolicy.MIN_START_PRICE) {
             throw new BusinessException(ErrorCode.INVALID_START_PRICE);
         }
 
-        Auction auction = new Auction();
+        final Auction auction = new Auction();
         auction.user = user;
         auction.category = category;
         auction.title = title;
@@ -85,34 +84,32 @@ public class Auction extends BaseTimeEntity {
         auction.currentPrice = price;
         auction.startAt = startAt;
         auction.endAt = endAt;
-
         return auction;
     }
 
     /* 경매 게시글 */
     // 수정 - 경매 시작 전에만 가능
-    public void update(String title, String description, String image, Category category, Long startPrice, LocalDateTime startAt, LocalDateTime endAt,LocalDateTime now){
-
+    public void update(final String title, final String description, final String image, final Category category, final Long startPrice, final LocalDateTime startAt, final LocalDateTime endAt, final LocalDateTime now) {
         // 경매 상태 확인
         validateStatus(AuctionStatus.SCHEDULED, ErrorCode.AUCTION_NOT_SCHEDULED);
 
         // 실제 시간 확인
-        if(!now.isBefore(this.startAt)){
+        if (!now.isBefore(this.startAt)) {
             throw new BusinessException(ErrorCode.AUCTION_ALREADY_STARTED);
         }
 
         // 입찰 존재 여부 확인
-        if(this.bidCount > 0){
+        if (this.bidCount > 0) {
             throw new BusinessException(ErrorCode.AUCTION_HAS_BIDS);
         }
 
         // 시작 가격 검증
-        if(startPrice == null || startPrice <= 0){
+        if (startPrice == null || startPrice <= 0) {
             throw new BusinessException(ErrorCode.INVALID_START_PRICE);
         }
 
         // 경매 기간 검증
-        if(startAt == null || endAt == null || !startAt.isAfter(now) || !endAt.isAfter(startAt)){
+        if (startAt == null || endAt == null || !startAt.isAfter(now) || !endAt.isAfter(startAt)) {
             throw new BusinessException(ErrorCode.INVALID_AUCTION_TIME);
         }
 
@@ -127,13 +124,12 @@ public class Auction extends BaseTimeEntity {
     }
 
     // 삭제
-    public void delete(LocalDateTime now){
-
+    public void delete(final LocalDateTime now) {
         // 경매 상태 확인
         validateStatus(AuctionStatus.SCHEDULED, ErrorCode.AUCTION_NOT_SCHEDULED);
 
         // 실제 시간 확인
-        if(!now.isBefore(this.startAt)){
+        if (!now.isBefore(this.startAt)) {
             throw new BusinessException(ErrorCode.AUCTION_ALREADY_STARTED);
         }
 
@@ -144,7 +140,7 @@ public class Auction extends BaseTimeEntity {
         this.isDeleted = true;
         this.deletedAt = now;
     }
-  
+
     // 상품 이미지를 바꿔요. (주소는 ImageStorage가 저장한 /uploads/auction/... 형태예요)
     public void changeImage(final String image) {
         this.image = image;

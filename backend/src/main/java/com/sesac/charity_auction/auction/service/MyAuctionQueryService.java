@@ -41,7 +41,7 @@ public class MyAuctionQueryService {
     }
 
     private static int clampSize(final int size) {
-        return Math.min(Math.max(1, size), MAX_PAGE_SIZE);
+        return Math.clamp(size, 1, MAX_PAGE_SIZE);
     }
 
     /**

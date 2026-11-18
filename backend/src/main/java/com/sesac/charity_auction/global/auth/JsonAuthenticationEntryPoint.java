@@ -4,6 +4,7 @@ import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.AuthenticationException;
@@ -24,9 +25,9 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
     }
 
     @Override
-    public void commence(final HttpServletRequest request,
+    public void commence(final @NonNull HttpServletRequest request,
                          final HttpServletResponse response,
-                         final AuthenticationException authException) throws IOException {
+                         final @NonNull AuthenticationException authException) throws IOException {
         final boolean badToken = authException instanceof OAuth2AuthenticationException;
         final ErrorCode code = badToken ? ErrorCode.INVALID_TOKEN : ErrorCode.NOT_LOGGED_IN;
         response.setHeader(HttpHeaders.WWW_AUTHENTICATE, badToken ? "Bearer error=\"invalid_token\"" : "Bearer");

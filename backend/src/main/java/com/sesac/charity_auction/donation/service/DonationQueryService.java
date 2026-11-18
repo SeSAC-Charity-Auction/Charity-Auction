@@ -25,8 +25,8 @@ public class DonationQueryService {
     private final DonationRepository donationRepository;
     private final DonationTargetRepository targetRepository;
 
-    public DonationQueryService(DonationRepository donationRepository,
-                                DonationTargetRepository targetRepository) {
+    public DonationQueryService(final DonationRepository donationRepository,
+                                final DonationTargetRepository targetRepository) {
         this.donationRepository = donationRepository;
         this.targetRepository = targetRepository;
     }

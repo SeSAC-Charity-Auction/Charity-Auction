@@ -14,7 +14,7 @@ import java.util.List;
 public class DonationRankingController {
     private final DonationRankingService donationRankingService;
 
-    public DonationRankingController(DonationRankingService donationRankingService) {
+    public DonationRankingController(final DonationRankingService donationRankingService) {
         this.donationRankingService = donationRankingService;
     }
 

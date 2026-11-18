@@ -40,7 +40,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
 //    List<AuctionListResponse> findAuctionList(@Param("status")AuctionCandidateStatus status);
 
     // 경매 조회
-    Optional<Auction> findByIdAndIsDeletedFalse(Long id);
+    Optional<Auction> findByIdAndIsDeletedFalse(final Long id);
 
 
     // 경매 물품 목록: 삭제·취소되지 않은 경매를 보기 방식·카테고리·검색어로 걸러요. (null이면 그 조건은 쓰지 않아요)
@@ -110,5 +110,5 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
             ORDER BY a.createdAt DESC, a.id DESC
             """,
             countQuery = "SELECT COUNT(a) FROM Auction a WHERE a.user.id = :userId AND a.isDeleted = false")
-    Page<Auction> findMine(@Param("userId") Long userId, Pageable pageable);
+    Page<Auction> findMine(final @Param("userId") Long userId, final Pageable pageable);
 }

@@ -25,9 +25,9 @@ public class MyProfileService {
     private final RefreshTokenService refreshTokenService;
     private final PointHistoryRepository pointHistoryRepository;
 
-    public MyProfileService(UserRepository userRepository, DonationRepository donationRepository,
-                            TargetEditPolicy targetEditPolicy, RefreshTokenService refreshTokenService,
-                            PointHistoryRepository pointHistoryRepository) {
+    public MyProfileService(final UserRepository userRepository, final DonationRepository donationRepository,
+                            final TargetEditPolicy targetEditPolicy, final RefreshTokenService refreshTokenService,
+                            final PointHistoryRepository pointHistoryRepository) {
         this.userRepository = userRepository;
         this.donationRepository = donationRepository;
         this.targetEditPolicy = targetEditPolicy;

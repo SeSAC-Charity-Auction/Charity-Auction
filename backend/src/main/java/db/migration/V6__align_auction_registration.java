@@ -48,7 +48,7 @@ public class V6__align_auction_registration extends BaseJavaMigration {
         add(db, "auction_candidates", "candidate_rank", "BIGINT NOT NULL");
         add(db, "auction_candidates", "bid_price", "BIGINT NOT NULL");
         primary(db, "auctions", "auction_id");
-        int foreignKeyChecks;
+        final int foreignKeyChecks;
         try (final var statement = db.createStatement(); final var rows = statement.executeQuery("SELECT @@SESSION.foreign_key_checks")) {
             rows.next();
             foreignKeyChecks = rows.getInt(1);

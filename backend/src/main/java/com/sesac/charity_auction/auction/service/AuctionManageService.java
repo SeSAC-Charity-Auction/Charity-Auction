@@ -3,7 +3,6 @@ package com.sesac.charity_auction.auction.service;
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.dto.request.AuctionSearchCondition;
 import com.sesac.charity_auction.auction.dto.request.AuctionUpdateRequest;
-import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse;
 import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse2;
 import com.sesac.charity_auction.auction.dto.response.AuctionListResponse;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
@@ -23,13 +22,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuctionManageService {
-
     private final AuctionRepository auctionRepository;
     private final CategoryRepository categoryRepository;
 
     // 경매 목록 조회 및 검색
-    public Page<AuctionListResponse> getAuctions(AuctionSearchCondition condition, Pageable pageable){
-
+    public Page<AuctionListResponse> getAuctions(final AuctionSearchCondition condition, final Pageable pageable) {
         System.out.println("service");
         Page<Auction> auctions = auctionRepository.searchAuctions(condition, pageable);
 
@@ -37,26 +34,24 @@ public class AuctionManageService {
     }
 
     // 경매 상세 조회
-    public AuctionDetailResponse2 getAuctionDetail(Long auctionId){
-
-        Auction auction = auctionRepository.findByIdAndIsDeletedFalse(auctionId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
+    public AuctionDetailResponse2 getAuctionDetail(final Long auctionId) {
+        final Auction auction = auctionRepository.findByIdAndIsDeletedFalse(auctionId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
 
         return AuctionDetailResponse2.from(auction);
     }
 
     // 수정
     @Transactional
-    public AuctionDetailResponse2 updateAuction(Long auctionId, Long userId, AuctionUpdateRequest request){
-
+    public AuctionDetailResponse2 updateAuction(final Long auctionId, final Long userId, final AuctionUpdateRequest request) {
         // 경매 조회 및 작성자 확인
-        Auction auction = getAuctionAndValidateOwner(auctionId, userId);
+        final Auction auction = getAuctionAndValidateOwner(auctionId, userId);
 
         // 카테고리 조회
-        Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(()-> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
+        final Category category = categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        LocalDateTime now = auctionRepository.findCurrentDatabaseTime();
+        final LocalDateTime now = auctionRepository.findCurrentDatabaseTime();
 
         auction.update(
                 request.title(),
@@ -74,22 +69,20 @@ public class AuctionManageService {
 
     // 삭제
     @Transactional
-    public void deleteAuction(Long auctionId, Long userId){
-
+    public void deleteAuction(final Long auctionId, final Long userId) {
         // 경매 조회 및 작성자 확인
-        Auction auction = getAuctionAndValidateOwner(auctionId, userId);
+        final Auction auction = getAuctionAndValidateOwner(auctionId, userId);
 
-        LocalDateTime now = auctionRepository.findCurrentDatabaseTime();
+        final LocalDateTime now = auctionRepository.findCurrentDatabaseTime();
 
         // 논리적 삭제
         auction.delete(now);
     }
 
     // 경매 조회 및 작성자 검증
-    private Auction getAuctionAndValidateOwner(Long auctionId, Long userId){
-
+    private Auction getAuctionAndValidateOwner(final Long auctionId, final Long userId) {
         // 삭제되지 않은 경매 조회
-        Auction auction = auctionRepository.findByIdAndIsDeletedFalse(auctionId)
+        final Auction auction = auctionRepository.findByIdAndIsDeletedFalse(auctionId)
                 .orElseThrow(() ->
                         new BusinessException(ErrorCode.AUCTION_NOT_FOUND)
                 );
@@ -101,5 +94,4 @@ public class AuctionManageService {
 
         return auction;
     }
-
 }

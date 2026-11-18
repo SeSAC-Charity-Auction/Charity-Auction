@@ -1,6 +1,7 @@
 package com.sesac.charity_auction.global.seed;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -39,7 +40,7 @@ public class DevSeedRunner implements ApplicationRunner {
     }
 
     @Override
-    public void run(final ApplicationArguments args) {
+    public void run(final @NonNull ApplicationArguments args) {
         try {
             if (!isEmpty("users") || !isEmpty("auctions") || !isEmpty("donation_targets")) {
                 log.info("개발용 더미 데이터: 이미 데이터가 있어서 넣지 않아요.");

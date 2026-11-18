@@ -44,7 +44,7 @@ public class DonationTarget {
     protected DonationTarget() {
     }
 
-    public DonationTarget(String targetName, String description, String targetImage, long targetAmount) {
+    public DonationTarget(final String targetName, final String description, final String targetImage, final long targetAmount) {
         this.targetName = targetName;
         this.description = description;
         this.targetImage = targetImage;

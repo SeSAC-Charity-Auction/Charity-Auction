@@ -39,6 +39,20 @@ public class RefreshTokenService {
         this.expirationSeconds = expirationSeconds;
     }
 
+    private static String hash(final String rawToken) {
+        try {
+            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            final byte[] hashed = digest.digest(rawToken.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hashed);
+        } catch (final NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 알고리즘을 쓸 수 없어요.", exception);
+        }
+    }
+
+    private static LocalDateTime now() {
+        return LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
+    }
+
     @Transactional
     public String issue(final long userId) {
         final boolean activeUser = userRepository.findById(userId)
@@ -60,7 +74,6 @@ public class RefreshTokenService {
         final User user = savedToken.getUser();
         final long userId = user.getId();
         final Role role = user.getRole();
-
         final String newRawToken = createRawToken();
         final int changed = refreshTokenRepository.rotateIfUnchanged(
                 savedToken.getId(), oldHash, hash(newRawToken), now().plusSeconds(expirationSeconds));
@@ -98,20 +111,6 @@ public class RefreshTokenService {
         final byte[] bytes = new byte[TOKEN_BYTE_LENGTH];
         secureRandom.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-    }
-
-    private static String hash(final String rawToken) {
-        try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            final byte[] hashed = digest.digest(rawToken.getBytes(StandardCharsets.UTF_8));
-            return HexFormat.of().formatHex(hashed);
-        } catch (final NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("SHA-256 알고리즘을 쓸 수 없어요.", exception);
-        }
-    }
-
-    private static LocalDateTime now() {
-        return LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
     }
 
     public record Rotation(

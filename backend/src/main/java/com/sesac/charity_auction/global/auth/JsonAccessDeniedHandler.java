@@ -4,6 +4,7 @@ import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -22,9 +23,9 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
     }
 
     @Override
-    public void handle(final HttpServletRequest request,
-                       final HttpServletResponse response,
-                       final AccessDeniedException accessDeniedException) throws IOException {
+    public void handle(final @NonNull HttpServletRequest request,
+                       final @NonNull HttpServletResponse response,
+                       final @NonNull AccessDeniedException accessDeniedException) throws IOException {
         final ErrorCode code = ErrorCode.FORBIDDEN;
         if (handlerExceptionResolver.resolveException(
                 request, response, null, new BusinessException(code, accessDeniedException)) == null) {

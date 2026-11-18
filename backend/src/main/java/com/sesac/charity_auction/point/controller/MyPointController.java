@@ -4,11 +4,7 @@ import com.sesac.charity_auction.global.auth.CurrentUserProvider;
 import com.sesac.charity_auction.point.dto.MyPointsResponse;
 import com.sesac.charity_auction.point.dto.PointPageResponse;
 import com.sesac.charity_auction.point.service.PointQueryService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -18,7 +14,7 @@ public class MyPointController {
     private final PointQueryService pointQueryService;
     private final CurrentUserProvider currentUser;
 
-    public MyPointController(PointQueryService pointQueryService, CurrentUserProvider currentUser) {
+    public MyPointController(final PointQueryService pointQueryService, final CurrentUserProvider currentUser) {
         this.pointQueryService = pointQueryService;
         this.currentUser = currentUser;
     }
