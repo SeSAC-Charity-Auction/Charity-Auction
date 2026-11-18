@@ -2,15 +2,14 @@ package com.sesac.charity_auction.bid.dto.response;
 
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.bid.entity.Bid;
-
-import java.time.LocalDateTime;
+import com.sesac.charity_auction.global.common.LocalTimes;
 
 public record BidRealtimeResponse(
         Long bidId,
         Long auctionId,
         String nickname,
         Long bidPrice,
-        LocalDateTime bidAt,
+        String bidAt, // 경매 상세(BidHistoryItemResponse)와 같은 UTC ISO 8601 형식 (예: 2026-11-17T03:49:20Z)
         Long currentPrice,
         Long bidCount
 ) {
@@ -22,7 +21,7 @@ public record BidRealtimeResponse(
                 bid.getAuction().getId(),
                 bid.getUser().getNickname(),
                 bid.getBidPrice(),
-                bid.getBidAt(),
+                LocalTimes.toIsoInstant(bid.getBidAt()),
                 auction.getCurrentPrice(),
                 auction.getBidCount()
         );
