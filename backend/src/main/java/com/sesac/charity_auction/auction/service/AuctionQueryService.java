@@ -54,7 +54,9 @@ public class AuctionQueryService {
     /**
      * 경매 한 건의 상세예요. 없거나 삭제된 경매는 404(AUCTION_NOT_FOUND)예요.
      */
+    @Transactional
     public AuctionDetailResponse getDetail(final long auctionId) {
+        auctionRepository.startDueAuctions(LocalDateTime.now());
         final Auction auction = auctionRepository.findDetailById(auctionId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUCTION_NOT_FOUND));
 
