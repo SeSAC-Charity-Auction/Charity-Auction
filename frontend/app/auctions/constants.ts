@@ -1,16 +1,18 @@
 export const SORTS = [
-	{ value: "ending", label: "마감 임박순" },
-	{ value: "latest", label: "최신순" },
-	{ value: "popular", label: "입찰 많은 순" },
-	{ value: "priceAsc", label: "낮은 가격순" },
-	{ value: "priceDesc", label: "높은 가격순" }
+	{ value: "ENDING_SOON", label: "마감 임박순" },
+	{ value: "LATEST", label: "최신순" },
+	{ value: "MOST_BIDS", label: "입찰 많은 순" },
+	{ value: "LOWEST_PRICE", label: "낮은 가격순" },
+	{ value: "HIGHEST_PRICE", label: "높은 가격순" },
+	{ value: "STARTING_SOON", label: "시작일 빠른순" }
 ] as const;
 
 export const STATUS_TABS = [
-	{ value: "", label: "전체" },
 	{ value: "IN_PROGRESS", label: "진행 중" },
 	{ value: "SCHEDULED", label: "예정" },
-	{ value: "ENDED", label: "마감" }
+	{ value: "CLOSED", label: "마감" },
+	{ value: "COMPLETED", label: "완료" },
+	{ value: "", label: "전체" }
 ] as const;
 
 export const MESSAGES: Record<string, string> = {

@@ -11,14 +11,17 @@ export default function parseFilters(params: RawParams): AuctionFilters {
 	const status = first(params.status) ?? "";
 	const sort = first(params.sort);
 	const page = Number(first(params.page));
+	const selectedStatus = STATUS_TABS.some((t) => t.value === status && t.value !== "") ? (status as AuctionFilters["status"]) : "";
+	const selectedSort = SORTS.find((s) => s.value === sort)?.value ?? "ENDING_SOON";
+
 	return {
 		categoryId:
 			Number.isInteger(category) && category > 0 ? category : null,
 		status:
-			STATUS_TABS.some((t) => t.value === status && t.value !== "") ?
-				(status as AuctionFilters["status"])
-			:	"",
-		sort: SORTS.find((s) => s.value === sort)?.value ?? "ending",
+			selectedStatus ||
+        	(selectedSort === "ENDING_SOON" ? "IN_PROGRESS" :
+         	selectedSort === "STARTING_SOON" ? "SCHEDULED" : ""),
+		sort: selectedSort,
 		keyword: (first(params.q) ?? "").trim().slice(0, 50),
 		page: Number.isInteger(page) && page >= 1 ? page : 1
 	};

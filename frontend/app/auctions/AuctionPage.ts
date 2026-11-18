@@ -1,8 +1,8 @@
 import AuctionSummary from "./AuctionSummary";
 
 type AuctionPage = {
-	items: AuctionSummary[];
-	page: number; // 0부터 시작
+	content: AuctionSummary[];
+	number: number; // 0부터 시작
 	size: number;
 	totalElements: number;
 	totalPages: number;
