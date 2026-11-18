@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +31,12 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("UPDATE Auction a SET a.endAt = :endAt WHERE a.id = :auctionId AND a.isDeleted = false AND a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.IN_PROGRESS")
     int expireNow(final @Param("auctionId") Long auctionId, final @Param("endAt") LocalDateTime endAt);
+
+    // 시작 시각이 된 예정 경매를 진행 중으로 바꿔요. (마감 시각이 이미 지난 경매는 시작하지 않아요.) 바뀐 개수를 돌려줘요.
+    @Transactional
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("UPDATE Auction a SET a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.IN_PROGRESS WHERE a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.SCHEDULED AND a.isDeleted = false AND a.startAt <= :now AND a.endAt > :now")
+    int startDueAuctions(final @Param("now") LocalDateTime now);
 
     // 만료된 경매
     @Query("SELECT a.id FROM Auction a WHERE a.status = :status AND a.endAt <= :now AND a.isDeleted = false")

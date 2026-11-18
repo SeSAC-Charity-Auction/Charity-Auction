@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import AuctionCard from "./AuctionCard";
 import CategoryFilter from "./CategoryFilter";
 import { DEFAULT_STATUS } from "./constants";
+import currentTime from "./currentTime";
 import getAuctions from "./getAuctions";
 import getCategories from "./getCategories";
 import LiveAuctionPricesProvider from "./LiveAuctionPrices";
@@ -26,6 +27,7 @@ export default async function AuctionsContent({
 		getCategories(),
 		getAuctions(filters)
 	]);
+	const now = currentTime(); // 카드의 남은 시간이 이 시각에서 시작해 계속 흘러가요.
 	const filtered =
 		filters.categoryId !== null || filters.status !== DEFAULT_STATUS || filters.keyword;
 	return (
@@ -54,7 +56,7 @@ export default async function AuctionsContent({
 				<ul className={styles.grid}>
 					{data.content.map((a) => (
 						<li key={a.auctionId} className={styles.gridItem}>
-							<AuctionCard auction={a} />
+							<AuctionCard auction={a} now={now} />
 						</li>
 					))}
 				</ul>

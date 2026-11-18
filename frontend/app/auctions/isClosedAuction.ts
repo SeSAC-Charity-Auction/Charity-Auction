@@ -6,8 +6,8 @@ import isPast from "./isPast";
 export default function isClosedAuction(a: {
 	status: AuctionStatus;
 	endAt: string;
-}) {
-	if (a.status === "IN_PROGRESS") return isPast(a.endAt);
+}, now: number = Date.now()) {
+	if (a.status === "IN_PROGRESS") return isPast(a.endAt, now);
 	return (
 		a.status === "CLOSED" ||
 		a.status === "COMPLETED" ||

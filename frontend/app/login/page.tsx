@@ -13,10 +13,14 @@ export const metadata: Metadata = {
 	title: "로그인"
 };
 
-type SearchParams = Promise<{ next?: string | string[] }>;
+type SearchParams = Promise<{
+	next?: string | string[];
+	error?: string | string[];
+}>;
 
 async function LoginContent({ searchParams }: { searchParams: SearchParams }) {
-	const { next: raw } = await searchParams;
+	const { next: raw, error: rawError } = await searchParams;
+	const error = Array.isArray(rawError) ? rawError[0] : rawError;
 	const next = safeNext(Array.isArray(raw) ? raw[0] : raw);
 	const loggedIn = Boolean((await cookies()).get(ACCESS_COOKIE)?.value);
 
@@ -39,7 +43,7 @@ async function LoginContent({ searchParams }: { searchParams: SearchParams }) {
 	}
 	return (
 		<>
-			<LoginForm next={next} />
+			<LoginForm next={next} error={error} />
 			<p className={styles.switch}>
 				아직 계정이 없나요?{" "}
 				<Link
