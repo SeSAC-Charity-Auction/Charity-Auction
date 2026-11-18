@@ -1,0 +1,57 @@
+.page {
+	flex: 1;
+	background: var(--paper);
+	color: var(--ink);
+	line-height: 1.7;
+	word-break: keep-all;
+}
+.wrap {
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 0 24px 96px;
+}
+.hero { padding: 64px 0 32px; }
+.eyebrow { margin: 0 0 10px; color: var(--bid-fg); font-size: .875rem; font-weight: 700; }
+.hero h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; letter-spacing: -.04em; }
+.description { margin: 16px 0 0; color: var(--ink-soft); }
+.panel { overflow: hidden; border: 1px solid var(--mist-strong); border-radius: 20px; background: var(--surface); }
+.listHead { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 24px; }
+.listHead h2 { margin: 0; font-size: 1.125rem; font-weight: 750; }
+.listHead p { margin: 0; color: var(--ink-soft); font-size: .875rem; }
+.listHead strong { color: var(--ink); }
+.table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.table thead { background: var(--mist); color: var(--ink-soft); font-size: .8125rem; }
+.table th, .table td { padding: 20px 16px; text-align: left; }
+.table thead th { padding-top: 12px; padding-bottom: 12px; font-weight: 600; }
+.table th:first-child { width: 84px; text-align: center; }
+.table th:last-child { width: 40%; text-align: right; padding-right: 24px; }
+.table tbody tr + tr { border-top: 1px solid var(--mist); }
+.table td:last-child { text-align: right; padding-right: 24px; }
+.rank { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; min-height: 36px; font-weight: 750; font-variant-numeric: tabular-nums; }
+.topRank { border-radius: 50%; background: var(--hammer); color: #1f2347; }
+.member { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.avatar { display: inline-flex; flex: 0 0 44px; width: 44px; height: 44px; align-items: center; justify-content: center; overflow: hidden; border-radius: 50%; background: var(--mist); color: var(--ink-soft); font-weight: 700; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.nickname { min-width: 0; overflow-wrap: anywhere; font-weight: 600; }
+.amount { font-size: 1.125rem; font-weight: 750; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.unit { font-size: .8125rem; font-weight: 500; color: var(--ink-soft); }
+.state { padding: 64px 24px; border: 1px solid var(--mist-strong); border-radius: 20px; background: var(--surface); text-align: center; color: var(--ink-soft); }
+.state h2 { margin: 0 0 12px; color: var(--ink); font-size: 1.25rem; font-weight: 700; }
+.state p { margin: 0 0 24px; }
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 20px; border: 0; border-radius: 8px; background: var(--bid); color: #fff; font: inherit; font-weight: 700; text-decoration: none; cursor: pointer; }
+.button:hover { opacity: .9; }
+.button:focus-visible { outline: 3px solid var(--bid-fg); outline-offset: 4px; }
+@media (max-width: 600px) {
+	.wrap { padding: 0 16px 64px; }
+	.hero { padding: 40px 0 24px; }
+	.description { font-size: .9375rem; }
+	.listHead { padding: 20px 16px; }
+	.table th, .table td { padding: 16px 8px; }
+	.table th:first-child { width: 52px; }
+	.table th:last-child { width: 43%; padding-right: 12px; }
+	.table td:last-child { padding-right: 12px; }
+	.member { gap: 8px; flex-wrap: wrap; }
+	.avatar { width: 32px; height: 32px; flex-basis: 32px; }
+	.nickname { font-size: .875rem; }
+	.amount { font-size: .9375rem; }
+}

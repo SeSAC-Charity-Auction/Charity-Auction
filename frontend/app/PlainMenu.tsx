@@ -10,6 +10,9 @@ export default function PlainMenu() {
 			<Link href="/donations" className={styles.link}>
 				기부
 			</Link>
+			<Link href="/rank" className={styles.link}>
+				랭킹
+			</Link>
 		</>
 	);
 }
