@@ -27,7 +27,7 @@ import java.sql.SQLException;
  * 개발용 더미 데이터를 자동으로 넣어요. 그래서 GitHub에서 받아 처음 실행한 사람도 바로 화면을 볼 수 있어요.
  * - local 프로필에서만 돌아요. (배포 환경에서는 절대 실행되지 않아요.)
  * - 회원·경매·기부처가 모두 "비어 있을 때만" 넣어요. 이미 데이터가 있는 DB는 건드리지 않아요.
- * - 시드 경매의 이미지(db/seed/images/auction)는 DB가 이미 있어도 매번 업로드 폴더로 복사하고 연결해요.
+ * - 시드 경매·기부처의 이미지(db/seed/images/{auction,target})는 DB가 이미 있어도 매번 업로드 폴더로 복사하고 연결해요.
  *   (비어 있는 파일·이미지만 채우고, 직접 올린 이미지는 그대로 둬요.)
  * - 시드 경매의 상품 설명(dev-seed-auction-descriptions.sql)도 같은 방식으로 채워요. (짧은 설명만 바꿔요.)
  * - 기부처 추가분(6~15번)과 상세 설명도 같은 방식으로 채워요.
@@ -52,7 +52,9 @@ public class DevSeedRunner implements ApplicationRunner {
 
     private static final String IMAGE_SCRIPT = "db/seed/dev-seed-auction-images.sql";
     private static final String DESCRIPTION_SCRIPT = "db/seed/dev-seed-auction-descriptions.sql";
-    private static final String IMAGE_DIR = "db/seed/images/auction/";
+    private static final String TARGET_IMAGE_SCRIPT = "db/seed/dev-seed-target-images.sql";
+    // 시드 이미지 폴더(db/seed/images/{폴더})와 업로드 폴더({upload-dir}/{폴더})의 이름이 같아요.
+    private static final String[] IMAGE_FOLDERS = {"auction", "target"};
 
     private final DataSource dataSource;
     private final JdbcTemplate jdbc;
@@ -138,39 +140,49 @@ public class DevSeedRunner implements ApplicationRunner {
     // 시드 경매 이미지를 업로드 폴더에 복사하고(이미 있으면 건너뛰어요) 경매에 연결해요.
     private void seedImages() {
         try {
-            final Resource[] images = new PathMatchingResourcePatternResolver()
-                    .getResources("classpath:" + IMAGE_DIR + "*");
-            final Path folder = uploadRoot.resolve("auction");
-            Files.createDirectories(folder);
             int copied = 0;
-            for (final Resource image : images) {
-                final String name = image.getFilename();
-                if (name == null) {
-                    continue;
-                }
-                final Path target = folder.resolve(name).normalize();
-                if (!target.startsWith(folder) || Files.exists(target)) {
-                    continue;
-                }
-                try (final InputStream in = image.getInputStream()) {
-                    Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-                    copied++;
-                }
+            for (final String name : IMAGE_FOLDERS) {
+                copied += copyImages(name);
             }
             try (final Connection connection = dataSource.getConnection()) {
                 ScriptUtils.executeSqlScript(connection, new ClassPathResource(IMAGE_SCRIPT));
+                ScriptUtils.executeSqlScript(connection, new ClassPathResource(TARGET_IMAGE_SCRIPT));
                 // 상품 설명도 같은 방식이에요. (설명이 짧은 시드 경매에만 긴 설명을 넣어요.)
                 ScriptUtils.executeSqlScript(connection, new ClassPathResource(DESCRIPTION_SCRIPT));
                 // 기부처 상세 설명도 같은 방식이에요.
                 ScriptUtils.executeSqlScript(connection, new ClassPathResource(TARGET_DESCRIPTION_SCRIPT));
             }
             if (copied > 0) {
-                log.info("개발용 경매 이미지를 {}장 복사했어요. ({})", copied, folder);
+                log.info("개발용 이미지를 {}장 복사했어요. ({})", copied, uploadRoot);
             }
         } catch (final IOException | SQLException | RuntimeException e) {
             // 이미지가 안 들어가도 앱은 떠야 해요.
             log.warn("개발용 경매 이미지를 넣지 못했어요: {}", e.getMessage());
         }
+    }
+
+    // 시드 이미지 폴더의 파일을 업로드 폴더로 복사해요. 이미 있는 파일은 건너뛰고, 복사한 개수를 돌려줘요.
+    private int copyImages(final String name) throws IOException {
+        final Resource[] images = new PathMatchingResourcePatternResolver()
+                .getResources("classpath:db/seed/images/" + name + "/*");
+        final Path folder = uploadRoot.resolve(name);
+        Files.createDirectories(folder);
+        int copied = 0;
+        for (final Resource image : images) {
+            final String filename = image.getFilename();
+            if (filename == null) {
+                continue;
+            }
+            final Path target = folder.resolve(filename).normalize();
+            if (!target.startsWith(folder) || Files.exists(target)) {
+                continue;
+            }
+            try (final InputStream in = image.getInputStream()) {
+                Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+                copied++;
+            }
+        }
+        return copied;
     }
 
     private boolean isEmpty(final String table) {
