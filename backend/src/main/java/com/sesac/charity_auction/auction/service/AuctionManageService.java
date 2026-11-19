@@ -56,7 +56,6 @@ public class AuctionManageService {
         auction.update(
                 request.title(),
                 request.description(),
-                request.image(),
                 category,
                 request.startPrice(),
                 request.startAt(),

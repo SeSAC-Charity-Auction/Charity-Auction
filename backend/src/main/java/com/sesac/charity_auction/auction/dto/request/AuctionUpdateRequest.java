@@ -14,8 +14,6 @@ public record AuctionUpdateRequest(
 
         String description,
 
-        String image,
-
         @NotNull(message = "카테고리는 필수입니다.")
         @Positive(message = "올바른 카테고리 ID를 입력해주세요.")
         Long categoryId,

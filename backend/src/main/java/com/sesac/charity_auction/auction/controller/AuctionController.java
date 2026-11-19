@@ -1,25 +1,26 @@
 package com.sesac.charity_auction.auction.controller;
 
+import com.sesac.charity_auction.auction.dto.request.AuctionRegistrationRequest;
 import com.sesac.charity_auction.auction.dto.request.AuctionSearchCondition;
 import com.sesac.charity_auction.auction.dto.request.AuctionUpdateRequest;
-import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse;
-import com.sesac.charity_auction.auction.dto.response.AuctionDetailResponse2;
-import com.sesac.charity_auction.auction.dto.response.AuctionListResponse;
-import com.sesac.charity_auction.auction.dto.response.AuctionPageResponse;
+import com.sesac.charity_auction.auction.dto.response.*;
 import com.sesac.charity_auction.auction.service.AuctionImageService;
 import com.sesac.charity_auction.auction.service.AuctionManageService;
 import com.sesac.charity_auction.auction.service.AuctionQueryService;
+import com.sesac.charity_auction.auction.service.AuctionRegistrationService;
 import com.sesac.charity_auction.global.auth.CurrentUserProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.Map;
 
 @RestController
@@ -32,8 +33,18 @@ public class AuctionController {
     private final AuctionImageService imageService;
     private final AuctionQueryService queryService;
     private final CurrentUserProvider currentUser;
+    private final AuctionRegistrationService registrationService;
 
-    // 경매 목록 조회 및 검색, 필터링
+    // 경매 등록
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AuctionRegistrationResponse> register(
+            final @Valid @RequestPart("auction") AuctionRegistrationRequest request,
+            final @RequestPart("file") MultipartFile file) {
+        var response = registrationService.register(currentUser.currentUserId(), request, file);
+        return ResponseEntity.created(URI.create("/api/v1/auctions/" + response.auctionId())).body(response);
+    }
+
+    // 경매 목록 조회 및 검색, 필터링 (동적 쿼리)
     @GetMapping("/v2")
     public ResponseEntity<Page<AuctionListResponse>> getAuctions(final @ModelAttribute AuctionSearchCondition condition, final @PageableDefault(size = 10) Pageable pageable) {
         final Page<AuctionListResponse> response = auctionManageService.getAuctions(condition, pageable);

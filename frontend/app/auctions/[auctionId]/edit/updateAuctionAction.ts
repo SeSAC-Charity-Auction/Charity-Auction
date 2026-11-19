@@ -46,7 +46,6 @@ export default async function updateAuctionAction(
 				body: JSON.stringify({
 					title: values.title,
 					description: values.description || null,
-					image: current.auction.image,
 					categoryId: values.categoryId,
 					startPrice: values.startPrice,
 					startAt: `${values.startAt}:00`,

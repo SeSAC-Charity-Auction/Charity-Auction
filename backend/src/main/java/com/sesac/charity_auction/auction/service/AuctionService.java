@@ -27,14 +27,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuctionService {
-    private static final int OFFER_MINUTES = 1;  // 임시 설정 1분
+    private static final int OFFER_MINUTES = 5;  // 임시 설정 5분
     private final AuctionRepository auctionRepository;
     private final AuctionCandidateRepository auctionCandidateRepository;
     private final BidRepository bidRepository;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    // 시작 시각이 된 예정 경매를 진행 중으로 바꾸고, 바뀐 경매마다 알림을 보내요. 바뀐 개수를 돌려줘요.
+    // 시작 예정 -> 진행 경매
     @Transactional
     public int startDueAuctions(final LocalDateTime now) {
         final List<Long> auctionIds = auctionRepository.findDueAuctionIds(now);
@@ -84,7 +84,7 @@ public class AuctionService {
         long rank = 1L;
 
         for (final HighestBidDto dto : highestBids) {
-            // 해당 ID를 가진 프록시 객체 가지고 오기
+            // 후보를 저장할 때 User와 Bid의 “ID(외래 키)”만 필요하고, 그 안의 데이터는 필요 없기 때문에 해당 ID를 가진 프록시 객체로 가지고 오기
             final User user = userRepository.getReferenceById(dto.getUserId());
             final Bid bid = bidRepository.getReferenceById(dto.getBidId());
 

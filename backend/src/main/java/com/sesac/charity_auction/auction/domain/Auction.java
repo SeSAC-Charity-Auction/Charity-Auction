@@ -89,7 +89,7 @@ public class Auction extends BaseTimeEntity {
 
     /* 경매 게시글 */
     // 수정 - 경매 시작 전에만 가능
-    public void update(final String title, final String description, final String image, final Category category, final Long startPrice, final LocalDateTime startAt, final LocalDateTime endAt, final LocalDateTime now) {
+    public void update(final String title, final String description, final Category category, final Long startPrice, final LocalDateTime startAt, final LocalDateTime endAt, final LocalDateTime now) {
         // 경매 상태 확인
         validateStatus(AuctionStatus.SCHEDULED, ErrorCode.AUCTION_NOT_SCHEDULED);
 
@@ -115,7 +115,6 @@ public class Auction extends BaseTimeEntity {
 
         this.title = title;
         this.description = description;
-        this.image = image;
         this.category = category;
         this.startPrice = startPrice;
         this.currentPrice = startPrice;
