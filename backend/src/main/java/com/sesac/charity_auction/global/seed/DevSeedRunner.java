@@ -29,6 +29,7 @@ import java.sql.SQLException;
  * - 회원·경매·기부처가 모두 "비어 있을 때만" 넣어요. 이미 데이터가 있는 DB는 건드리지 않아요.
  * - 시드 경매의 이미지(db/seed/images/auction)는 DB가 이미 있어도 매번 업로드 폴더로 복사하고 연결해요.
  *   (비어 있는 파일·이미지만 채우고, 직접 올린 이미지는 그대로 둬요.)
+ * - 시드 경매의 상품 설명(dev-seed-auction-descriptions.sql)도 같은 방식으로 채워요. (짧은 설명만 바꿔요.)
  * - 끄려면 app.dev-seed.enabled=false (환경 변수 APP_DEV_SEED_ENABLED=false)로 지정하세요.
  */
 @Slf4j
@@ -46,6 +47,7 @@ public class DevSeedRunner implements ApplicationRunner {
     private static final String EXTRA_SCRIPT = "db/seed/dev-seed-auctions-extra.sql";
 
     private static final String IMAGE_SCRIPT = "db/seed/dev-seed-auction-images.sql";
+    private static final String DESCRIPTION_SCRIPT = "db/seed/dev-seed-auction-descriptions.sql";
     private static final String IMAGE_DIR = "db/seed/images/auction/";
 
     private final DataSource dataSource;
@@ -131,6 +133,8 @@ public class DevSeedRunner implements ApplicationRunner {
             }
             try (final Connection connection = dataSource.getConnection()) {
                 ScriptUtils.executeSqlScript(connection, new ClassPathResource(IMAGE_SCRIPT));
+                // 상품 설명도 같은 방식이에요. (설명이 짧은 시드 경매에만 긴 설명을 넣어요.)
+                ScriptUtils.executeSqlScript(connection, new ClassPathResource(DESCRIPTION_SCRIPT));
             }
             if (copied > 0) {
                 log.info("개발용 경매 이미지를 {}장 복사했어요. ({})", copied, folder);
