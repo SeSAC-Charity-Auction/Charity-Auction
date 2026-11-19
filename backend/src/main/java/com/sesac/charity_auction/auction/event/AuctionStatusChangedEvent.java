@@ -2,7 +2,10 @@ package com.sesac.charity_auction.auction.event;
 
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
 
-// 상태 변경시 발생하는 이벤트
+/**
+ * 경매 상태가 바뀌었을 때 발생하는 이벤트예요.
+ * DB 트랜잭션이 커밋된 뒤 AuctionStatusEventListener가 웹소켓으로 알려줘요.
+ */
 public record AuctionStatusChangedEvent(Long auctionId, AuctionStatus status, Reason reason) {
 
     public enum Reason {
@@ -16,5 +19,10 @@ public record AuctionStatusChangedEvent(Long auctionId, AuctionStatus status, Re
     // 목록 화면에 영향을 주는 변화인지. (다음 순위로 넘어가는 건 목록에서 보이는 게 없어요)
     public boolean affectsList() {
         return reason != Reason.OFFER_MOVED;
+    }
+
+    // 사용자의 낙찰 기회에 영향을 주는 변화인지. (경매 시작은 낙찰 기회와 상관없어요)
+    public boolean affectsOffers() {
+        return reason != Reason.STARTED;
     }
 }

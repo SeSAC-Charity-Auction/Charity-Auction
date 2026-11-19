@@ -2,6 +2,7 @@
 
 // 낙찰 기회를 수락하거나 포기하는 폼이에요.
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import secondsUntil from "../secondsUntil";
@@ -17,12 +18,16 @@ export default function OfferForm({
 	candidateId,
 	bidPrice,
 	secondsLeft: initialSeconds,
-	deadlineAtIso
+	deadlineAtIso,
+	rank = 1,
+	item
 }: {
 	candidateId: number;
 	bidPrice: number;
 	secondsLeft: number | null; // 처음 그릴 때 남은 초 (서버가 계산)
 	deadlineAtIso: string | null; // 낙찰 기한 (ISO 8601)
+	rank?: number; // 몇 순위로 기회를 받았는지 (1이면 최고가)
+	item?: { auctionId: number; title: string }; // 마이페이지처럼 경매 밖에서 보여줄 때 어떤 경매인지 알려줘요
 }) {
 	const router = useRouter();
 	// 남은 시간을 1초마다 줄여 보여줘요. 기한이 지나면 화면을 새로 그려서 다음 상태를 보여줘요.
@@ -71,7 +76,16 @@ export default function OfferForm({
 	return (
 		<form action={formAction} className={styles.offer}>
 			<input type="hidden" name="candidateId" value={candidateId} />
-			<h2 className={styles.offerTitle}>최고가로 낙찰됐어요!</h2>
+			{item && (
+				<p className={styles.offerItem}>
+					<Link href={`/auctions/${item.auctionId}`}>{item.title}</Link>
+				</p>
+			)}
+			<h2 className={styles.offerTitle}>
+				{rank <= 1 ?
+					"최고가로 낙찰됐어요!"
+				:	`앞 순위가 넘겨서 ${rank}순위인 내게 낙찰 기회가 왔어요!`}
+			</h2>
 			<p className={styles.offerText}>
 				내 입찰가 {won(bidPrice)}으로 낙찰 기회를 얻었어요. 수락하면
 				낙찰가의 50%인{" "}

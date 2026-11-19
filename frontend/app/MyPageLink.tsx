@@ -1,10 +1,11 @@
 import { cookies } from "next/headers";
 import { connection } from "next/server";
+import getMyOfferCount from "./auctions/getMyOfferCount";
 import { ACCESS_COOKIE } from "./auth/authCookies";
 import getMyProfile from "./donations/getMyProfile";
 import MyPageNav from "./MyPageNav";
 
-// 내 프로필 사진과 새 포인트 여부를 가져와서 마이페이지 메뉴에 넘겨줘요.
+// 내 프로필 사진, 새 포인트 여부, 선택을 기다리는 낙찰 기회 수를 가져와서 마이페이지 메뉴에 넘겨줘요.
 // 로그인하지 않았으면 메뉴 자체를 보여주지 않아요. (사진이 없으면 글자로 보여줘요)
 export default async function MyPageLink() {
 	// 사람마다 다른 값이라 요청이 올 때 그려요.
@@ -14,10 +15,13 @@ export default async function MyPageLink() {
 	if (!(await cookies()).get(ACCESS_COOKIE)?.value) return null;
 	let image: string | null = null;
 	let hasNew = false;
+	let offerCount = 0;
 	let loggedIn = false;
 	let failed = false; // 내 정보를 못 불러온 경우: 로그인 여부를 알 수 없어서 글자 메뉴는 남겨 둬요
 	try {
-		const profile = await getMyProfile();
+		// 둘 다 사람마다 다른 값이라 함께 물어봐요. (낙찰 기회는 못 불러오면 0이에요)
+		const [profile, count] = await Promise.all([getMyProfile(), getMyOfferCount()]);
+		offerCount = count;
 		if (profile) {
 			loggedIn = true;
 			image = profile.userImage;
@@ -28,5 +32,12 @@ export default async function MyPageLink() {
 		failed = true;
 	}
 	if (!loggedIn && !failed) return null;
-	return <MyPageNav image={image} hasNew={hasNew} watch={loggedIn} />;
+	return (
+		<MyPageNav
+			image={image}
+			hasNew={hasNew}
+			offerCount={offerCount}
+			watch={loggedIn}
+		/>
+	);
 }

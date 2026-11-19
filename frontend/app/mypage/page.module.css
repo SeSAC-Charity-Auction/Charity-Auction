@@ -679,3 +679,43 @@
 		height: 52px;
 	}
 }
+
+/* ---------- 낙찰 기회 ---------- */
+/* 지금 선택해야 하는 낙찰 기회 카드들 */
+.offerGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+/* 마이페이지 맨 위 "선택 대기 중인 낙찰 기회" 안내 */
+.callout {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 20px;
+	margin-bottom: 8px;
+	padding: 18px 20px;
+	background: var(--surface);
+	border: 2px solid var(--ink);
+	border-radius: 14px;
+	box-shadow: 4px 4px 0 var(--hammer);
+}
+.calloutTitle {
+	font-weight: 800;
+}
+.calloutQuiet {
+	box-shadow: none;
+	border-width: 1.5px;
+	border-color: var(--mist-strong);
+}
+/* 탭이 많아 좁은 화면에서 넘치면 옆으로 밀어 볼 수 있게 해요 */
+.tabs {
+	overflow-x: auto;
+}
+.tab {
+	white-space: nowrap;
+}
