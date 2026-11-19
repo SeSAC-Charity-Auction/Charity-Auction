@@ -4,6 +4,7 @@ type MyOffer = {
 	auctionId: number;
 	title: string;
 	bidPrice: number; // 내 최고 입찰가 = 낙찰가
+	candidateRank: number; // 몇 순위로 기회를 받았는지 (1이면 최고가)
 	deadlineAtIso: string | null; // 낙찰 기한 (ISO 8601)
 };
 

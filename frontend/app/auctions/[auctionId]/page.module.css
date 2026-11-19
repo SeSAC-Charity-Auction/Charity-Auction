@@ -437,6 +437,18 @@
 	border-radius: 14px;
 	box-shadow: 4px 4px 0 var(--hammer);
 }
+.offerItem {
+	font-size: 0.875rem;
+	font-weight: 700;
+}
+.offerItem a {
+	color: var(--ink);
+	text-underline-offset: 4px;
+}
+.offerItem a:focus-visible {
+	outline: 3px solid var(--bid-fg);
+	outline-offset: 3px;
+}
 .offerTitle {
 	font-size: 1.125rem;
 	font-weight: 800;

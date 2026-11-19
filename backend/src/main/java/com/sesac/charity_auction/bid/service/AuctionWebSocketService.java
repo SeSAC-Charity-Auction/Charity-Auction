@@ -14,7 +14,7 @@ public class AuctionWebSocketService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void sendBidUpdate(Long auctionId, BidRealtimeResponse response) {
+    public void sendBidUpdate(Long auctionId, BidRealtimeResponse response){
 
         // 메시지 전송
         // 특정 경매 상세 페이지 입찰 정보 전달
@@ -34,6 +34,13 @@ public class AuctionWebSocketService {
         // 경매 목록 화면 (시작·마감·유찰·낙찰 완료만)
         if (event.affectsList()) {
             messagingTemplate.convertAndSend("/topic/auctions/status", message);
+        }
+
+        // 낙찰 기회가 생기거나(마감), 다음 순위로 넘어가거나, 끝났을 때(낙찰 완료·유찰)
+        // 로그인한 사람들의 화면이 "내 낙찰 기회"를 다시 확인하도록 신호를 보내요.
+        // (누구에게 기회가 갔는지는 담지 않아요. 각 화면이 자기 것만 서버에 다시 물어봐요)
+        if (event.affectsOffers()) {
+            messagingTemplate.convertAndSend("/topic/offers", message);
         }
     }
 }

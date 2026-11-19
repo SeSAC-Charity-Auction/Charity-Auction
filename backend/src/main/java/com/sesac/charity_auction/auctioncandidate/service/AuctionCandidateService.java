@@ -11,7 +11,6 @@ import com.sesac.charity_auction.auctioncandidate.dto.CandidateAcceptResponseDto
 import com.sesac.charity_auction.auctioncandidate.dto.CandidateRejectResponseDto;
 import com.sesac.charity_auction.auctioncandidate.dto.MyOfferedCandidateResponse;
 import com.sesac.charity_auction.auctioncandidate.repository.AuctionCandidateRepository;
-import com.sesac.charity_auction.global.common.LocalTimes;
 import com.sesac.charity_auction.global.exception.BusinessException;
 import com.sesac.charity_auction.global.exception.ErrorCode;
 import com.sesac.charity_auction.point.domain.PointHistory;
@@ -193,41 +192,15 @@ public class AuctionCandidateService {
 
     // 유저 낙찰 기회 내역 상태별 조건 조회
     public List<MyOfferedCandidateResponse> getMyOfferedCandidate(final Long userId, final AuctionCandidateStatus status) {
-        final List<AuctionCandidate> candidates = auctionCandidateRepository.findAllByUser_IdAndStatusOrderByIdDesc(userId, status);
-
-        return candidates.stream()
-                .map(candidate -> new MyOfferedCandidateResponse(
-                        candidate.getId(),
-                        candidate.getAuction().getId(),
-                        candidate.getAuction().getTitle(),
-                        candidate.getBidPrice(),
-                        candidate.getRank(),
-                        candidate.getStatus(),
-                        candidate.getOfferedAt(),
-                        candidate.getDeadlineAt(),
-                        candidate.getProcessedAt(),
-                        candidate.getDeadlineAt() == null ? null : LocalTimes.toIsoInstant(candidate.getDeadlineAt())
-                ))
+        return auctionCandidateRepository.findAllByUser_IdAndStatusOrderByIdDesc(userId, status).stream()
+                .map(MyOfferedCandidateResponse::from)
                 .toList();
     }
 
     // 유저 낙찰 기회 내역 전체 조회
     public List<MyOfferedCandidateResponse> getAllMyOfferedCandidate(final Long userId) {
-        final List<AuctionCandidate> candidates = auctionCandidateRepository.findAllByUser_IdOrderByIdDesc(userId);
-
-        return candidates.stream()
-                .map(candidate -> new MyOfferedCandidateResponse(
-                        candidate.getId(),
-                        candidate.getAuction().getId(),
-                        candidate.getAuction().getTitle(),
-                        candidate.getBidPrice(),
-                        candidate.getRank(),
-                        candidate.getStatus(),
-                        candidate.getOfferedAt(),
-                        candidate.getDeadlineAt(),
-                        candidate.getProcessedAt(),
-                        candidate.getDeadlineAt() == null ? null : LocalTimes.toIsoInstant(candidate.getDeadlineAt())
-                ))
+        return auctionCandidateRepository.findAllByUser_IdOrderByIdDesc(userId).stream()
+                .map(MyOfferedCandidateResponse::from)
                 .toList();
     }
 }
