@@ -1,3 +1,4 @@
+import InView from "./InView";
 import Link from "next/link";
 import DonationTarget from "./DonationTarget";
 import FlipText from "./FlipText";
@@ -54,7 +55,7 @@ export default function TargetCard({ target }: { target: DonationTarget }) {
 						목표 <FlipText text={won(target.targetAmount)} />
 					</span>
 				</div>
-				<div
+				<InView
 					className={styles.bar}
 					role="progressbar"
 					aria-valuemin={0}
@@ -66,7 +67,7 @@ export default function TargetCard({ target }: { target: DonationTarget }) {
 						className={styles.barFill}
 						style={{ width: `${barWidth}%` }}
 					/>
-				</div>
+				</InView>
 				<p className={styles.raised}>
 					<FlipText text={`${won(target.totalDonation)} 모였어요`} />
 				</p>

@@ -1,3 +1,4 @@
+import InView from "./InView";
 import styles from "./page.module.css";
 
 export default function Sparkline({
@@ -27,25 +28,27 @@ export default function Sparkline({
 		.join(" ");
 	const [lastX, lastY] = points[points.length - 1];
 	return (
-		<svg
-			viewBox={`0 0 ${W} ${H}`}
-			role="img"
-			aria-label={label}
-			className={styles.spark}
-		>
-			{/* 처음에는 그래프의 바닥(가장 낮은 값의 높이)에 납작하게 붙어 있다가 제자리로 올라와요. */}
-			<path
-				d={path}
-				className={styles.sparkLine}
-				style={{ "--floor": `${H - PAD}px` } as React.CSSProperties}
-			/>
-			<circle
-				cx={lastX}
-				cy={lastY}
-				r={5}
-				className={styles.sparkDot}
-				style={{ "--drop": `${H - PAD - lastY}px` } as React.CSSProperties}
-			/>
-		</svg>
+		<InView>
+			<svg
+				viewBox={`0 0 ${W} ${H}`}
+				role="img"
+				aria-label={label}
+				className={styles.spark}
+			>
+				{/* 처음에는 그래프의 바닥(가장 낮은 값의 높이)에 납작하게 붙어 있다가 제자리로 올라와요. */}
+				<path
+					d={path}
+					className={styles.sparkLine}
+					style={{ "--floor": `${H - PAD}px` } as React.CSSProperties}
+				/>
+				<circle
+					cx={lastX}
+					cy={lastY}
+					r={5}
+					className={styles.sparkDot}
+					style={{ "--drop": `${H - PAD - lastY}px` } as React.CSSProperties}
+				/>
+			</svg>
+		</InView>
 	);
 }

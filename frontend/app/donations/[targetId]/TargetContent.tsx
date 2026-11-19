@@ -1,3 +1,4 @@
+import InView from "../InView";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -100,7 +101,7 @@ export default async function TargetContent({
 							:	"목표 금액을 모두 채웠어요"}
 						</span>
 					</div>
-					<div
+					<InView
 						className={styles.bar}
 						role="progressbar"
 						aria-valuemin={0}
@@ -120,7 +121,7 @@ export default async function TargetContent({
 								aria-hidden="true"
 							/>
 						))}
-					</div>
+					</InView>
 					<div className={styles.amounts}>
 						<span className={styles.raised}>
 							<FlipText
