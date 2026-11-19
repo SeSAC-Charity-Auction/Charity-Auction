@@ -3,6 +3,7 @@ package com.sesac.charity_auction.auction;
 import com.sesac.charity_auction.auction.domain.Auction;
 import com.sesac.charity_auction.auction.domain.AuctionStatus;
 import com.sesac.charity_auction.auction.repository.AuctionRepository;
+import com.sesac.charity_auction.auction.service.AuctionService;
 import com.sesac.charity_auction.category.domain.Category;
 import com.sesac.charity_auction.user.entity.User;
 import com.sesac.charity_auction.user.repository.UserRepository;
@@ -51,6 +52,7 @@ class AuctionScheduleRegistrationTest {
     @Autowired EntityManager em;
     @Autowired UserRepository users;
     @Autowired AuctionRepository auctions;
+    @Autowired AuctionService auctionService;
     User seller;
     Category category;
     LocalDateTime now;
@@ -132,13 +134,15 @@ class AuctionScheduleRegistrationTest {
         mvc.perform(multipart("/api/v1/auctions").file(data(now.plusHours(2), now.plusHours(26))).file(image()).with(asSeller()))
                 .andExpect(status().isCreated());
         Auction auction = auctions.findAll().getFirst();
-        String body = "{\"title\":\"수정한 물품\",\"description\":\"새 설명\",\"image\":\"" + auction.getImage() + "\","
+        // 이미지는 수정 API로 바꾸지 않아요. (POST /api/v1/auctions/{id}/image 전용)
+        String body = "{\"title\":\"수정한 물품\",\"description\":\"새 설명\","
                 + "\"categoryId\":" + category.getId() + ",\"startPrice\":2000,"
                 + "\"startAt\":\"" + now.plusHours(3) + "\",\"endAt\":\"" + now.plusHours(27) + "\"}";
         mvc.perform(put("/api/v1/auctions/" + auction.getId()).contentType(MediaType.APPLICATION_JSON).content(body).with(asSeller()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("수정한 물품"))
-                .andExpect(jsonPath("$.startPrice").value(2000));
+                .andExpect(jsonPath("$.startPrice").value(2000))
+                .andExpect(jsonPath("$.image").value(auction.getImage())); // 이미지는 그대로예요
     }
 
     @Test
@@ -147,10 +151,10 @@ class AuctionScheduleRegistrationTest {
                 .andExpect(status().isCreated());
         Auction auction = auctions.findAll().getFirst();
 
-        assertEquals(0, auctions.startDueAuctions(now));
+        assertEquals(0, auctionService.startDueAuctions(now));
         assertEquals(AuctionStatus.SCHEDULED, auctions.findById(auction.getId()).orElseThrow().getStatus());
 
-        assertEquals(1, auctions.startDueAuctions(now.plusHours(2)));
+        assertEquals(1, auctionService.startDueAuctions(now.plusHours(2)));
         assertEquals(AuctionStatus.IN_PROGRESS, auctions.findById(auction.getId()).orElseThrow().getStatus());
     }
 

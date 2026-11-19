@@ -31,17 +31,16 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
     @Query("UPDATE Auction a SET a.endAt = :endAt WHERE a.id = :auctionId AND a.isDeleted = false AND a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.IN_PROGRESS")
     int expireNow(final @Param("auctionId") Long auctionId, final @Param("endAt") LocalDateTime endAt);
 
-    // 시작 시각이 된 예정 경매 번호 (마감 시각이 이미 지난 경매는 빼요)
+    // 시작 시간이 되었지만 SCHEDULED 상태인 경매 조회 (경매 상태 변경을 위함)
     @Query("SELECT a.id FROM Auction a WHERE a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.SCHEDULED AND a.isDeleted = false AND a.startAt <= :now AND a.endAt > :now")
     List<Long> findDueAuctionIds(final @Param("now") LocalDateTime now);
 
-    // 고른 예정 경매들을 진행 중으로 바꿔요. 그사이 상태가 바뀐 경매는 건드리지 않아요. 바뀐 개수를 돌려줘요.
-    // (트랜잭션은 AuctionService.startDueAuctions가 열어요)
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    // 시작 시간이 되었지만 SCHEDULED 상태인 경매들을 IN_PROGRESS 상태로 변경
+    @Modifying(flushAutomatically = true, clearAutomatically = true) // 벌크 UPDATE 쿼리를 사용하면 일반적인 JPA 엔티티 변경과 달리 영속성 컨텍스트를 거치지 않고 DB에 직접 UPDATE 쿼리를 실행하기 때문에 영속성 컨텍스트와 DB 데이터 간의 불일치 문제를 방지하기 위함
     @Query("UPDATE Auction a SET a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.IN_PROGRESS WHERE a.id IN :ids AND a.status = com.sesac.charity_auction.auction.domain.AuctionStatus.SCHEDULED")
     int startAuctions(final @Param("ids") List<Long> ids);
 
-    // 만료된 경매
+    // 마감 시간이 되었지만 IN_PROGRESS 상태인 경매들을 조회
     @Query("SELECT a.id FROM Auction a WHERE a.status = :status AND a.endAt <= :now AND a.isDeleted = false")
     List<Long> findExpiredAuctionIds(final @Param("status") AuctionStatus status, final @Param("now") LocalDateTime now);
 

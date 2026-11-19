@@ -4,6 +4,7 @@ import isLoggedIn from "../../auth/isLoggedIn";
 import getMyProfile from "../../donations/getMyProfile";
 import editability from "../item/editability";
 import getAuctionForEdit from "../item/getAuctionForEdit";
+import DeleteAuctionButton from "./DeleteAuctionButton";
 import styles from "./SellerActions.module.css";
 
 async function SellerActionsContent({ auctionId }: { auctionId: number }) {
@@ -21,11 +22,18 @@ async function SellerActionsContent({ auctionId }: { auctionId: number }) {
 			{check.editable ?
 				<>
 					<p className={styles.text}>
-						시작 전이고 입찰이 없어서 내용을 고칠 수 있어요.
+						시작 전이고 입찰이 없어서 내용을 고치거나 삭제할 수 있어요.
 					</p>
-					<Link href={`/auctions/${auctionId}/edit`} className={styles.button}>
-						물품 정보 수정
-					</Link>
+					{/* 삭제도 수정과 같은 조건(시작 전, 입찰 없음)이라 함께 보여줘요. (백엔드 Auction.delete와 같은 규칙) */}
+					<div className={styles.actions}>
+						<Link href={`/auctions/${auctionId}/edit`} className={styles.button}>
+							물품 정보 수정
+						</Link>
+						<DeleteAuctionButton
+							auctionId={auctionId}
+							title={result.auction.title}
+						/>
+					</div>
 				</>
 			:	<p className={styles.text}>{check.reason}</p>}
 		</div>

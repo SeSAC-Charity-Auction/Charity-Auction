@@ -73,6 +73,7 @@ public class AuctionCandidateService {
         // 후보자가 없을 경우 유찰 처리
         if (nextCandidate.isEmpty()) {
             auction.fail();
+            // 프론트 실시간 반영을 위해 경매 상태 변경 이벤트 발행
             eventPublisher.publishEvent(new AuctionStatusChangedEvent(auction.getId(), AuctionStatus.FAILED, Reason.FAILED));
             return;
         }
@@ -82,6 +83,7 @@ public class AuctionCandidateService {
 
         candidate.offer(now, now.plusMinutes(OFFER_MINUTES));
 
+        // 경매 상태는 변하지 않았지만, 후보자 대상으로 낙찰 기회 실시간 처리를 위해 이벤트 발행
         eventPublisher.publishEvent(new AuctionStatusChangedEvent(auction.getId(), AuctionStatus.CLOSED, Reason.OFFER_MOVED));
     }
 
