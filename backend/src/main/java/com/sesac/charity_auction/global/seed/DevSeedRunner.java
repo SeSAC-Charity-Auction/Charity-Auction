@@ -39,8 +39,11 @@ public class DevSeedRunner implements ApplicationRunner {
     private static final String[] SCRIPTS = {
             "db/seed/dev-seed.sql",
             "db/seed/dev-seed-auctions.sql",
-            "db/seed/dev-seed-auctions-more.sql"
+            "db/seed/dev-seed-auctions-more.sql",
+            "db/seed/dev-seed-auctions-extra.sql"
     };
+    // 예전에 시드한 DB에는 없는 추가분이에요. 아직 없을 때만 따로 넣어요.
+    private static final String EXTRA_SCRIPT = "db/seed/dev-seed-auctions-extra.sql";
 
     private static final String IMAGE_SCRIPT = "db/seed/dev-seed-auction-images.sql";
     private static final String IMAGE_DIR = "db/seed/images/auction/";
@@ -65,6 +68,7 @@ public class DevSeedRunner implements ApplicationRunner {
     private void seedData() {
         try {
             if (!isEmpty("users") || !isEmpty("auctions") || !isEmpty("donation_targets")) {
+                seedExtraIfMissing();
                 log.info("개발용 더미 데이터: 이미 데이터가 있어서 넣지 않아요.");
                 return;
             }
@@ -77,6 +81,29 @@ public class DevSeedRunner implements ApplicationRunner {
         } catch (final Exception e) {
             // 더미 데이터가 안 들어가도 앱은 떠야 해요.
             log.warn("개발용 더미 데이터를 넣지 못했어요: {}", e.getMessage());
+        }
+    }
+
+    // 예전에 시드한 DB에 추가분(경매 201~240번, 입찰 2001번~)을 넣어요.
+    // 번호가 하나라도 쓰이고 있거나, 판매자·입찰자 회원(2~17번)이 없으면 건드리지 않아요.
+    private void seedExtraIfMissing() {
+        try {
+            final Long taken = jdbc.queryForObject(
+                    "SELECT (SELECT COUNT(*) FROM auctions WHERE auction_id BETWEEN 201 AND 240)"
+                            + " + (SELECT COUNT(*) FROM bids WHERE bid_id >= 2001)", Long.class);
+            final Long users = jdbc.queryForObject(
+                    "SELECT COUNT(*) FROM users WHERE user_id BETWEEN 2 AND 17", Long.class);
+            final Long categories = jdbc.queryForObject(
+                    "SELECT COUNT(*) FROM categories WHERE category_id BETWEEN 1 AND 7", Long.class);
+            if (taken == null || taken != 0 || users == null || users != 16 || categories == null || categories != 7) {
+                return;
+            }
+            try (final Connection connection = dataSource.getConnection()) {
+                ScriptUtils.executeSqlScript(connection, new ClassPathResource(EXTRA_SCRIPT));
+            }
+            log.info("개발용 더미 데이터: 진행 중 경매 추가분을 넣었어요.");
+        } catch (final Exception e) {
+            log.warn("개발용 더미 데이터 추가분을 넣지 못했어요: {}", e.getMessage());
         }
     }
 
