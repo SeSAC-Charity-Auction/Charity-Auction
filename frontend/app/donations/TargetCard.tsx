@@ -5,6 +5,7 @@ import { display } from "./fonts";
 import { won } from "./format";
 import styles from "./page.module.css";
 import progressOf from "./progressOf";
+import summaryOf from "./summaryOf";
 
 export default function TargetCard({ target }: { target: DonationTarget }) {
 	const { pct, barWidth } = progressOf(target);
@@ -40,7 +41,9 @@ export default function TargetCard({ target }: { target: DonationTarget }) {
 				</Link>
 			</h3>
 			{target.description && (
-				<p className={styles.cardSummary}>{target.description}</p>
+				<p className={styles.cardSummary}>
+					{summaryOf(target.description)}
+				</p>
 			)}
 			<div className={styles.progress}>
 				<div className={styles.progressTop}>

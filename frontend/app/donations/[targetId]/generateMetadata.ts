@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import getDonationTarget from "../getDonationTarget";
+import summaryOf from "../summaryOf";
 
 export default async function generateMetadata({
 	params
@@ -12,7 +13,7 @@ export default async function generateMetadata({
 	if (!detail) return { title: "기부처" };
 	const { target } = detail;
 	const description =
-		target.description?.trim().slice(0, 150) ||
+		summaryOf(target.description).slice(0, 150) ||
 		`${target.targetName}에 포인트로 기부해 보세요.`;
 	return {
 		title: target.targetName,

@@ -30,6 +30,7 @@ import java.sql.SQLException;
  * - 시드 경매의 이미지(db/seed/images/auction)는 DB가 이미 있어도 매번 업로드 폴더로 복사하고 연결해요.
  *   (비어 있는 파일·이미지만 채우고, 직접 올린 이미지는 그대로 둬요.)
  * - 시드 경매의 상품 설명(dev-seed-auction-descriptions.sql)도 같은 방식으로 채워요. (짧은 설명만 바꿔요.)
+ * - 기부처 추가분(6~15번)과 상세 설명도 같은 방식으로 채워요.
  * - 끄려면 app.dev-seed.enabled=false (환경 변수 APP_DEV_SEED_ENABLED=false)로 지정하세요.
  */
 @Slf4j
@@ -41,10 +42,13 @@ public class DevSeedRunner implements ApplicationRunner {
             "db/seed/dev-seed.sql",
             "db/seed/dev-seed-auctions.sql",
             "db/seed/dev-seed-auctions-more.sql",
-            "db/seed/dev-seed-auctions-extra.sql"
+            "db/seed/dev-seed-auctions-extra.sql",
+            "db/seed/dev-seed-targets-extra.sql"
     };
     // 예전에 시드한 DB에는 없는 추가분이에요. 아직 없을 때만 따로 넣어요.
     private static final String EXTRA_SCRIPT = "db/seed/dev-seed-auctions-extra.sql";
+    private static final String TARGETS_EXTRA_SCRIPT = "db/seed/dev-seed-targets-extra.sql";
+    private static final String TARGET_DESCRIPTION_SCRIPT = "db/seed/dev-seed-target-descriptions.sql";
 
     private static final String IMAGE_SCRIPT = "db/seed/dev-seed-auction-images.sql";
     private static final String DESCRIPTION_SCRIPT = "db/seed/dev-seed-auction-descriptions.sql";
@@ -71,6 +75,7 @@ public class DevSeedRunner implements ApplicationRunner {
         try {
             if (!isEmpty("users") || !isEmpty("auctions") || !isEmpty("donation_targets")) {
                 seedExtraIfMissing();
+                seedTargetsIfMissing();
                 log.info("개발용 더미 데이터: 이미 데이터가 있어서 넣지 않아요.");
                 return;
             }
@@ -109,6 +114,27 @@ public class DevSeedRunner implements ApplicationRunner {
         }
     }
 
+    // 예전에 시드한 DB에 기부처 추가분(기부처 6~15번, 기부 300번~)을 넣어요.
+    // 번호가 하나라도 쓰이고 있거나 회원 1~17번이 없으면 건드리지 않아요.
+    private void seedTargetsIfMissing() {
+        try {
+            final Long taken = jdbc.queryForObject(
+                    "SELECT (SELECT COUNT(*) FROM donation_targets WHERE target_id BETWEEN 6 AND 15)"
+                            + " + (SELECT COUNT(*) FROM donations WHERE donation_id >= 300)", Long.class);
+            final Long users = jdbc.queryForObject(
+                    "SELECT COUNT(*) FROM users WHERE user_id BETWEEN 1 AND 17", Long.class);
+            if (taken == null || taken != 0 || users == null || users != 17) {
+                return;
+            }
+            try (final Connection connection = dataSource.getConnection()) {
+                ScriptUtils.executeSqlScript(connection, new ClassPathResource(TARGETS_EXTRA_SCRIPT));
+            }
+            log.info("개발용 더미 데이터: 기부처 추가분을 넣었어요.");
+        } catch (final Exception e) {
+            log.warn("개발용 기부처 추가분을 넣지 못했어요: {}", e.getMessage());
+        }
+    }
+
     // 시드 경매 이미지를 업로드 폴더에 복사하고(이미 있으면 건너뛰어요) 경매에 연결해요.
     private void seedImages() {
         try {
@@ -135,6 +161,8 @@ public class DevSeedRunner implements ApplicationRunner {
                 ScriptUtils.executeSqlScript(connection, new ClassPathResource(IMAGE_SCRIPT));
                 // 상품 설명도 같은 방식이에요. (설명이 짧은 시드 경매에만 긴 설명을 넣어요.)
                 ScriptUtils.executeSqlScript(connection, new ClassPathResource(DESCRIPTION_SCRIPT));
+                // 기부처 상세 설명도 같은 방식이에요.
+                ScriptUtils.executeSqlScript(connection, new ClassPathResource(TARGET_DESCRIPTION_SCRIPT));
             }
             if (copied > 0) {
                 log.info("개발용 경매 이미지를 {}장 복사했어요. ({})", copied, folder);

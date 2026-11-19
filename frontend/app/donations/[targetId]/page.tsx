@@ -2,9 +2,13 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { body } from "../fonts";
+import generateMetadata from "./generateMetadata";
 import LoadingState from "./LoadingState";
 import styles from "./page.module.css";
 import TargetContent from "./TargetContent";
+
+// 기부처 이름과 설명(첫 문단)이 탭 제목과 공유 미리보기에 나와요.
+export { generateMetadata };
 
 export default function TargetPage({
 	params

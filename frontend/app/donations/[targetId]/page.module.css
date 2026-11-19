@@ -204,9 +204,11 @@
 }
 
 .lead {
-	max-width: 36em;
+	max-width: 40em;
 	margin-top: 12px;
 	color: var(--ink-soft);
+	white-space: pre-line; /* 설명의 줄바꿈과 문단을 그대로 */
+	line-height: 1.75;
 }
 
 /* ---------- 진행 상황 ---------- */
