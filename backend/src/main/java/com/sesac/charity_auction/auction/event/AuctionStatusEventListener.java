@@ -8,13 +8,12 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-public class AuctionStatusEventListener {
+public class AuctionStatusEventListener { // 경매 상태 변경시 발행되는 이벤트를 감지
 
     private final AuctionWebSocketService auctionWebSocketService;
 
-    // DB 커밋이 끝난 뒤에만 보내요. (커밋 전에 보내면 화면이 다시 불러와도 옛 상태가 보일 수 있어요)
-    // fallbackExecution: 트랜잭션 밖에서 발행돼도 보내요.
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
+    // 특정 시점(커밋 이후)에 이벤트 처리
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true) // 트랜잭션이 정상적으로 처리된 이후에 이벤트를 처리
     public void handle(final AuctionStatusChangedEvent event) {
         auctionWebSocketService.sendStatusChange(event);
     }

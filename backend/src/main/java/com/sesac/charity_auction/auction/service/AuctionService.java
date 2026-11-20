@@ -37,11 +37,12 @@ public class AuctionService {
     // 시작 예정 -> 진행 경매
     @Transactional
     public int startDueAuctions(final LocalDateTime now) {
-        final List<Long> auctionIds = auctionRepository.findDueAuctionIds(now);
+        final List<Long> auctionIds = auctionRepository.findDueAuctionIds(now); // 시작 시간이 되었지만 SCHEDULED 상태인 경매 조회
         if (auctionIds.isEmpty()) {
             return 0;
         }
-        final int started = auctionRepository.startAuctions(auctionIds);
+        final int started = auctionRepository.startAuctions(auctionIds); // 위에서 조회한 auctionIds를 IN_PROGRESS로 업데이트
+        // 상태 변화에 따른 이벤트 발행
         auctionIds.forEach(id -> eventPublisher.publishEvent(
                 new AuctionStatusChangedEvent(id, AuctionStatus.IN_PROGRESS, Reason.STARTED)));
         return started;

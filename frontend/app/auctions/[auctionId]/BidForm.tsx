@@ -31,12 +31,23 @@ export default function BidForm({
 	const live = useLiveAuction();
 	const currentPrice = live?.currentPrice ?? initialPrice;
 	const hasBids = live ? live.bidCount > 0 : initialHasBids;
+	
 	// 내가 입찰한 뒤에 더 높은 입찰이 들어왔는지
 	const outbid = state.status === "success" && currentPrice > state.bidPrice;
 	const min = currentPrice + BID_STEP; // 지금보다 한 단위 높은 금액부터
 	// 직접 입력한 숫자(자릿수만)예요. 아직 건드리지 않았으면 null이고, 이때는 최소 금액을 보여줘요.
 	// (입찰이 들어와 최소 금액이 올라가면 건드리지 않은 입력값도 따라 올라가요.)
 	const [typed, setTyped] = useState<string | null>(null);
+	// 현재가가 바뀌면(다른 사람의 입찰, 내 입찰 성공) 입력값을 다시 확인해요.
+	// 새 최소 금액보다 낮아진 입력값은 버리고 최소 금액을 따라가게 해요.
+	// 일부러 더 높게 적어 둔 금액은 그대로 둬요. (그리는 중에 값을 맞추는 React 방식이에요)
+	const [seenPrice, setSeenPrice] = useState(currentPrice);
+	if (currentPrice !== seenPrice) {
+		setSeenPrice(currentPrice);
+		if (typed !== null && (typed === "" || Number(typed) < min)) {
+			setTyped(null);
+		}
+	}
 	const digits = typed ?? String(min);
 	const price = digits === "" ? 0 : Number(digits);
 	// 현재 입찰가보다 낮거나 같은 금액, 100원 단위가 아닌 금액은 입찰할 수 없어요.

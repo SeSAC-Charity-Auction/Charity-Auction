@@ -47,17 +47,15 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
             builder.and(auction.category.id.eq(condition.categoryId()));
         }
 
-        // 취소된 경매는 목록에 나오지 않아요.
+        // 취소된 경매 제외
         builder.and(auction.status.ne(AuctionStatus.CANCELED));
 
-        // 상태 필터링. 마감 시각이 지났지만 스케줄러가 아직 처리하지 못한 진행 중 경매는 마감으로 봐요.
         final LocalDateTime now = LocalDateTime.now();
         final BooleanExpression inProgress = auction.status.eq(AuctionStatus.IN_PROGRESS).and(auction.endAt.gt(now));
         final BooleanExpression scheduled = auction.status.eq(AuctionStatus.SCHEDULED);
         final BooleanExpression ended = auction.status.in(AuctionStatus.CLOSED, AuctionStatus.COMPLETED, AuctionStatus.FAILED)
                 .or(auction.status.eq(AuctionStatus.IN_PROGRESS).and(auction.endAt.loe(now)));
 
-        // status가 없으면 전체예요.
         if (condition.status() != null) {
             switch (condition.status()) {
                 case SCHEDULED -> builder.and(scheduled);
@@ -93,7 +91,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
         return new PageImpl<>(content, pageable, total != null ? total : 0L);
     }
 
-    // 정렬 조건. 마감 임박순은 진행 중·예정을 마감이 가까운 순으로, 마감된 경매는 최근에 마감된 순으로 이어 붙여요.
+    // 정렬 조건. 마감 임박순은 진행 중·예정을 마감이 가까운 순으로, 마감된 경매는 최근에 마감된 순
     private OrderSpecifier<?>[] getOrderSpecifiers(final AuctionSort sort, final OrderSpecifier<Integer> group, final BooleanExpression open) {
         if (sort == AuctionSort.ENDING_SOON) {
             final Expression<LocalDateTime> none = Expressions.nullExpression(LocalDateTime.class);

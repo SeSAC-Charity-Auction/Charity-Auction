@@ -27,7 +27,7 @@ public class Auction extends BaseTimeEntity {
     @Column(name = "item_name", nullable = false, length = 100)
     private String title;
 
-    @Column(name = "item_image", length = 500)
+    @Column(name = "item_image", length = 500, nullable = false)
     private String image;
 
     @Column(columnDefinition = "TEXT")
