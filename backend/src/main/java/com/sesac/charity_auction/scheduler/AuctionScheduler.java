@@ -23,7 +23,7 @@ public class AuctionScheduler {
     private final AuctionRepository auctionRepository;
     private final AuctionService auctionService;
 
-    // 10초 마다 실행: 시작 시각이 된 예정 경매를 진행 중으로 바꾸고 화면에 알려요.
+    // 10초 마다 실행: 시작 시각이 된 예정 경매를 진행 중으로 변경 후 클라이언트에게 상태 변경을 알린다
     @Scheduled(fixedDelay = 10000)
     public void startDueAuctions() {
         final int started = auctionService.startDueAuctions(LocalDateTime.now());

@@ -14,7 +14,7 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
 
     List<Bid> findTop5ByAuction_IdOrderByBidAtDesc(final Long auctionId);
 
-    // 경매 상세의 입찰 내역: 입찰자(user)를 한 번에 가져와서 쿼리가 반복되지 않게 해요.
+    // 경매 상세의 입찰 내역: 입찰자를 한 번에 가져와서 N+1 문제 방지
     @EntityGraph(attributePaths = {"user"})
     List<Bid> findTop10ByAuction_IdOrderByBidAtDescIdDesc(final Long auctionId);
 
