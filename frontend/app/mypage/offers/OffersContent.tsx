@@ -11,11 +11,14 @@ import SearchParams from "./SearchParams";
 
 // 지난 기록 탭. (선택 대기·순번 대기는 위쪽에 따로 보여줘요)
 const TABS: { value: string; label: string; statuses: CandidateStatus[] }[] = [
-	{ value: "all", label: "전체", statuses: ["COMPLETED", "REJECTED", "EXPIRED", "NOT_SELECTED"] },
+	{
+		value: "all",
+		label: "전체",
+		statuses: ["COMPLETED", "REJECTED", "EXPIRED", "NOT_SELECTED"]
+	},
 	{ value: "completed", label: "낙찰 완료", statuses: ["COMPLETED"] },
 	{ value: "rejected", label: "포기", statuses: ["REJECTED"] },
-	{ value: "expired", label: "기한 만료", statuses: ["EXPIRED"] },
-	{ value: "not_selected", label: "기회 종료", statuses: ["NOT_SELECTED"] }
+	{ value: "expired", label: "기한 만료", statuses: ["EXPIRED"] }
 ];
 
 const first = (v: string | string[] | undefined) =>
@@ -38,7 +41,10 @@ export default async function OffersContent({
 		return (
 			<p className={styles.empty}>
 				로그인하면 낙찰 기회를 볼 수 있어요.{" "}
-				<Link href="/login?next=%2Fmypage%2Foffers" className={styles.textLink}>
+				<Link
+					href="/login?next=%2Fmypage%2Foffers"
+					className={styles.textLink}
+				>
 					로그인하기
 				</Link>
 			</p>
@@ -59,11 +65,15 @@ export default async function OffersContent({
 			{/* 1. 지금 선택해야 하는 기회: 기한이 짧아서 맨 위에 크게 보여줘요 */}
 			<section aria-labelledby="offered-title">
 				<div className={styles.sectionHead}>
-					<h2 id="offered-title" className={`${styles.h2} ${display.className}`}>
+					<h2
+						id="offered-title"
+						className={`${styles.h2} ${display.className}`}
+					>
 						지금 선택해야 해요
 					</h2>
 					<p className={styles.muted}>
-						수락하면 낙찰가의 50%를 포인트로 받아요. 기한이 지나면 다음 순위로 넘어가요.
+						수락하면 낙찰가의 50%를 포인트로 받아요. 기한이 지나면
+						다음 순위로 넘어가요.
 					</p>
 				</div>
 				{offered.length > 0 ?
@@ -73,17 +83,24 @@ export default async function OffersContent({
 								<OfferForm
 									candidateId={o.candidateId}
 									bidPrice={o.bidPrice}
-									secondsLeft={o.deadlineAtIso ? secondsUntil(o.deadlineAtIso) : null}
+									secondsLeft={
+										o.deadlineAtIso ?
+											secondsUntil(o.deadlineAtIso)
+										:	null
+									}
 									deadlineAtIso={o.deadlineAtIso}
 									rank={o.candidateRank}
-									item={{ auctionId: o.auctionId, title: o.title }}
+									item={{
+										auctionId: o.auctionId,
+										title: o.title
+									}}
 								/>
 							</li>
 						))}
 					</ul>
 				:	<p className={styles.empty}>
-						지금 선택할 낙찰 기회가 없어요. 입찰한 경매가 마감되고 내 순서가 오면
-						이곳과 위쪽 메뉴에 바로 나타나요.
+						지금 선택할 낙찰 기회가 없어요. 입찰한 경매가 마감되고
+						내 순서가 오면 이곳과 위쪽 메뉴에 바로 나타나요.
 					</p>
 				}
 			</section>
@@ -92,10 +109,15 @@ export default async function OffersContent({
 			{waiting.length > 0 && (
 				<section aria-labelledby="waiting-title">
 					<div className={styles.sectionHead}>
-						<h2 id="waiting-title" className={`${styles.h2} ${display.className}`}>
+						<h2
+							id="waiting-title"
+							className={`${styles.h2} ${display.className}`}
+						>
 							순번 대기 중
 						</h2>
-						<p className={styles.muted}>{waiting.length.toLocaleString("ko-KR")}건</p>
+						<p className={styles.muted}>
+							{waiting.length.toLocaleString("ko-KR")}건
+						</p>
 					</div>
 					<ul className={styles.rowList}>
 						{waiting.map((c) => (
@@ -108,7 +130,10 @@ export default async function OffersContent({
 			{/* 3. 지난 기록 */}
 			<section aria-labelledby="history-title">
 				<div className={styles.sectionHead}>
-					<h2 id="history-title" className={`${styles.h2} ${display.className}`}>
+					<h2
+						id="history-title"
+						className={`${styles.h2} ${display.className}`}
+					>
 						지난 기록
 					</h2>
 					<Link
@@ -124,7 +149,9 @@ export default async function OffersContent({
 							key={t.value}
 							href={hrefOf(t.value)}
 							className={`${styles.tab} ${t.value === tab.value ? styles.tabOn : ""}`}
-							aria-current={t.value === tab.value ? "page" : undefined}
+							aria-current={
+								t.value === tab.value ? "page" : undefined
+							}
 							scroll={false}
 						>
 							{t.label}
