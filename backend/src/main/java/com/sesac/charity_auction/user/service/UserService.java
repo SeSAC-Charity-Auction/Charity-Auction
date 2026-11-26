@@ -21,7 +21,7 @@ public class UserService {
 
     @Transactional
     public SignupResponse signup(final SignupRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmailAndIsDeletedFalse(request.email())) {
             throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
 
@@ -37,7 +37,7 @@ public class UserService {
     }
 
     public DuplicateCheckResponse checkEmail(final String email) {
-        final boolean exists = userRepository.existsByEmail(email);
+        final boolean exists = userRepository.existsByEmailAndIsDeletedFalse(email);
 
         return new DuplicateCheckResponse(!exists, exists ? ErrorCode.DUPLICATE_EMAIL.getMessage() : "사용 가능한 이메일입니다.");
     }
