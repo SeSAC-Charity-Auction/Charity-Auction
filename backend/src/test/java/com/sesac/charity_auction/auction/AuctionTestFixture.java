@@ -116,7 +116,7 @@ public class AuctionTestFixture {
             Long price
     ) {
 
-        Bid bid = Bid.create(user, auction, price);
+        Bid bid = Bid.create(user, auction, price, LocalDateTime.now());
 
         bidRepository.save(bid);
 

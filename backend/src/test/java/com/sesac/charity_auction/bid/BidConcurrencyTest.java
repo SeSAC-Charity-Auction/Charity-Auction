@@ -56,6 +56,8 @@ class BidConcurrencyTest {
 
     private Long auctionId;
 
+    private Long categoryId;
+
     @BeforeEach
     void setUp() {
         transactionTemplate = new TransactionTemplate(transactionManager);
@@ -76,6 +78,12 @@ class BidConcurrencyTest {
                 userRepository.deleteById(userId);
             }
         });
+
+        // 테스트에서 직접 만든 카테고리 삭제 (기존 카테고리는 그대로)
+        if (categoryId != null) {
+            jdbc.update("DELETE FROM categories WHERE category_id = ?", categoryId);
+            categoryId = null;
+        }
 
         userIds.clear();
         auctionId = null;
@@ -113,6 +121,34 @@ class BidConcurrencyTest {
         return userId;
     }
 
+    // 경매에 필요한 카테고리. 이미 있으면 그걸 쓰고, 없으면 테스트용으로 생성
+    private long categoryId() {
+
+        List<Long> ids = jdbc.queryForList(
+                "SELECT category_id FROM categories ORDER BY category_id LIMIT 1",
+                Long.class
+        );
+
+        if (!ids.isEmpty()) {
+            return ids.get(0);
+        }
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbc.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    "INSERT INTO categories (category_name) VALUES (?)",
+                    Statement.RETURN_GENERATED_KEYS
+            );
+            ps.setString(1, "동시성테스트-" + UUID.randomUUID().toString().substring(0, 8));
+            return ps;
+        }, keyHolder);
+
+        categoryId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+
+        return categoryId;
+    }
+
     private long createAuction(
             long sellerId,
             long startPrice,
@@ -124,6 +160,8 @@ class BidConcurrencyTest {
         LocalDateTime startAt = now.minusMinutes(1);
         LocalDateTime endAt = now.plusDays(1);
 
+        long categoryId = categoryId();
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbc.update(connection -> {
@@ -133,8 +171,8 @@ class BidConcurrencyTest {
                             "(item_name, item_image, description, start_price, " +
                             "current_price, bid_count, start_at, end_at, " +
                             "status, is_deleted, deleted_at, user_id, " +
-                            "created_at, updated_at) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            "created_at, updated_at, category_id) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS
             );
 
@@ -156,6 +194,7 @@ class BidConcurrencyTest {
 
             ps.setTimestamp(13, Timestamp.valueOf(now));
             ps.setTimestamp(14, Timestamp.valueOf(now));
+            ps.setLong(15, categoryId);
 
             return ps;
 
